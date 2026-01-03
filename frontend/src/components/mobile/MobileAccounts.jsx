@@ -31,8 +31,7 @@ const MobileAccounts = ({ onOpenTrading }) => {
   
   const [newAccountForm, setNewAccountForm] = useState({
     leverage: 100,
-    currency: 'USD',
-    isDemo: false
+    currency: 'USD'
   })
   
   const [kycForm, setKycForm] = useState({
@@ -99,7 +98,7 @@ const MobileAccounts = ({ onOpenTrading }) => {
         accountTypeId: selectedAccountType._id,
         leverage: newAccountForm.leverage,
         currency: newAccountForm.currency,
-        isDemo: newAccountForm.isDemo
+        isDemo: false
       }, getAuthHeader())
       
       if (res.data.success) {
@@ -194,9 +193,7 @@ const MobileAccounts = ({ onOpenTrading }) => {
   }
 
   const liveAccountTypes = accountTypes.filter(t => !t.isDemo)
-  const demoAccountType = accountTypes.find(t => t.isDemo)
   const liveAccounts = accounts.filter(a => !a.isDemo)
-  const demoAccounts = accounts.filter(a => a.isDemo)
 
   if (loading) {
     return (
@@ -404,59 +401,7 @@ const MobileAccounts = ({ onOpenTrading }) => {
             )}
           </div>
 
-          {/* Demo Accounts - Horizontal Scroll */}
-          <div className="mb-4">
-            <h2 className="text-sm font-semibold mb-3 px-4" style={{ color: 'var(--text-secondary)' }}>
-              Demo Accounts ({demoAccounts.length})
-            </h2>
-            
-            {demoAccounts.length === 0 ? (
-              <div className="px-4">
-                <button
-                  onClick={() => {
-                    if (demoAccountType) {
-                      setSelectedAccountType(demoAccountType)
-                      setNewAccountForm({ ...newAccountForm, isDemo: true })
-                      setShowNewAccountModal(true)
-                    }
-                  }}
-                  className="w-full p-4 rounded-xl border-2 border-dashed flex items-center justify-center gap-2"
-                  style={{ borderColor: 'var(--border-color)', color: 'var(--text-muted)' }}
-                >
-                  <Plus size={18} />
-                  <span className="text-sm">Create Demo Account</span>
-                </button>
-              </div>
-            ) : (
-              <div className="flex gap-3 overflow-x-auto px-4 pb-2 scrollbar-hide" style={{ scrollSnapType: 'x mandatory' }}>
-                {demoAccounts.map((account) => (
-                  <div
-                    key={account._id}
-                    className="p-4 rounded-xl flex-shrink-0"
-                    style={{ backgroundColor: 'var(--bg-secondary)', width: '240px', scrollSnapAlign: 'start' }}
-                  >
-                    <div className="flex items-center gap-2 mb-2">
-                      <GraduationCap size={18} className="text-gray-500" />
-                      <p className="font-medium text-sm" style={{ color: 'var(--text-primary)' }}>
-                        Demo - {account.accountNumber}
-                      </p>
-                    </div>
-                    <p className="text-xl font-bold mb-3" style={{ color: 'var(--text-primary)' }}>
-                      ${account.balance?.toFixed(2)}
-                    </p>
-                    <button
-                      onClick={() => onOpenTrading && onOpenTrading(account)}
-                      className="w-full px-3 py-2 rounded-lg text-sm font-medium"
-                      style={{ backgroundColor: 'var(--bg-hover)', color: 'var(--text-primary)' }}
-                    >
-                      Practice
-                    </button>
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
-        </>
+          </>
       ) : (
         /* Transfer Tab */
         <div className="px-4">
@@ -566,26 +511,6 @@ const MobileAccounts = ({ onOpenTrading }) => {
             <div className="p-4">
               {!selectedAccountType ? (
                 <div className="space-y-3">
-                  {/* Demo Option */}
-                  {demoAccountType && (
-                    <button
-                      onClick={() => {
-                        setSelectedAccountType(demoAccountType)
-                        setNewAccountForm({ ...newAccountForm, isDemo: true, leverage: demoAccountType.maxLeverage })
-                      }}
-                      className="w-full p-4 rounded-xl text-left"
-                      style={{ backgroundColor: 'var(--bg-hover)' }}
-                    >
-                      <div className="flex items-center gap-3">
-                        <GraduationCap size={20} className="text-gray-400" />
-                        <div>
-                          <p className="font-medium" style={{ color: 'var(--text-primary)' }}>Demo Account</p>
-                          <p className="text-xs" style={{ color: 'var(--text-muted)' }}>Practice with $10,000 virtual funds</p>
-                        </div>
-                      </div>
-                    </button>
-                  )}
-
                   {/* Live Options */}
                   {liveAccountTypes.map((type) => {
                     const IconComponent = getIconComponent(type.color)
@@ -594,7 +519,7 @@ const MobileAccounts = ({ onOpenTrading }) => {
                         key={type._id}
                         onClick={() => {
                           setSelectedAccountType(type)
-                          setNewAccountForm({ ...newAccountForm, isDemo: false, leverage: type.maxLeverage })
+                          setNewAccountForm({ ...newAccountForm, leverage: type.maxLeverage })
                         }}
                         className="w-full p-4 rounded-xl text-left"
                         style={{ backgroundColor: 'var(--bg-hover)' }}
@@ -620,10 +545,10 @@ const MobileAccounts = ({ onOpenTrading }) => {
                   {/* Selected Type */}
                   <div className="p-3 rounded-xl" style={{ backgroundColor: 'var(--bg-hover)' }}>
                     <p className="font-medium" style={{ color: 'var(--text-primary)' }}>
-                      {selectedAccountType.name} {selectedAccountType.isDemo ? '(Demo)' : 'Account'}
+                      {selectedAccountType.name} Account
                     </p>
                     <p className="text-xs" style={{ color: 'var(--text-muted)' }}>
-                      {selectedAccountType.isDemo ? 'Virtual $10,000' : `Min deposit: $${selectedAccountType.minDeposit}`}
+                      Min deposit: ${selectedAccountType.minDeposit}
                     </p>
                   </div>
 

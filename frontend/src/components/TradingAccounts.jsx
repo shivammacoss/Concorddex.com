@@ -29,8 +29,7 @@ const TradingAccounts = ({ onOpenTrading }) => {
   })
   const [newAccountForm, setNewAccountForm] = useState({
     leverage: 100,
-    currency: 'USD',
-    isDemo: false
+    currency: 'USD'
   })
 
   const getAuthHeader = () => ({
@@ -81,7 +80,7 @@ const TradingAccounts = ({ onOpenTrading }) => {
         accountTypeId: selectedAccountType._id,
         leverage: newAccountForm.leverage,
         currency: newAccountForm.currency,
-        isDemo: newAccountForm.isDemo
+        isDemo: false
       }, getAuthHeader())
       
       if (res.data.success) {
@@ -132,13 +131,11 @@ const TradingAccounts = ({ onOpenTrading }) => {
     }
   }
 
-  // Filter accounts by tab
+  // Filter accounts by tab (only live accounts, no demo)
   const liveAccountTypes = accountTypes.filter(t => !t.isDemo)
-  const demoAccountType = accountTypes.find(t => t.isDemo)
   
   const filteredAccounts = accounts.filter(acc => {
     if (activeTab === 'real') return !acc.isDemo && acc.status === 'active'
-    if (activeTab === 'demo') return acc.isDemo && acc.status === 'active'
     if (activeTab === 'archived') return acc.status !== 'active'
     return true
   })
@@ -178,8 +175,7 @@ const TradingAccounts = ({ onOpenTrading }) => {
         {/* Tabs */}
         <div className="flex gap-1 mb-8 p-1 rounded-lg w-fit" style={{ backgroundColor: 'var(--bg-secondary)' }}>
           {[
-            { id: 'real', label: 'Real' },
-            { id: 'demo', label: 'Demo' },
+            { id: 'real', label: 'Live Accounts' },
             { id: 'archived', label: 'Archived' }
           ].map((tab) => (
             <button
@@ -207,27 +203,19 @@ const TradingAccounts = ({ onOpenTrading }) => {
               <TrendingUp size={28} style={{ color: 'var(--text-muted)' }} />
             </div>
             <h3 className="text-lg font-medium mb-2" style={{ color: 'var(--text-primary)' }}>
-              No {activeTab} accounts yet
+              No {activeTab === 'real' ? 'live' : 'archived'} accounts yet
             </h3>
             <p className="text-sm mb-4" style={{ color: 'var(--text-muted)' }}>
               {activeTab === 'real' 
                 ? 'Open your first live trading account to start trading'
-                : activeTab === 'demo'
-                ? 'Open a demo account to practice trading risk-free'
                 : 'No archived accounts'}
             </p>
             {activeTab !== 'archived' && (
               <button
-                onClick={() => {
-                  if (activeTab === 'demo' && demoAccountType) {
-                    setSelectedAccountType(demoAccountType)
-                    setNewAccountForm({ ...newAccountForm, isDemo: true })
-                  }
-                  setShowNewAccountModal(true)
-                }}
+                onClick={() => setShowNewAccountModal(true)}
                 className="text-blue-500 hover:text-blue-600 font-medium text-sm"
               >
-                Open your first {activeTab} account →
+                Open your first live account →
               </button>
             )}
           </div>
