@@ -394,52 +394,6 @@ const TradingAccounts = ({ onOpenTrading }) => {
 
               {/* Account Type Cards */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-                {/* Demo Account Option */}
-                {demoAccountType && (
-                  <button
-                    onClick={() => {
-                      setSelectedAccountType(demoAccountType)
-                      setNewAccountForm({ ...newAccountForm, isDemo: true, leverage: demoAccountType.maxLeverage })
-                    }}
-                    className={`p-6 rounded-2xl border-2 text-left transition-all ${
-                      selectedAccountType?._id === demoAccountType._id 
-                        ? 'border-blue-500 bg-blue-500/5' 
-                        : 'hover:border-gray-400'
-                    }`}
-                    style={{ 
-                      backgroundColor: 'var(--bg-secondary)', 
-                      borderColor: selectedAccountType?._id === demoAccountType._id ? '#3b82f6' : 'var(--border-color)' 
-                    }}
-                  >
-                    <div className="flex items-center gap-3 mb-3">
-                      <div className="p-2 rounded-lg bg-gray-500/10">
-                        <GraduationCap size={24} className="text-gray-500" />
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <span className="font-bold text-lg" style={{ color: 'var(--text-primary)' }}>DEMO</span>
-                        <div className={`w-4 h-4 rounded-full border-2 flex items-center justify-center ${
-                          selectedAccountType?._id === demoAccountType._id ? 'border-blue-500 bg-blue-500' : 'border-gray-400'
-                        }`}>
-                          {selectedAccountType?._id === demoAccountType._id && <Check size={10} className="text-white" />}
-                        </div>
-                      </div>
-                    </div>
-                    <p className="text-sm mb-4" style={{ color: 'var(--text-muted)' }}>
-                      Practice trading with virtual funds. No risk involved.
-                    </p>
-                    <div className="grid grid-cols-2 gap-4">
-                      <div>
-                        <p className="text-xs" style={{ color: 'var(--text-muted)' }}>Virtual Balance</p>
-                        <p className="font-semibold" style={{ color: 'var(--text-primary)' }}>$10,000</p>
-                      </div>
-                      <div>
-                        <p className="text-xs" style={{ color: 'var(--text-muted)' }}>Max leverage</p>
-                        <p className="font-semibold" style={{ color: 'var(--text-primary)' }}>1:{demoAccountType.maxLeverage}</p>
-                      </div>
-                    </div>
-                  </button>
-                )}
-
                 {/* Live Account Types */}
                 {liveAccountTypes.map((type) => {
                   const IconComponent = getIconComponent(type.color)
@@ -449,7 +403,7 @@ const TradingAccounts = ({ onOpenTrading }) => {
                       key={type._id}
                       onClick={() => {
                         setSelectedAccountType(type)
-                        setNewAccountForm({ ...newAccountForm, isDemo: false, leverage: type.maxLeverage })
+                        setNewAccountForm({ ...newAccountForm, leverage: type.maxLeverage })
                       }}
                       className={`p-6 rounded-2xl border-2 text-left transition-all ${
                         isSelected 
