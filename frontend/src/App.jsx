@@ -19,7 +19,6 @@ import Support from './components/Support'
 import TradingAccounts from './components/TradingAccounts'
 import TradeNotifications from './components/TradeNotifications'
 import MobileApp from './components/mobile/MobileApp'
-import Leaderboard from './components/Leaderboard'
 import ImpersonationBanner from './components/ImpersonationBanner'
 
 function App({ initialView = 'home' }) {
@@ -35,7 +34,6 @@ function App({ initialView = 'home' }) {
       '/trade': 'chart',
       '/terminal': 'terminal',
       '/wallet': 'wallet',
-      '/leaderboard': 'leaderboard',
       '/copytrade': 'copy',
       '/ib': 'ib',
       '/orders': 'orders',
@@ -881,10 +879,6 @@ function App({ initialView = 'home' }) {
           <Support />
         )}
 
-        {/* Leaderboard View */}
-        {activeView === 'leaderboard' && (
-          <Leaderboard />
-        )}
 
         {/* Terminal View - Same as chart but dedicated */}
         {activeView === 'terminal' && (

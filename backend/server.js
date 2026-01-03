@@ -33,7 +33,6 @@ const kycRoutes = require('./routes/kyc');
 const adminKycRoutes = require('./routes/adminKyc');
 const adminSettingsRoutes = require('./routes/adminSettings');
 const adminCreditRoutes = require('./routes/adminCredit');
-const leaderboardRoutes = require('./routes/leaderboard');
 
 const app = express();
 const server = http.createServer(app);
@@ -109,7 +108,6 @@ app.use('/api/support', supportRoutes);
 app.use('/api/account-types', accountTypesRoutes);
 app.use('/api/trading-accounts', tradingAccountsRoutes);
 app.use('/api/kyc', kycRoutes);
-app.use('/api/leaderboard', leaderboardRoutes);
 // Admin routes - order matters! More specific routes first
 app.use('/api/admin/auth', adminAuthRoutes);
 app.use('/api/admin/users', adminUsersRoutes);

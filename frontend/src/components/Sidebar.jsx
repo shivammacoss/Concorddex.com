@@ -13,7 +13,6 @@ import {
   Layers,
   ChevronLeft,
   ChevronRight,
-  Trophy,
   Monitor
 } from 'lucide-react'
 import { useTheme } from '../context/ThemeContext'
@@ -35,7 +34,6 @@ const Sidebar = ({ activeView, setActiveView }) => {
     { icon: Monitor, label: 'Terminal', id: 'terminal', path: '/terminal', onClick: () => handleNavigation('terminal', '/terminal') },
     { icon: ClipboardList, label: 'Orders', id: 'orders', path: '/orders', onClick: () => handleNavigation('orders', '/orders') },
     { icon: Wallet, label: 'Wallet', id: 'wallet', path: '/wallet', onClick: () => handleNavigation('wallet', '/wallet') },
-    { icon: Trophy, label: 'Leaderboard', id: 'leaderboard', path: '/leaderboard', onClick: () => handleNavigation('leaderboard', '/leaderboard') },
     { icon: Users, label: 'Copy Trading', id: 'copy', path: '/copytrade', onClick: () => handleNavigation('copy', '/copytrade') },
     { icon: UserPlus, label: 'IB Dashboard', id: 'ib', path: '/ib', onClick: () => handleNavigation('ib', '/ib') },
     { icon: UserCircle, label: 'Profile', id: 'profile', path: '/profile', onClick: () => handleNavigation('profile', '/profile') },
