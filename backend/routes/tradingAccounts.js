@@ -202,6 +202,11 @@ router.post('/', protect, async (req, res) => {
     console.error('Create trading account error:', error);
     console.error('Request body:', req.body);
     console.error('User ID:', req.user?._id);
+    console.error('Error name:', error.name);
+    console.error('Error message:', error.message);
+    if (error.errors) {
+      console.error('Validation errors:', error.errors);
+    }
     res.status(500).json({ success: false, message: 'Server error', error: error.message });
   }
 });
