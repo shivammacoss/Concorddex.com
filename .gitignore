@@ -1,0 +1,56 @@
+# Dependencies
+node_modules/
+*/node_modules/
+
+# Environment files
+.env
+.env.local
+.env.development
+.env.production
+*.env
+
+# Build outputs
+dist/
+build/
+.next/
+
+!hc-finvest-main/hc-finvest-website/build/
+!hc-finvest-main/hc-finvest-website/build/**
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+
+# PM2
+.pm2/
+
+# SQL dump files (sensitive data)
+*.sql
+
+# Uploads (if any)
+uploads/
+
+# Coverage
+coverage/
+
+# Cache
+.cache/
+.npm/
