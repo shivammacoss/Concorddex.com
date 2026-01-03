@@ -116,20 +116,20 @@ const LandingPage = () => {
           </div>
           
           <div className="flex items-center gap-2 sm:gap-3">
-            <Link 
-              to="/login" 
+            <a 
+              href="https://trade.concorddex.com/login" 
               className="hidden sm:block px-4 py-2 text-sm font-medium rounded-lg transition-colors border"
               style={{ color: '#d4af37', borderColor: '#d4af37' }}
             >
               Login
-            </Link>
-            <Link 
-              to="/signup" 
+            </a>
+            <a 
+              href="https://trade.concorddex.com/signup" 
               className="px-3 sm:px-4 py-2 text-xs sm:text-sm font-medium rounded-lg text-black transition-all hover:opacity-90"
               style={{ background: 'linear-gradient(135deg, #d4af37 0%, #f4d03f 50%, #d4af37 100%)' }}
             >
               Get Started
-            </Link>
+            </a>
           </div>
         </div>
       </nav>
@@ -157,21 +157,21 @@ const LandingPage = () => {
               </p>
               
               <div className="flex flex-col sm:flex-row flex-wrap gap-3 sm:gap-4 mb-8 sm:mb-12 justify-center lg:justify-start">
-                <Link 
-                  to="/signup" 
+                <a 
+                  href="https://trade.concorddex.com/signup" 
                   className="inline-flex items-center justify-center gap-2 px-5 sm:px-6 py-3 rounded-xl text-black font-semibold transition-all hover:opacity-90"
                   style={{ background: 'linear-gradient(135deg, #d4af37 0%, #f4d03f 50%, #d4af37 100%)', boxShadow: '0 10px 40px rgba(212, 175, 55, 0.3)' }}
                 >
                   Start Trading Now
                   <ArrowRight size={18} />
-                </Link>
-                <Link 
-                  to="/login" 
+                </a>
+                <a 
+                  href="https://trade.concorddex.com/login" 
                   className="inline-flex items-center justify-center gap-2 px-5 sm:px-6 py-3 rounded-xl font-semibold transition-all border"
                   style={{ borderColor: '#d4af37', color: '#d4af37' }}
                 >
                   View Demo
-                </Link>
+                </a>
               </div>
               
               <div className="flex items-center justify-center lg:justify-start gap-4 sm:gap-6 flex-wrap">
@@ -348,14 +348,14 @@ const LandingPage = () => {
             Join thousands of successful traders on Concorddex. Create your free account in minutes.
           </p>
           <div className="flex flex-wrap justify-center gap-4">
-            <Link 
-              to="/signup" 
+            <a 
+              href="https://trade.concorddex.com/signup" 
               className="inline-flex items-center gap-2 px-6 sm:px-8 py-3 sm:py-4 rounded-xl text-black font-semibold transition-all hover:opacity-90 text-base sm:text-lg"
               style={{ background: 'linear-gradient(135deg, #d4af37 0%, #f4d03f 50%, #d4af37 100%)', boxShadow: '0 10px 40px rgba(212, 175, 55, 0.3)' }}
             >
               Create Free Account
               <ArrowRight size={18} />
-            </Link>
+            </a>
           </div>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-6 mt-6 sm:mt-8">
             <div className="flex items-center gap-2">

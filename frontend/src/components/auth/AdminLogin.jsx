@@ -51,10 +51,10 @@ const AdminLogin = ({ onAdminLogin }) => {
             <div className="flex items-center gap-3">
               <img src="/assets/logo.jpeg" alt="Concorddex" className="h-10" />
             </div>
-            <Link to="/" className="flex items-center gap-2 px-4 py-2 rounded-full border text-gray-400 hover:bg-white/5 transition-all text-sm" style={{ borderColor: 'rgba(212, 175, 55, 0.3)' }}>
+            <a href="https://concorddex.com" className="flex items-center gap-2 px-4 py-2 rounded-full border text-gray-400 hover:bg-white/5 transition-all text-sm" style={{ borderColor: 'rgba(212, 175, 55, 0.3)' }}>
               <ArrowRight size={16} className="rotate-180" />
               Back to Home
-            </Link>
+            </a>
           </div>
 
           {/* Center Content */}
