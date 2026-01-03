@@ -200,7 +200,9 @@ router.post('/', protect, async (req, res) => {
     });
   } catch (error) {
     console.error('Create trading account error:', error);
-    res.status(500).json({ success: false, message: 'Server error' });
+    console.error('Request body:', req.body);
+    console.error('User ID:', req.user?._id);
+    res.status(500).json({ success: false, message: 'Server error', error: error.message });
   }
 });
 

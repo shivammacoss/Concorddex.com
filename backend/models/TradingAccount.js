@@ -50,12 +50,12 @@ const tradingAccountSchema = new mongoose.Schema({
     type: Number,
     default: 0
   },
-  // Leverage can be up to 1000x (configurable per account type)
+  // Leverage can be up to 3000x (configurable per account type)
   leverage: {
     type: Number,
     default: 100,
     min: 1,
-    max: 1000
+    max: 3000
   },
   // Stop-out level percentage (default 20%)
   stopOutLevel: {

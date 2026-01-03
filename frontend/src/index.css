@@ -30,18 +30,18 @@
   --gradient-gold-dark: linear-gradient(135deg, #b8960c 0%, #d4af37 100%);
 }
 
-/* Light Theme (Golden Black - same as dark for consistency) */
+/* Light Theme (Golden White) */
 :root.light {
-  --bg-primary: #0a0a0a;
-  --bg-secondary: #111111;
-  --bg-tertiary: #1a1a1a;
-  --bg-card: #141414;
-  --bg-hover: #222222;
-  --border-color: #333333;
+  --bg-primary: #ffffff;
+  --bg-secondary: #f8f9fa;
+  --bg-tertiary: #f1f3f4;
+  --bg-card: #ffffff;
+  --bg-hover: #f5f5f5;
+  --border-color: #e0e0e0;
   --border-gold: #d4af37;
-  --text-primary: #ffffff;
-  --text-secondary: #b0b0b0;
-  --text-muted: #888888;
+  --text-primary: #1a1a1a;
+  --text-secondary: #5f6368;
+  --text-muted: #9aa0a6;
   --accent-gold: #d4af37;
   --accent-gold-light: #f4d03f;
   --accent-gold-dark: #b8960c;
@@ -96,7 +96,7 @@ body.landing-page {
 }
 
 :root.light ::-webkit-scrollbar-track {
-  background: #f0f1f2;
+  background: #f1f3f4;
 }
 
 :root.light ::-webkit-scrollbar-thumb {
