@@ -49,9 +49,9 @@ const Login = ({ onLogin }) => {
           {/* Top Header */}
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <img src="/assets/logo.jpeg" alt="Concorddex" className="h-10" />
+              <img src="/assets/logo.png" alt="Concorddex" className="h-10" />
             </div>
-            <a href="https://concorddex.com" className="flex items-center gap-2 px-4 py-2 rounded-full border text-gray-400 hover:bg-white/5 transition-all text-sm" style={{ borderColor: 'rgba(212, 175, 55, 0.3)' }}>
+            <a href="/" className="flex items-center gap-2 px-4 py-2 rounded-full border text-gray-400 hover:bg-white/5 transition-all text-sm" style={{ borderColor: 'rgba(212, 175, 55, 0.3)' }}>
               <ArrowRight size={16} className="rotate-180" />
               Back to Home
             </a>
@@ -59,52 +59,9 @@ const Login = ({ onLogin }) => {
 
           {/* Center Content */}
           <div className="flex-1 flex flex-col items-center justify-center">
-            {/* Live Chart Card */}
-            <div className="w-full max-w-md">
-              <div className="relative rounded-2xl p-6 backdrop-blur-xl" style={{ backgroundColor: 'rgba(20, 20, 20, 0.9)', border: '1px solid rgba(212, 175, 55, 0.2)' }}>
-                <div className="flex items-center justify-between mb-4">
-                  <div>
-                    <span className="text-gray-400 text-sm">Live Market</span>
-                    <div className="flex items-center gap-2 mt-1">
-                      <span className="text-xl font-bold" style={{ color: '#d4af37' }}>XAUUSD</span>
-                      <span className="px-2 py-0.5 rounded-full text-xs font-medium" style={{ backgroundColor: 'rgba(34, 197, 94, 0.2)', color: '#22c55e' }}>+2.34%</span>
-                    </div>
-                  </div>
-                  <div className="text-right">
-                    <span className="text-gray-400 text-sm">Price</span>
-                    <div className="text-2xl font-bold text-white">$2,645.80</div>
-                  </div>
-                </div>
-                
-                <svg viewBox="0 0 400 120" className="w-full h-28">
-                  <defs>
-                    <linearGradient id="loginGradient" x1="0%" y1="0%" x2="0%" y2="100%">
-                      <stop offset="0%" stopColor="#d4af37" stopOpacity="0.4"/>
-                      <stop offset="100%" stopColor="#d4af37" stopOpacity="0"/>
-                    </linearGradient>
-                  </defs>
-                  <path d="M 0 100 Q 40 90 80 85 T 160 70 T 240 55 T 320 40 T 400 20 L 400 120 L 0 120 Z" fill="url(#loginGradient)"/>
-                  <path d="M 0 100 Q 40 90 80 85 T 160 70 T 240 55 T 320 40 T 400 20" fill="none" stroke="#d4af37" strokeWidth="2.5"/>
-                  <circle cx="400" cy="20" r="5" fill="#d4af37">
-                    <animate attributeName="r" values="5;7;5" dur="1.5s" repeatCount="indefinite"/>
-                  </circle>
-                </svg>
-
-                <div className="grid grid-cols-3 gap-3 mt-4">
-                  <div className="text-center p-3 rounded-xl" style={{ backgroundColor: 'rgba(255,255,255,0.05)' }}>
-                    <div className="text-xs text-gray-500 mb-1">24h High</div>
-                    <div className="text-sm font-semibold text-white">$2,658.40</div>
-                  </div>
-                  <div className="text-center p-3 rounded-xl" style={{ backgroundColor: 'rgba(255,255,255,0.05)' }}>
-                    <div className="text-xs text-gray-500 mb-1">24h Low</div>
-                    <div className="text-sm font-semibold text-white">$2,612.20</div>
-                  </div>
-                  <div className="text-center p-3 rounded-xl" style={{ backgroundColor: 'rgba(255,255,255,0.05)' }}>
-                    <div className="text-xs text-gray-500 mb-1">Volume</div>
-                    <div className="text-sm font-semibold text-white">$1.2B</div>
-                  </div>
-                </div>
-              </div>
+            {/* Big Logo */}
+            <div className="w-full max-w-md flex items-center justify-center">
+              <img src="/assets/logo.png" alt="Concorddex" className="w-64 h-64 object-contain" />
             </div>
 
             {/* Tagline */}
@@ -140,7 +97,7 @@ const Login = ({ onLogin }) => {
         <div className="max-w-md w-full mx-auto">
           {/* Mobile Logo */}
           <div className="lg:hidden flex items-center gap-3 mb-8">
-            <img src="/assets/logo.jpeg" alt="Concorddex" className="h-10" />
+            <img src="/assets/logo.png" alt="Concorddex" className="h-10" />
           </div>
 
           {/* Heading */}

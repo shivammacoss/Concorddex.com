@@ -267,7 +267,7 @@ const ChargesManagement = () => {
                         className="px-3 py-1 rounded-full text-xs font-medium"
                         style={{ 
                           backgroundColor: charge.isActive ? 'rgba(34, 197, 94, 0.1)' : 'rgba(239, 68, 68, 0.1)',
-                          color: charge.isActive ? '#22c55e' : '#ef4444'
+                          color: charge.isActive ? '#22c55e' : '#d4af37'
                         }}
                       >
                         {charge.isActive ? 'Active' : 'Inactive'}
@@ -279,7 +279,7 @@ const ChargesManagement = () => {
                           <Edit size={16} style={{ color: 'var(--text-secondary)' }} />
                         </button>
                         <button onClick={() => handleDelete(charge._id)} className="p-2 rounded-lg hover:bg-red-500/10">
-                          <Trash2 size={16} style={{ color: '#ef4444' }} />
+                          <Trash2 size={16} style={{ color: '#d4af37' }} />
                         </button>
                       </div>
                     </td>

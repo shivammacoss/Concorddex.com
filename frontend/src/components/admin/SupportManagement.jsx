@@ -133,7 +133,7 @@ const SupportManagement = () => {
 
   const getPriorityStyle = (priority) => {
     switch (priority) {
-      case 'urgent': return { bg: 'rgba(239, 68, 68, 0.1)', color: '#ef4444' }
+      case 'urgent': return { bg: 'rgba(239, 68, 68, 0.1)', color: '#d4af37' }
       case 'high': return { bg: 'rgba(249, 115, 22, 0.1)', color: '#f97316' }
       case 'medium': return { bg: 'rgba(251, 191, 36, 0.1)', color: '#fbbf24' }
       case 'low': return { bg: 'rgba(34, 197, 94, 0.1)', color: '#22c55e' }
@@ -177,7 +177,7 @@ const SupportManagement = () => {
         </div>
         <div className="p-4 rounded-2xl" style={{ background: 'linear-gradient(135deg, rgba(239, 68, 68, 0.15) 0%, rgba(220, 38, 38, 0.15) 100%)', border: '1px solid rgba(239, 68, 68, 0.3)' }}>
           <p className="text-sm" style={{ color: 'var(--text-muted)' }}>Unread</p>
-          <p className="text-2xl font-bold" style={{ color: '#ef4444' }}>{stats.unreadCount || 0}</p>
+          <p className="text-2xl font-bold" style={{ color: '#d4af37' }}>{stats.unreadCount || 0}</p>
         </div>
       </div>
 

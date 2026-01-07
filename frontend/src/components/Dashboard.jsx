@@ -26,10 +26,12 @@ import {
   Star,
   Trophy,
   Rocket,
-  Image
+  Image,
+  Receipt
 } from 'lucide-react'
 import { useTheme } from '../context/ThemeContext'
 import axios from 'axios'
+import { Search } from 'lucide-react'
 
 const Dashboard = () => {
   const { isDark } = useTheme()
@@ -67,10 +69,14 @@ const Dashboard = () => {
     name: 'Trader',
     walletBalance: 0.00,
     totalPnL: 0,
+    totalCharges: 0,
+    totalTrades: 0,
     todayPnL: 0,
     weekPnL: 0,
     monthPnL: 0
   })
+  const [activeAccount, setActiveAccount] = useState(null)
+  const [isCentAccount, setIsCentAccount] = useState(false)
   const [userStats, setUserStats] = useState({
     totalTrades: 0,
     winRate: 0,
@@ -92,12 +98,39 @@ const Dashboard = () => {
         const profileRes = await axios.get('/api/auth/me', {
           headers: { Authorization: `Bearer ${token}` }
         })
+        
+        // Check for active trading account
+        const savedAccount = localStorage.getItem('activeTradingAccount')
+        let accountBalance = 0
+        let isCent = false
+        let account = null
+        
+        if (savedAccount) {
+          const accountData = JSON.parse(savedAccount)
+          try {
+            const accountRes = await axios.get(`/api/trading-accounts/${accountData._id}`, {
+              headers: { Authorization: `Bearer ${token}` }
+            })
+            if (accountRes.data.success && accountRes.data.data) {
+              account = accountRes.data.data
+              isCent = account.isCentAccount || false
+              // For cent accounts, show balance in cents (multiply by 100)
+              accountBalance = isCent ? (account.balance || 0) * 100 : (account.balance || 0)
+              setActiveAccount(account)
+              setIsCentAccount(isCent)
+            }
+          } catch (e) {
+            console.log('Failed to fetch trading account:', e)
+          }
+        }
+        
         if (profileRes.data.success) {
           const user = profileRes.data.data
           setUserData(prev => ({
             ...prev,
             name: user.firstName || 'Trader',
-            walletBalance: user.balance || 0
+            // Use trading account balance if available, otherwise user wallet balance
+            walletBalance: account ? accountBalance : (user.balance || 0)
           }))
         }
 
@@ -114,6 +147,7 @@ const Dashboard = () => {
             const losingTrades = closedTrades.filter(t => (t.profit || 0) < 0)
             
             const totalPnL = closedTrades.reduce((sum, t) => sum + (t.profit || 0), 0)
+            const totalCharges = trades.reduce((sum, t) => sum + (t.tradingCharge || 0) + (t.commission || 0) + (t.spreadCost || 0), 0)
             const winRate = closedTrades.length > 0 ? Math.round((winningTrades.length / closedTrades.length) * 100) : 0
             const avgProfit = winningTrades.length > 0 ? winningTrades.reduce((sum, t) => sum + (t.profit || 0), 0) / winningTrades.length : 0
             const avgLoss = losingTrades.length > 0 ? Math.abs(losingTrades.reduce((sum, t) => sum + (t.profit || 0), 0) / losingTrades.length) : 0
@@ -164,6 +198,8 @@ const Dashboard = () => {
             setUserData(prev => ({ 
               ...prev, 
               totalPnL,
+              totalCharges,
+              totalTrades: trades.length,
               todayPnL,
               weekPnL,
               monthPnL
@@ -327,7 +363,7 @@ const Dashboard = () => {
       {/* Top Section - Logo, Greeting & Time */}
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center gap-4">
-          <img src="/assets/logo.jpeg" alt="Concorddex" className="h-10" />
+          <img src="/assets/logo.png" alt="Concorddex" className="h-10" />
           <div>
             <h1 
               className="text-2xl font-bold"
@@ -360,533 +396,291 @@ const Dashboard = () => {
         </div>
       </div>
 
-      {/* Stats Cards Row - Stylish Gradient Design */}
-      <div className="grid grid-cols-4 gap-4 mb-6">
+      {/* Stats Cards Row - Responsive Grid */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-6">
         {/* Wallet Card */}
         <div 
-          className="rounded-2xl p-5 relative overflow-hidden"
+          className="rounded-xl sm:rounded-2xl p-4 sm:p-5 relative overflow-hidden transition-transform hover:scale-[1.02]"
           style={{ 
-            background: 'linear-gradient(135deg, rgba(212, 175, 55, 0.15) 0%, rgba(244, 208, 63, 0.15) 100%)',
+            backgroundColor: 'var(--bg-card)',
             border: '1px solid rgba(212, 175, 55, 0.3)'
           }}
         >
-          <div className="absolute top-0 right-0 w-32 h-32 opacity-10">
-            <Sparkles size={128} style={{ color: '#d4af37' }} />
+          <div className="absolute top-0 right-0 w-20 sm:w-32 h-20 sm:h-32 opacity-10">
+            <Sparkles size={80} className="sm:hidden" style={{ color: '#d4af37' }} />
+            <Sparkles size={128} className="hidden sm:block" style={{ color: '#d4af37' }} />
           </div>
           <div className="relative z-10">
-            <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center justify-between mb-3 sm:mb-4">
               <div 
-                className="w-12 h-12 rounded-xl flex items-center justify-center"
+                className="w-10 h-10 sm:w-12 sm:h-12 rounded-lg sm:rounded-xl flex items-center justify-center"
                 style={{ background: 'linear-gradient(135deg, #d4af37 0%, #f4d03f 100%)' }}
               >
-                <Wallet size={24} style={{ color: '#000' }} />
+                <Wallet size={20} className="sm:hidden" style={{ color: '#000' }} />
+                <Wallet size={24} className="hidden sm:block" style={{ color: '#000' }} />
               </div>
               <button 
-                className="px-3 py-1.5 rounded-lg text-xs font-medium transition-all hover:scale-105"
+                className="px-2 sm:px-3 py-1 sm:py-1.5 rounded-lg text-xs font-medium transition-all hover:scale-105"
                 style={{ background: 'linear-gradient(135deg, #d4af37 0%, #f4d03f 100%)', color: '#000' }}
               >
                 Deposit
               </button>
             </div>
-            <p className="text-sm mb-1" style={{ color: 'var(--text-secondary)' }}>Wallet Balance</p>
-            <p className="text-2xl font-bold" style={{ color: 'var(--text-primary)' }}>
-              ${userData.walletBalance.toFixed(2)}
+            <p className="text-xs sm:text-sm mb-1" style={{ color: 'var(--text-secondary)' }}>
+              {activeAccount ? (isCentAccount ? 'Account Balance (Cents)' : 'Account Balance') : 'Wallet Balance'}
             </p>
+            <p className="text-lg sm:text-2xl font-bold" style={{ color: 'var(--text-primary)' }}>
+              {isCentAccount ? '¢' : '$'}{userData.walletBalance.toFixed(2)}
+            </p>
+            {isCentAccount && (
+              <p className="text-xs mt-1" style={{ color: '#eab308' }}>¢ Cent Account</p>
+            )}
           </div>
         </div>
 
-        {/* Today's PnL */}
+        {/* Total P&L */}
         <div 
-          className="rounded-2xl p-5 relative overflow-hidden"
+          className="rounded-xl sm:rounded-2xl p-4 sm:p-5 relative overflow-hidden transition-transform hover:scale-[1.02]"
           style={{ 
-            background: userData.todayPnL >= 0 
-              ? 'linear-gradient(135deg, rgba(34, 197, 94, 0.15) 0%, rgba(16, 185, 129, 0.15) 100%)'
-              : 'linear-gradient(135deg, rgba(239, 68, 68, 0.15) 0%, rgba(220, 38, 38, 0.15) 100%)',
-            border: `1px solid ${userData.todayPnL >= 0 ? 'rgba(34, 197, 94, 0.3)' : 'rgba(239, 68, 68, 0.3)'}`
+            backgroundColor: 'var(--bg-card)',
+            border: `1px solid ${userData.totalPnL >= 0 ? 'rgba(34, 197, 94, 0.3)' : 'rgba(239, 68, 68, 0.3)'}`
           }}
         >
-          <div className="absolute top-0 right-0 w-32 h-32 opacity-10">
-            <Zap size={128} style={{ color: userData.todayPnL >= 0 ? '#22c55e' : '#ef4444' }} />
+          <div className="absolute top-0 right-0 w-20 sm:w-32 h-20 sm:h-32 opacity-10">
+            <TrendingUp size={80} className="sm:hidden" style={{ color: userData.totalPnL >= 0 ? '#22c55e' : '#ef4444' }} />
+            <TrendingUp size={128} className="hidden sm:block" style={{ color: userData.totalPnL >= 0 ? '#22c55e' : '#ef4444' }} />
           </div>
           <div className="relative z-10">
-            <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center justify-between mb-3 sm:mb-4">
               <div 
-                className="w-12 h-12 rounded-xl flex items-center justify-center"
-                style={{ background: userData.todayPnL >= 0 ? 'linear-gradient(135deg, #22c55e 0%, #10b981 100%)' : 'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)' }}
+                className="w-10 h-10 sm:w-12 sm:h-12 rounded-lg sm:rounded-xl flex items-center justify-center"
+                style={{ background: userData.totalPnL >= 0 ? 'linear-gradient(135deg, #22c55e 0%, #10b981 100%)' : 'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)' }}
               >
-                {userData.todayPnL >= 0 ? 
-                  <TrendingUp size={24} style={{ color: '#fff' }} /> :
-                  <TrendingDown size={24} style={{ color: '#fff' }} />
+                {userData.totalPnL >= 0 ? 
+                  <TrendingUp size={20} className="sm:hidden" style={{ color: '#fff' }} /> :
+                  <TrendingDown size={20} className="sm:hidden" style={{ color: '#fff' }} />
+                }
+                {userData.totalPnL >= 0 ? 
+                  <TrendingUp size={24} className="hidden sm:block" style={{ color: '#fff' }} /> :
+                  <TrendingDown size={24} className="hidden sm:block" style={{ color: '#fff' }} />
                 }
               </div>
               <span 
-                className="text-xs px-2 py-1 rounded-full flex items-center gap-1"
+                className="text-xs px-2 py-1 rounded-full hidden sm:flex items-center gap-1"
                 style={{ 
-                  background: userData.todayPnL >= 0 ? 'linear-gradient(135deg, #22c55e 0%, #10b981 100%)' : 'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)',
+                  background: userData.totalPnL >= 0 ? 'linear-gradient(135deg, #22c55e 0%, #10b981 100%)' : 'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)',
                   color: '#fff'
                 }}
               >
-                <Flame size={12} /> Today
+                <Zap size={12} /> All Time
               </span>
             </div>
-            <p className="text-sm mb-1" style={{ color: 'var(--text-secondary)' }}>Today's P&L</p>
+            <p className="text-xs sm:text-sm mb-1" style={{ color: 'var(--text-secondary)' }}>Total P&L</p>
             <p 
-              className="text-2xl font-bold"
-              style={{ color: userData.todayPnL >= 0 ? '#22c55e' : '#ef4444' }}
+              className="text-lg sm:text-2xl font-bold"
+              style={{ color: userData.totalPnL >= 0 ? '#22c55e' : '#ef4444' }}
             >
-              {userData.todayPnL >= 0 ? '+' : ''}${userData.todayPnL.toFixed(2)}
+              {userData.totalPnL >= 0 ? '+' : ''}${userData.totalPnL.toFixed(2)}
             </p>
           </div>
         </div>
 
-        {/* Weekly PnL */}
+        {/* Total Charges */}
         <div 
-          className="rounded-2xl p-5 relative overflow-hidden"
+          className="rounded-xl sm:rounded-2xl p-4 sm:p-5 relative overflow-hidden transition-transform hover:scale-[1.02]"
           style={{ 
-            background: 'linear-gradient(135deg, rgba(168, 85, 247, 0.15) 0%, rgba(236, 72, 153, 0.15) 100%)',
-            border: '1px solid rgba(168, 85, 247, 0.3)'
+            backgroundColor: 'var(--bg-card)',
+            border: '1px solid rgba(212, 175, 55, 0.4)'
           }}
         >
-          <div className="absolute top-0 right-0 w-32 h-32 opacity-10">
-            <Brain size={128} style={{ color: '#a855f7' }} />
+          <div className="absolute top-0 right-0 w-20 sm:w-32 h-20 sm:h-32 opacity-10">
+            <Receipt size={80} className="sm:hidden" style={{ color: '#d4af37' }} />
+            <Receipt size={128} className="hidden sm:block" style={{ color: '#d4af37' }} />
           </div>
           <div className="relative z-10">
-            <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center justify-between mb-3 sm:mb-4">
               <div 
-                className="w-12 h-12 rounded-xl flex items-center justify-center"
-                style={{ background: 'linear-gradient(135deg, #a855f7 0%, #ec4899 100%)' }}
+                className="w-10 h-10 sm:w-12 sm:h-12 rounded-lg sm:rounded-xl flex items-center justify-center"
+                style={{ background: 'linear-gradient(135deg, #d4af37 0%, #b8960c 100%)' }}
               >
-                <Activity size={24} style={{ color: '#fff' }} />
+                <Receipt size={20} className="sm:hidden" style={{ color: '#000' }} />
+                <Receipt size={24} className="hidden sm:block" style={{ color: '#000' }} />
               </div>
               <span 
-                className="text-xs px-2 py-1 rounded-full flex items-center gap-1"
-                style={{ background: 'linear-gradient(135deg, #a855f7 0%, #ec4899 100%)', color: '#fff' }}
+                className="text-xs px-2 py-1 rounded-full hidden sm:flex items-center gap-1"
+                style={{ background: 'linear-gradient(135deg, #d4af37 0%, #b8960c 100%)', color: '#000' }}
               >
-                <Star size={12} /> 7 Days
+                <DollarSign size={12} /> Fees
               </span>
             </div>
-            <p className="text-sm mb-1" style={{ color: 'var(--text-secondary)' }}>Weekly P&L</p>
+            <p className="text-xs sm:text-sm mb-1" style={{ color: 'var(--text-secondary)' }}>Total Charges</p>
             <p 
-              className="text-2xl font-bold"
-              style={{ color: userData.weekPnL >= 0 ? '#22c55e' : '#ef4444' }}
+              className="text-lg sm:text-2xl font-bold"
+              style={{ color: '#d4af37' }}
             >
-              {userData.weekPnL >= 0 ? '+' : ''}${userData.weekPnL.toFixed(2)}
+              ${userData.totalCharges.toFixed(2)}
             </p>
           </div>
         </div>
 
-        {/* Monthly PnL */}
+        {/* Total Trades */}
         <div 
-          className="rounded-2xl p-5 relative overflow-hidden"
+          className="rounded-xl sm:rounded-2xl p-4 sm:p-5 relative overflow-hidden transition-transform hover:scale-[1.02]"
           style={{ 
-            background: 'linear-gradient(135deg, rgba(251, 191, 36, 0.15) 0%, rgba(245, 158, 11, 0.15) 100%)',
-            border: '1px solid rgba(251, 191, 36, 0.3)'
+            backgroundColor: 'var(--bg-card)',
+            border: '1px solid rgba(212, 175, 55, 0.5)'
           }}
         >
-          <div className="absolute top-0 right-0 w-32 h-32 opacity-10">
-            <Trophy size={128} style={{ color: '#fbbf24' }} />
+          <div className="absolute top-0 right-0 w-20 sm:w-32 h-20 sm:h-32 opacity-10">
+            <BarChart3 size={80} className="sm:hidden" style={{ color: '#d4af37' }} />
+            <BarChart3 size={128} className="hidden sm:block" style={{ color: '#d4af37' }} />
           </div>
           <div className="relative z-10">
-            <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center justify-between mb-3 sm:mb-4">
               <div 
-                className="w-12 h-12 rounded-xl flex items-center justify-center"
-                style={{ background: 'linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%)' }}
+                className="w-10 h-10 sm:w-12 sm:h-12 rounded-lg sm:rounded-xl flex items-center justify-center"
+                style={{ background: 'linear-gradient(135deg, #d4af37 0%, #f4d03f 100%)' }}
               >
-                <DollarSign size={24} style={{ color: '#fff' }} />
+                <BarChart3 size={20} className="sm:hidden" style={{ color: '#000' }} />
+                <BarChart3 size={24} className="hidden sm:block" style={{ color: '#000' }} />
               </div>
               <span 
-                className="text-xs px-2 py-1 rounded-full flex items-center gap-1"
-                style={{ background: 'linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%)', color: '#000' }}
+                className="text-xs px-2 py-1 rounded-full hidden sm:flex items-center gap-1"
+                style={{ background: 'linear-gradient(135deg, #d4af37 0%, #f4d03f 100%)', color: '#000' }}
               >
-                <Rocket size={12} /> 30 Days
+                <Activity size={12} /> Count
               </span>
             </div>
-            <p className="text-sm mb-1" style={{ color: 'var(--text-secondary)' }}>Monthly P&L</p>
+            <p className="text-xs sm:text-sm mb-1" style={{ color: 'var(--text-secondary)' }}>Total Trades</p>
             <p 
-              className="text-2xl font-bold"
-              style={{ color: userData.monthPnL >= 0 ? '#22c55e' : '#ef4444' }}
+              className="text-lg sm:text-2xl font-bold"
+              style={{ color: 'var(--text-primary)' }}
             >
-              {userData.monthPnL >= 0 ? '+' : ''}${userData.monthPnL.toFixed(2)}
+              {userData.totalTrades}
             </p>
           </div>
         </div>
       </div>
 
-      {/* Middle Section - Calendar & PnL Details */}
-      <div className="grid grid-cols-3 gap-4 mb-6">
-        {/* Calendar */}
+      {/* Middle Section - TradingView News & Heat Map */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-3 sm:gap-4 mb-4 sm:mb-6">
+        {/* TradingView Timeline/News Widget */}
         <div 
-          className="rounded-2xl p-5"
-          style={{ backgroundColor: 'var(--bg-card)', border: '1px solid var(--border-color)' }}
+          className="rounded-xl sm:rounded-2xl overflow-hidden"
+          style={{ 
+            backgroundColor: 'var(--bg-card)',
+            border: '1px solid rgba(212, 175, 55, 0.3)'
+          }}
         >
-          <div className="flex items-center justify-between mb-4">
-            <h3 className="font-semibold" style={{ color: 'var(--text-primary)' }}>PnL Calendar</h3>
-            <div className="flex items-center gap-2">
-              <button 
-                onClick={prevMonth}
-                className="p-1 rounded-lg transition-colors hover:opacity-70"
-                style={{ backgroundColor: 'var(--bg-hover)' }}
-              >
-                <ChevronLeft size={16} style={{ color: 'var(--text-secondary)' }} />
-              </button>
-              <span className="text-sm font-medium" style={{ color: 'var(--text-primary)' }}>
-                {currentMonth.toLocaleDateString('en-US', { month: 'short', year: 'numeric' })}
-              </span>
-              <button 
-                onClick={nextMonth}
-                className="p-1 rounded-lg transition-colors hover:opacity-70"
-                style={{ backgroundColor: 'var(--bg-hover)' }}
-              >
-                <ChevronRight size={16} style={{ color: 'var(--text-secondary)' }} />
-              </button>
-            </div>
+          <div 
+            className="px-3 sm:px-4 py-2 sm:py-3 flex items-center gap-2"
+            style={{ 
+              backgroundColor: 'var(--bg-hover)',
+              borderBottom: '1px solid var(--border-color)'
+            }}
+          >
+            <Newspaper size={16} className="sm:hidden" style={{ color: '#d4af37' }} />
+            <Newspaper size={18} className="hidden sm:block" style={{ color: '#d4af37' }} />
+            <h3 className="font-semibold text-sm sm:text-base" style={{ color: '#d4af37' }}>Market News</h3>
           </div>
-          
-          {/* Calendar Grid */}
-          <div className="grid grid-cols-7 gap-1 mb-2">
-            {['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'].map(day => (
-              <div key={day} className="text-center text-xs py-1" style={{ color: 'var(--text-muted)' }}>
-                {day}
-              </div>
-            ))}
-          </div>
-          <div className="grid grid-cols-7 gap-1">
-            {Array.from({ length: startingDay }).map((_, i) => (
-              <div key={`empty-${i}`} className="aspect-square"></div>
-            ))}
-            {Array.from({ length: daysInMonth }).map((_, i) => {
-              const day = i + 1
-              const dateKey = `${currentMonth.getFullYear()}-${String(currentMonth.getMonth() + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`
-              const dayPnL = pnlByDate[dateKey]
-              const isSelected = selectedDate.getDate() === day && 
-                                 selectedDate.getMonth() === currentMonth.getMonth() &&
-                                 selectedDate.getFullYear() === currentMonth.getFullYear()
-              const isToday = new Date().getDate() === day && 
-                              new Date().getMonth() === currentMonth.getMonth() &&
-                              new Date().getFullYear() === currentMonth.getFullYear()
-              
-              return (
-                <button
-                  key={day}
-                  onClick={() => selectDate(day)}
-                  className="aspect-square rounded-lg text-sm font-medium transition-all flex items-center justify-center"
-                  style={{ 
-                    backgroundColor: isSelected ? 'var(--accent-blue)' : 
-                                    dayPnL ? (dayPnL.pnl >= 0 ? 'rgba(34, 197, 94, 0.2)' : 'rgba(239, 68, 68, 0.2)') : 
-                                    'transparent',
-                    color: isSelected ? '#fff' : 
-                           dayPnL ? (dayPnL.pnl >= 0 ? '#3b82f6' : 'var(--accent-red)') :
-                           'var(--text-primary)',
-                    border: isToday ? '2px solid var(--accent-blue)' : 'none'
-                  }}
-                >
-                  {day}
-                </button>
-              )
-            })}
+          <div className="h-64 sm:h-80 lg:h-[350px]">
+            <iframe
+              src="https://www.tradingview-widget.com/embed-widget/timeline/?locale=en#%7B%22feedMode%22%3A%22all_symbols%22%2C%22isTransparent%22%3Atrue%2C%22displayMode%22%3A%22regular%22%2C%22width%22%3A%22100%25%22%2C%22height%22%3A%22100%25%22%2C%22colorTheme%22%3A%22dark%22%2C%22utm_source%22%3A%22www.tradingview.com%22%2C%22utm_medium%22%3A%22widget_new%22%2C%22utm_campaign%22%3A%22timeline-widget%22%7D"
+              style={{ width: '100%', height: '100%', border: 'none' }}
+              title="TradingView News"
+              loading="lazy"
+            />
           </div>
         </div>
 
-        {/* Selected Date PnL Details */}
+        {/* TradingView Forex Heat Map Widget */}
         <div 
-          className="rounded-2xl p-5"
-          style={{ backgroundColor: 'var(--bg-card)', border: '1px solid var(--border-color)' }}
+          className="rounded-xl sm:rounded-2xl overflow-hidden"
+          style={{ 
+            backgroundColor: 'var(--bg-card)',
+            border: '1px solid rgba(212, 175, 55, 0.3)'
+          }}
         >
-          <h3 className="font-semibold mb-4" style={{ color: 'var(--text-primary)' }}>
-            {selectedDate.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' })}
-          </h3>
-          
-          <div className="space-y-4">
-            <div 
-              className="p-4 rounded-xl"
-              style={{ backgroundColor: 'var(--bg-hover)' }}
-            >
-              <p className="text-sm mb-1" style={{ color: 'var(--text-secondary)' }}>Day's P&L</p>
-              <p 
-                className="text-3xl font-bold"
-                style={{ color: selectedPnL.pnl >= 0 ? '#3b82f6' : 'var(--accent-red)' }}
-              >
-                {selectedPnL.pnl >= 0 ? '+' : ''}${selectedPnL.pnl.toFixed(2)}
-              </p>
-            </div>
-            
-            <div className="grid grid-cols-2 gap-3">
-              <div 
-                className="p-3 rounded-xl"
-                style={{ backgroundColor: 'var(--bg-hover)' }}
-              >
-                <p className="text-xs mb-1" style={{ color: 'var(--text-secondary)' }}>Trades</p>
-                <p className="text-xl font-bold" style={{ color: 'var(--text-primary)' }}>{selectedPnL.trades}</p>
-              </div>
-              <div 
-                className="p-3 rounded-xl"
-                style={{ backgroundColor: 'var(--bg-hover)' }}
-              >
-                <p className="text-xs mb-1" style={{ color: 'var(--text-secondary)' }}>Win Rate</p>
-                <p className="text-xl font-bold" style={{ color: selectedPnL.winRate >= 50 ? '#3b82f6' : 'var(--accent-red)' }}>
-                  {selectedPnL.winRate}%
-                </p>
-              </div>
-            </div>
+          <div 
+            className="px-3 sm:px-4 py-2 sm:py-3 flex items-center gap-2"
+            style={{ 
+              backgroundColor: 'var(--bg-hover)',
+              borderBottom: '1px solid var(--border-color)'
+            }}
+          >
+            <BarChart3 size={16} className="sm:hidden" style={{ color: '#d4af37' }} />
+            <BarChart3 size={18} className="hidden sm:block" style={{ color: '#d4af37' }} />
+            <h3 className="font-semibold text-sm sm:text-base" style={{ color: '#d4af37' }}>Forex Heat Map</h3>
           </div>
-        </div>
-
-        {/* Quick Stats */}
-        <div 
-          className="rounded-2xl p-5"
-          style={{ backgroundColor: 'var(--bg-card)', border: '1px solid var(--border-color)' }}
-        >
-          <h3 className="font-semibold mb-4" style={{ color: 'var(--text-primary)' }}>Quick Stats</h3>
-          
-          <div className="space-y-3">
-            <div className="flex items-center justify-between p-3 rounded-xl" style={{ backgroundColor: 'var(--bg-hover)' }}>
-              <span className="text-sm" style={{ color: 'var(--text-secondary)' }}>Total Trades</span>
-              <span className="font-semibold" style={{ color: 'var(--text-primary)' }}>{userStats.totalTrades}</span>
-            </div>
-            <div className="flex items-center justify-between p-3 rounded-xl" style={{ backgroundColor: 'var(--bg-hover)' }}>
-              <span className="text-sm" style={{ color: 'var(--text-secondary)' }}>Win Rate</span>
-              <span className="font-semibold" style={{ color: userStats.winRate >= 50 ? 'var(--accent-green)' : 'var(--accent-red)' }}>{userStats.winRate}%</span>
-            </div>
-            <div className="flex items-center justify-between p-3 rounded-xl" style={{ backgroundColor: 'var(--bg-hover)' }}>
-              <span className="text-sm" style={{ color: 'var(--text-secondary)' }}>Avg. Profit</span>
-              <span className="font-semibold" style={{ color: '#3b82f6' }}>+${userStats.avgProfit.toFixed(2)}</span>
-            </div>
-            <div className="flex items-center justify-between p-3 rounded-xl" style={{ backgroundColor: 'var(--bg-hover)' }}>
-              <span className="text-sm" style={{ color: 'var(--text-secondary)' }}>Avg. Loss</span>
-              <span className="font-semibold" style={{ color: 'var(--accent-red)' }}>${userStats.avgLoss.toFixed(2)}</span>
-            </div>
+          <div className="h-64 sm:h-80 lg:h-[350px]">
+            <iframe
+              src="https://www.tradingview-widget.com/embed-widget/forex-heat-map/?locale=en#%7B%22width%22%3A%22100%25%22%2C%22height%22%3A%22100%25%22%2C%22currencies%22%3A%5B%22EUR%22%2C%22USD%22%2C%22JPY%22%2C%22GBP%22%2C%22CHF%22%2C%22AUD%22%2C%22CAD%22%2C%22NZD%22%5D%2C%22isTransparent%22%3Atrue%2C%22colorTheme%22%3A%22dark%22%2C%22utm_source%22%3A%22www.tradingview.com%22%2C%22utm_medium%22%3A%22widget_new%22%2C%22utm_campaign%22%3A%22forex-heat-map%22%7D"
+              style={{ width: '100%', height: '100%', border: 'none' }}
+              title="TradingView Heat Map"
+              loading="lazy"
+            />
           </div>
         </div>
       </div>
 
-      {/* Bottom Section - News & Economic Calendar */}
-      <div className="grid grid-cols-2 gap-4">
-        {/* Market News - Enhanced with Images */}
+      {/* Bottom Section - TradingView Screener & Economic Calendar */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-3 sm:gap-4">
+        {/* TradingView Forex Screener Widget */}
         <div 
-          className="rounded-2xl p-5 relative overflow-hidden"
+          className="rounded-xl sm:rounded-2xl overflow-hidden"
           style={{ 
-            background: 'linear-gradient(135deg, rgba(59, 130, 246, 0.05) 0%, rgba(139, 92, 246, 0.05) 100%)',
-            border: '1px solid rgba(59, 130, 246, 0.2)'
+            backgroundColor: 'var(--bg-card)',
+            border: '1px solid rgba(212, 175, 55, 0.3)'
           }}
         >
-          <div className="flex items-center justify-between mb-4">
-            <div className="flex items-center gap-2">
-              <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ background: 'linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%)' }}>
-                <Newspaper size={16} style={{ color: '#fff' }} />
-              </div>
-              <div>
-                <h3 className="font-semibold" style={{ color: 'var(--text-primary)' }}>Market News</h3>
-                <p className="text-xs" style={{ color: 'var(--text-muted)' }}>{allDayNews.length} articles today</p>
-              </div>
-            </div>
-            <div className="flex items-center gap-2">
-              <button 
-                onClick={fetchMarketNews}
-                className="p-2 rounded-lg transition-all hover:scale-110"
-                style={{ background: 'linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%)' }}
-                title="Refresh News"
-              >
-                <RefreshCw size={14} className={newsLoading ? 'animate-spin' : ''} style={{ color: '#fff' }} />
-              </button>
-              <span className="text-xs px-3 py-1.5 rounded-full animate-pulse flex items-center gap-1" style={{ background: 'linear-gradient(135deg, #22c55e 0%, #10b981 100%)', color: '#fff' }}>
-                <Zap size={10} /> Live
-              </span>
-            </div>
+          <div 
+            className="px-3 sm:px-4 py-2 sm:py-3 flex items-center gap-2"
+            style={{ 
+              backgroundColor: 'var(--bg-hover)',
+              borderBottom: '1px solid var(--border-color)'
+            }}
+          >
+            <Search size={16} className="sm:hidden" style={{ color: '#d4af37' }} />
+            <Search size={18} className="hidden sm:block" style={{ color: '#d4af37' }} />
+            <h3 className="font-semibold text-sm sm:text-base" style={{ color: '#d4af37' }}>Forex Screener</h3>
           </div>
-          
-          {newsLoading && allDayNews.length === 0 ? (
-            <div className="flex items-center justify-center py-8">
-              <RefreshCw className="animate-spin" size={24} style={{ color: 'var(--text-muted)' }} />
-            </div>
-          ) : (
-            <div className="space-y-3 max-h-96 overflow-y-auto pr-2" style={{ scrollbarWidth: 'thin' }}>
-              {(allDayNews.length > 0 ? allDayNews : marketNews).map((news, index) => (
-                <a 
-                  key={news.id || index}
-                  href={news.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="block p-3 rounded-xl cursor-pointer transition-all hover:scale-[1.02] hover:shadow-lg"
-                  style={{ 
-                    background: 'linear-gradient(135deg, var(--bg-card) 0%, var(--bg-hover) 100%)',
-                    border: '1px solid var(--border-color)'
-                  }}
-                >
-                  <div className="flex gap-3">
-                    {/* News Image */}
-                    <div className="w-20 h-14 rounded-lg overflow-hidden flex-shrink-0 bg-gradient-to-br from-blue-500/20 to-purple-500/20 flex items-center justify-center">
-                      {news.image ? (
-                        <img 
-                          src={news.image} 
-                          alt="" 
-                          className="w-full h-full object-cover"
-                          onError={(e) => { e.target.style.display = 'none'; e.target.nextSibling.style.display = 'flex'; }}
-                        />
-                      ) : null}
-                      <div className={`w-full h-full items-center justify-center ${news.image ? 'hidden' : 'flex'}`} style={{ background: 'linear-gradient(135deg, rgba(59, 130, 246, 0.3) 0%, rgba(139, 92, 246, 0.3) 100%)' }}>
-                        <Image size={20} style={{ color: 'var(--text-muted)' }} />
-                      </div>
-                    </div>
-                    
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-start justify-between gap-2">
-                        <p className="text-sm font-medium mb-1 line-clamp-2" style={{ color: 'var(--text-primary)' }}>{news.title}</p>
-                        <span 
-                          className="text-xs px-2 py-0.5 rounded-full flex-shrink-0"
-                          style={{ 
-                            background: news.impact === 'high' ? 'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)' : 
-                                        news.impact === 'medium' ? 'linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%)' : 
-                                        'linear-gradient(135deg, #6b7280 0%, #4b5563 100%)',
-                            color: '#fff'
-                          }}
-                        >
-                          {news.impact || 'low'}
-                        </span>
-                      </div>
-                      <div className="flex items-center gap-2 text-xs" style={{ color: 'var(--text-muted)' }}>
-                        <span className="font-medium" style={{ color: '#3b82f6' }}>{news.source}</span>
-                        <span>•</span>
-                        <span>{getTimeAgo(news.time)}</span>
-                        {news.category && (
-                          <>
-                            <span>•</span>
-                            <span className="px-1.5 py-0.5 rounded text-xs" style={{ backgroundColor: 'var(--bg-hover)' }}>{news.category}</span>
-                          </>
-                        )}
-                      </div>
-                    </div>
-                  </div>
-                </a>
-              ))}
-            </div>
-          )}
-          
-          {lastNewsUpdate && (
-            <div className="mt-3 pt-3 text-xs flex items-center justify-between" style={{ borderTop: '1px solid var(--border-color)', color: 'var(--text-muted)' }}>
-              <span>Last updated: {lastNewsUpdate.toLocaleTimeString()}</span>
-              <span className="flex items-center gap-1"><Sparkles size={12} style={{ color: '#a855f7' }} /> AI Curated</span>
-            </div>
-          )}
+          <div className="h-64 sm:h-80 lg:h-[350px]">
+            <iframe
+              src="https://www.tradingview-widget.com/embed-widget/screener/?locale=en#%7B%22width%22%3A%22100%25%22%2C%22height%22%3A%22100%25%22%2C%22defaultColumn%22%3A%22overview%22%2C%22defaultScreen%22%3A%22general%22%2C%22market%22%3A%22forex%22%2C%22showToolbar%22%3Atrue%2C%22colorTheme%22%3A%22dark%22%2C%22isTransparent%22%3Atrue%2C%22utm_source%22%3A%22www.tradingview.com%22%2C%22utm_medium%22%3A%22widget_new%22%2C%22utm_campaign%22%3A%22screener%22%7D"
+              style={{ width: '100%', height: '100%', border: 'none' }}
+              title="TradingView Forex Screener"
+              loading="lazy"
+            />
+          </div>
         </div>
 
-        {/* Economic Calendar - Enhanced Full Day View */}
+        {/* TradingView Economic Calendar Widget */}
         <div 
-          className="rounded-2xl p-5 relative overflow-hidden"
+          className="rounded-xl sm:rounded-2xl overflow-hidden"
           style={{ 
-            background: 'linear-gradient(135deg, rgba(34, 197, 94, 0.05) 0%, rgba(16, 185, 129, 0.05) 100%)',
-            border: '1px solid rgba(34, 197, 94, 0.2)'
+            backgroundColor: 'var(--bg-card)',
+            border: '1px solid rgba(212, 175, 55, 0.3)'
           }}
         >
-          <div className="flex items-center justify-between mb-4">
-            <div className="flex items-center gap-2">
-              <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ background: 'linear-gradient(135deg, #22c55e 0%, #10b981 100%)' }}>
-                <Globe size={16} style={{ color: '#fff' }} />
-              </div>
-              <div>
-                <h3 className="font-semibold" style={{ color: 'var(--text-primary)' }}>Economic Calendar</h3>
-                <p className="text-xs" style={{ color: 'var(--text-muted)' }}>{allDayEvents.length} events today</p>
-              </div>
-            </div>
-            <div className="flex items-center gap-2">
-              <button 
-                onClick={fetchEconomicCalendar}
-                className="p-2 rounded-lg transition-all hover:scale-110"
-                style={{ background: 'linear-gradient(135deg, #22c55e 0%, #10b981 100%)' }}
-                title="Refresh Calendar"
-              >
-                <RefreshCw size={14} className={calendarLoading ? 'animate-spin' : ''} style={{ color: '#fff' }} />
-              </button>
-              <span className="text-xs px-3 py-1.5 rounded-full" style={{ background: 'linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%)', color: '#fff' }}>
-                {currentTime.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
-              </span>
-            </div>
+          <div 
+            className="px-3 sm:px-4 py-2 sm:py-3 flex items-center gap-2"
+            style={{ 
+              backgroundColor: 'var(--bg-hover)',
+              borderBottom: '1px solid var(--border-color)'
+            }}
+          >
+            <Globe size={16} className="sm:hidden" style={{ color: '#d4af37' }} />
+            <Globe size={18} className="hidden sm:block" style={{ color: '#d4af37' }} />
+            <h3 className="font-semibold text-sm sm:text-base" style={{ color: '#d4af37' }}>Economic Calendar</h3>
           </div>
-          
-          {calendarLoading && allDayEvents.length === 0 ? (
-            <div className="flex items-center justify-center py-8">
-              <RefreshCw className="animate-spin" size={24} style={{ color: 'var(--text-muted)' }} />
-            </div>
-          ) : (
-            <div className="space-y-2 max-h-96 overflow-y-auto pr-2" style={{ scrollbarWidth: 'thin' }}>
-              {/* Table Header */}
-              <div className="grid grid-cols-6 gap-2 px-3 py-2 text-xs sticky top-0 rounded-lg" style={{ color: 'var(--text-muted)', background: 'linear-gradient(135deg, var(--bg-card) 0%, var(--bg-hover) 100%)' }}>
-                <div className="flex items-center gap-1"><Clock size={10} /> Time</div>
-                <div>Cur</div>
-                <div className="col-span-2">Event</div>
-                <div>Forecast</div>
-                <div>Previous</div>
-              </div>
-              
-              {(allDayEvents.length > 0 ? allDayEvents : economicEvents).length === 0 ? (
-                <div className="text-center py-4" style={{ color: 'var(--text-muted)' }}>
-                  No events scheduled for today
-                </div>
-              ) : (
-                (allDayEvents.length > 0 ? allDayEvents : economicEvents).map((event, index) => {
-                  const eventTime = event.time ? new Date(event.time) : null
-                  const isPast = eventTime && eventTime < currentTime
-                  const isNow = eventTime && Math.abs(eventTime - currentTime) < 30 * 60 * 1000 // Within 30 mins
-                  
-                  return (
-                    <div 
-                      key={event.id || index}
-                      className="grid grid-cols-6 gap-2 px-3 py-2.5 rounded-lg text-sm items-center transition-all"
-                      style={{ 
-                        background: isNow 
-                          ? 'linear-gradient(135deg, rgba(251, 191, 36, 0.2) 0%, rgba(245, 158, 11, 0.2) 100%)'
-                          : isPast 
-                            ? 'var(--bg-hover)' 
-                            : 'linear-gradient(135deg, var(--bg-card) 0%, var(--bg-hover) 100%)',
-                        border: isNow ? '1px solid rgba(251, 191, 36, 0.5)' : '1px solid var(--border-color)',
-                        opacity: isPast ? 0.6 : 1
-                      }}
-                    >
-                      <div className="flex items-center gap-1" style={{ color: isNow ? '#fbbf24' : 'var(--text-primary)' }}>
-                        {isNow && <Zap size={12} className="animate-pulse" style={{ color: '#fbbf24' }} />}
-                        {eventTime ? eventTime.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' }) : '-'}
-                      </div>
-                      <div 
-                        className="font-bold px-1.5 py-0.5 rounded text-center text-xs"
-                        style={{ 
-                          background: event.currency === 'USD' ? 'linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)' : 
-                                      event.currency === 'EUR' ? 'linear-gradient(135deg, #22c55e 0%, #16a34a 100%)' :
-                                      event.currency === 'GBP' ? 'linear-gradient(135deg, #a855f7 0%, #9333ea 100%)' :
-                                      event.currency === 'JPY' ? 'linear-gradient(135deg, #f97316 0%, #ea580c 100%)' :
-                                      event.currency === 'AUD' ? 'linear-gradient(135deg, #06b6d4 0%, #0891b2 100%)' :
-                                      event.currency === 'CAD' ? 'linear-gradient(135deg, #ec4899 0%, #db2777 100%)' :
-                                      'linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%)',
-                          color: '#fff'
-                        }}
-                      >
-                        {event.currency}
-                      </div>
-                      <div className="col-span-2 flex items-center gap-2">
-                        <span 
-                          className="w-2.5 h-2.5 rounded-full flex-shrink-0 animate-pulse"
-                          style={{ 
-                            background: event.impact === 'high' ? 'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)' : 
-                                        event.impact === 'medium' ? 'linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%)' : 
-                                        'linear-gradient(135deg, #6b7280 0%, #4b5563 100%)',
-                            boxShadow: event.impact === 'high' ? '0 0 8px rgba(239, 68, 68, 0.5)' : 'none'
-                          }}
-                        ></span>
-                        <span className="truncate font-medium" style={{ color: 'var(--text-primary)' }} title={event.event}>{event.event}</span>
-                      </div>
-                      <div className="font-medium" style={{ color: '#3b82f6' }}>{event.forecast || '-'}</div>
-                      <div style={{ color: 'var(--text-muted)' }}>{event.previous || '-'}</div>
-                    </div>
-                  )
-                })
-              )}
-            </div>
-          )}
-          
-          {lastCalendarUpdate && (
-            <div className="mt-3 pt-3 text-xs flex items-center justify-between" style={{ borderTop: '1px solid var(--border-color)', color: 'var(--text-muted)' }}>
-              <span>Last updated: {lastCalendarUpdate.toLocaleTimeString()}</span>
-              <span className="flex items-center gap-1"><Target size={12} style={{ color: '#22c55e' }} /> Full Day</span>
-            </div>
-          )}
+          <div className="h-64 sm:h-80 lg:h-[350px]">
+            <iframe
+              src="https://www.tradingview-widget.com/embed-widget/events/?locale=en#%7B%22colorTheme%22%3A%22dark%22%2C%22isTransparent%22%3Atrue%2C%22width%22%3A%22100%25%22%2C%22height%22%3A%22100%25%22%2C%22importanceFilter%22%3A%22-1%2C0%2C1%22%2C%22countryFilter%22%3A%22us%2Ceu%2Cgb%2Cjp%2Cau%2Cca%2Cch%2Cnz%22%2C%22utm_source%22%3A%22www.tradingview.com%22%2C%22utm_medium%22%3A%22widget_new%22%2C%22utm_campaign%22%3A%22events%22%7D"
+              style={{ width: '100%', height: '100%', border: 'none' }}
+              title="TradingView Economic Calendar"
+              loading="lazy"
+            />
+          </div>
         </div>
       </div>
     </div>

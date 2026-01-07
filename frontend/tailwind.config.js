@@ -16,9 +16,13 @@ export default {
         },
         'accent': {
           green: '#22c55e',
-          red: '#ef4444',
+          red: '#d4af37',
           blue: '#3b82f6',
-        }
+          gold: '#d4af37',
+        },
+        'bid': '#22c55e',
+        'ask': '#3b82f6',
+        'gold': '#d4af37',
       }
     },
   },

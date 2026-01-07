@@ -263,32 +263,40 @@ const TradingAccounts = ({ onOpenTrading }) => {
 
                     {/* Equity & Balance */}
                     <div className="text-center py-3">
+                      {/* Cent Account Badge */}
+                      {account.isCentAccount && (
+                        <div className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium mb-2" style={{ backgroundColor: 'rgba(234, 179, 8, 0.2)', color: '#eab308' }}>
+                          ¢ Cent Account
+                        </div>
+                      )}
                       <p className="text-3xl font-bold mb-1" style={{ color: 'var(--text-primary)' }}>
-                        ${(account.equity || account.balance)?.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                        {account.isCentAccount ? '¢' : '$'}{(account.isCentAccount ? account.displayEquity : (account.equity || account.balance))?.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                       </p>
-                      <p className="text-sm mb-3" style={{ color: 'var(--text-muted)' }}>Equity</p>
+                      <p className="text-sm mb-3" style={{ color: 'var(--text-muted)' }}>
+                        {account.isCentAccount ? 'Equity (Cents)' : 'Equity'}
+                      </p>
                       
                       {/* Balance breakdown */}
                       <div className="flex justify-center gap-4 text-xs">
                         <div>
                           <p style={{ color: 'var(--text-muted)' }}>Balance</p>
                           <p className="font-semibold" style={{ color: 'var(--text-primary)' }}>
-                            ${(account.walletBalance || account.balance)?.toFixed(2)}
+                            {account.isCentAccount ? '¢' : '$'}{(account.isCentAccount ? account.displayBalance : (account.walletBalance || account.balance))?.toFixed(2)}
                           </p>
                         </div>
                         {(account.creditBalance || 0) > 0 && (
                           <div>
                             <p style={{ color: 'var(--text-muted)' }}>Credit</p>
                             <p className="font-semibold" style={{ color: '#f59e0b' }}>
-                              ${account.creditBalance?.toFixed(2)}
+                              {account.isCentAccount ? '¢' : '$'}{(account.isCentAccount ? account.displayCreditBalance : account.creditBalance)?.toFixed(2)}
                             </p>
                           </div>
                         )}
                         {account.floatingPnL !== undefined && account.floatingPnL !== 0 && (
                           <div>
                             <p style={{ color: 'var(--text-muted)' }}>Floating P/L</p>
-                            <p className="font-semibold" style={{ color: account.floatingPnL >= 0 ? '#22c55e' : '#ef4444' }}>
-                              {account.floatingPnL >= 0 ? '+' : ''}${account.floatingPnL?.toFixed(2)}
+                            <p className="font-semibold" style={{ color: account.floatingPnL >= 0 ? '#22c55e' : '#d4af37' }}>
+                              {account.floatingPnL >= 0 ? '+' : ''}{account.isCentAccount ? '¢' : '$'}{(account.isCentAccount ? account.displayFloatingPnL : account.floatingPnL)?.toFixed(2)}
                             </p>
                           </div>
                         )}

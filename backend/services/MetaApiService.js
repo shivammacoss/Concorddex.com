@@ -23,6 +23,7 @@ class MetaApiService extends EventEmitter {
 
   /**
    * Initialize MetaApi connection
+   * Supports both full access tokens and restricted access tokens
    */
   async connect() {
     try {
@@ -34,25 +35,42 @@ class MetaApiService extends EventEmitter {
         enableSocketioDebugger: false
       });
 
-      // Get trading account
-      this.account = await this.api.metatraderAccountApi.getAccount(this.accountId);
-      
-      // Wait for account deployment
-      console.log('[MetaApi] Waiting for account deployment...');
-      await this.account.waitDeployed();
+      try {
+        // Try full access method first (getAccount)
+        this.account = await this.api.metatraderAccountApi.getAccount(this.accountId);
+        
+        // Wait for account deployment
+        console.log('[MetaApi] Waiting for account deployment...');
+        await this.account.waitDeployed();
 
-      // Create streaming connection for real-time data
-      this.connection = this.account.getStreamingConnection();
-      
-      // Set up event listeners before connecting
-      this.setupEventListeners();
+        // Create streaming connection for real-time data
+        this.connection = this.account.getStreamingConnection();
+        
+        // Set up event listeners before connecting
+        this.setupEventListeners();
 
-      // Connect to MetaTrader terminal
-      await this.connection.connect();
-      
-      // Wait for synchronization
-      console.log('[MetaApi] Waiting for synchronization...');
-      await this.connection.waitSynchronized();
+        // Connect to MetaTrader terminal
+        await this.connection.connect();
+        
+        // Wait for synchronization
+        console.log('[MetaApi] Waiting for synchronization...');
+        await this.connection.waitSynchronized();
+      } catch (accountError) {
+        // If getAccount fails (restricted token), try RPC connection directly
+        console.log('[MetaApi] Full access failed, trying RPC connection...');
+        console.log('[MetaApi] Error was:', accountError.message);
+        
+        // For restricted tokens, use streaming API directly
+        // Create a minimal account object for streaming
+        const streamingApi = this.api.streamingConnection;
+        if (streamingApi) {
+          this.connection = await streamingApi.connect(this.accountId);
+          this.setupEventListeners();
+          console.log('[MetaApi] Connected via streaming API');
+        } else {
+          throw new Error('Cannot connect with restricted token - streaming API not available');
+        }
+      }
 
       this.isConnected = true;
       this.reconnectAttempts = 0;

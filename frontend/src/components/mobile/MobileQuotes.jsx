@@ -358,8 +358,8 @@ const MobileQuotes = ({ onOpenChart, onGoHome }) => {
               <div className="flex-1 text-center">
                 <div className="text-[10px]" style={{ color: isDark ? '#6b7280' : '#8e8e93' }}>sell</div>
                 <div className="flex items-baseline justify-center">
-                  <span className="text-sm font-medium" style={{ color: '#ef4444' }}>{bidFormatted.main}</span>
-                  <span className="text-xl font-bold" style={{ color: '#ef4444' }}>{bidFormatted.pip}</span>
+                  <span className="text-sm font-medium" style={{ color: '#d4af37' }}>{bidFormatted.main}</span>
+                  <span className="text-xl font-bold" style={{ color: '#d4af37' }}>{bidFormatted.pip}</span>
                 </div>
                 <div className="text-[10px]" style={{ color: '#3b82f6' }}>low {low.toFixed(symbol?.includes('BTC') ? 1 : symbol?.includes('ETH') || symbol?.includes('XAU') ? 2 : symbol?.includes('JPY') ? 2 : 4)}</div>
               </div>
@@ -406,7 +406,7 @@ const MobileQuotes = ({ onOpenChart, onGoHome }) => {
               <div>
                 <h2 className="text-xl font-bold" style={{ color: isDark ? '#fff' : '#000' }}>{selectedSymbol}</h2>
                 <div className="text-sm mt-1">
-                  <span style={{ color: '#ef4444' }} className="font-medium">{formatPrice(prices[selectedSymbol]?.bid, selectedSymbol)}</span>
+                  <span style={{ color: '#d4af37' }} className="font-medium">{formatPrice(prices[selectedSymbol]?.bid, selectedSymbol)}</span>
                   <span style={{ color: isDark ? '#4a4a4c' : '#c7c7cc' }} className="mx-2">/</span>
                   <span style={{ color: '#3b82f6' }} className="font-medium">{formatPrice(prices[selectedSymbol]?.ask, selectedSymbol)}</span>
                 </div>
@@ -544,7 +544,7 @@ const MobileQuotes = ({ onOpenChart, onGoHome }) => {
                     onClick={() => setShowStopLoss(!showStopLoss)}
                     className="text-xs px-2 py-0.5 rounded"
                     style={{ 
-                      backgroundColor: showStopLoss ? '#ef4444' : (isDark ? '#2c2c2e' : '#e5e5ea'),
+                      backgroundColor: showStopLoss ? '#d4af37' : (isDark ? '#2c2c2e' : '#e5e5ea'),
                       color: showStopLoss ? '#fff' : (isDark ? '#9ca3af' : '#6b7280')
                     }}
                   >
@@ -597,7 +597,7 @@ const MobileQuotes = ({ onOpenChart, onGoHome }) => {
                     onClick={() => handleTrade('sell')}
                     disabled={loading}
                     className="flex-1 py-3 rounded-full font-semibold text-white transition-all active:scale-95 disabled:opacity-50 flex items-center justify-center gap-2"
-                    style={{ background: 'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)' }}
+                    style={{ background: 'linear-gradient(135deg, #d4af37 0%, #dc2626 100%)' }}
                   >
                     <span>SELL</span>
                     <span className="text-xs opacity-80">{formatPrice(prices[selectedSymbol]?.bid, selectedSymbol)}</span>
@@ -617,7 +617,7 @@ const MobileQuotes = ({ onOpenChart, onGoHome }) => {
                   onClick={() => handleTrade(pendingOrderType.toLowerCase().includes('buy') ? 'buy' : 'sell')}
                   disabled={loading}
                   className="w-full py-3 rounded-full font-semibold text-white transition-all active:scale-95 disabled:opacity-50"
-                  style={{ background: pendingOrderType.includes('BUY') ? 'linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)' : 'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)' }}
+                  style={{ background: pendingOrderType.includes('BUY') ? 'linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)' : 'linear-gradient(135deg, #d4af37 0%, #dc2626 100%)' }}
                 >
                   {loading ? 'Placing...' : `Place ${pendingOrderType}`}
                 </button>

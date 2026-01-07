@@ -91,6 +91,9 @@ router.post('/', protectAdmin, async (req, res) => {
       icon: icon || 'star',
       sortOrder: sortOrder || 0,
       isDemo: isDemo || false,
+      isCentAccount: req.body.isCentAccount || false,
+      balanceMultiplier: req.body.isCentAccount ? 100 : (req.body.balanceMultiplier || 1),
+      currencySymbol: req.body.isCentAccount ? '¢' : '$',
       isActive: isActive !== false
     });
     
@@ -120,7 +123,8 @@ router.put('/:id', protectAdmin, async (req, res) => {
       'name', 'description', 'minDeposit', 'maxLeverage', 'spreadMarkup',
       'commission', 'swapFree', 'features', 'tradingFee', 'withdrawalFee',
       'minTradeSize', 'maxTradeSize', 'marginCallLevel', 'stopOutLevel',
-      'allowedInstruments', 'color', 'icon', 'sortOrder', 'isActive'
+      'allowedInstruments', 'color', 'icon', 'sortOrder', 'isActive',
+      'isCentAccount', 'balanceMultiplier', 'currencySymbol'
     ];
     
     updateFields.forEach(field => {
@@ -128,6 +132,13 @@ router.put('/:id', protectAdmin, async (req, res) => {
         accountType[field] = req.body[field];
       }
     });
+    
+    // Auto-set cent account related fields
+    if (req.body.isCentAccount !== undefined) {
+      accountType.isCentAccount = req.body.isCentAccount;
+      accountType.balanceMultiplier = req.body.isCentAccount ? 100 : 1;
+      accountType.currencySymbol = req.body.isCentAccount ? '¢' : '$';
+    }
     
     await accountType.save();
     

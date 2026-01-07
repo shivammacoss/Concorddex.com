@@ -238,9 +238,9 @@ const MobileAccounts = ({ onOpenTrading }) => {
               border: `1px solid ${user?.kycStatus === 'pending' ? 'rgba(234, 179, 8, 0.3)' : 'rgba(239, 68, 68, 0.3)'}`
             }}
           >
-            <AlertCircle size={18} style={{ color: user?.kycStatus === 'pending' ? '#eab308' : '#ef4444' }} />
+            <AlertCircle size={18} style={{ color: user?.kycStatus === 'pending' ? '#eab308' : '#d4af37' }} />
             <div className="flex-1">
-              <p className="text-sm font-medium" style={{ color: user?.kycStatus === 'pending' ? '#eab308' : '#ef4444' }}>
+              <p className="text-sm font-medium" style={{ color: user?.kycStatus === 'pending' ? '#eab308' : '#d4af37' }}>
                 {user?.kycStatus === 'pending' ? 'KYC Pending Review' : 'KYC Required'}
               </p>
               <p className="text-xs" style={{ color: 'var(--text-muted)' }}>
@@ -376,7 +376,7 @@ const MobileAccounts = ({ onOpenTrading }) => {
                           {account.floatingPnL !== undefined && account.floatingPnL !== 0 && (
                             <div>
                               <p className="text-[10px]" style={{ color: 'var(--text-muted)' }}>P/L</p>
-                              <p className="text-xs font-medium" style={{ color: account.floatingPnL >= 0 ? '#22c55e' : '#ef4444' }}>
+                              <p className="text-xs font-medium" style={{ color: account.floatingPnL >= 0 ? '#22c55e' : '#d4af37' }}>
                                 {account.floatingPnL >= 0 ? '+' : ''}${account.floatingPnL?.toFixed(2)}
                               </p>
                             </div>

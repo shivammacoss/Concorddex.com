@@ -332,7 +332,7 @@ const InstrumentsPanel = ({ onClose, onSelectSymbol, selectedSymbol }) => {
                 </div>
               </div>
               <div className="text-right">
-                <div className="text-sm font-mono" style={{ color: 'var(--accent-red)' }}>
+                <div className="text-sm font-mono" style={{ color: 'var(--bid-color)' }}>
                   {liveData.bid ? liveData.bid.toFixed(inst.decimals) : '-.--'}
                 </div>
                 <div className="text-xs" style={{ color: 'var(--text-muted)' }}>Bid</div>
@@ -362,7 +362,7 @@ const InstrumentsPanel = ({ onClose, onSelectSymbol, selectedSymbol }) => {
                 <div className="text-xs mt-0.5" style={{ color: 'var(--text-muted)', fontSize: '9px' }}>Sprd</div>
               </div>
               <div className="text-right">
-                <div className="text-sm font-mono" style={{ color: 'var(--accent-blue)' }}>
+                <div className="text-sm font-mono" style={{ color: 'var(--ask-color)' }}>
                   {liveData.ask ? liveData.ask.toFixed(inst.decimals) : '-.--'}
                 </div>
                 <div className="text-xs" style={{ color: 'var(--text-muted)' }}>Ask</div>

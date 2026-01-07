@@ -87,6 +87,18 @@ const accountTypeSchema = new mongoose.Schema({
     type: Boolean,
     default: false
   },
+  isCentAccount: {
+    type: Boolean,
+    default: false
+  },
+  balanceMultiplier: {
+    type: Number,
+    default: 1  // 1 for standard, 100 for cent accounts (100 USD = 10000 cents)
+  },
+  currencySymbol: {
+    type: String,
+    default: '$'  // '$' for standard, '¢' for cent accounts
+  },
   isActive: {
     type: Boolean,
     default: true

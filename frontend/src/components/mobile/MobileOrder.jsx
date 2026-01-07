@@ -152,11 +152,11 @@ const MobileOrder = ({ symbol }) => {
           className="py-4 rounded-xl"
           style={{ 
             backgroundColor: tradeType === 'sell' ? 'rgba(239, 68, 68, 0.3)' : 'rgba(239, 68, 68, 0.1)', 
-            border: tradeType === 'sell' ? '2px solid #ef4444' : '1px solid #ef4444'
+            border: tradeType === 'sell' ? '2px solid #d4af37' : '1px solid #d4af37'
           }}
         >
           <p className="text-xs mb-1" style={{ color: '#9ca3af' }}>Sell</p>
-          <p className="text-lg font-bold" style={{ color: '#ef4444' }}>
+          <p className="text-lg font-bold" style={{ color: '#d4af37' }}>
             {prices.bid?.toFixed(decimals) || '-.--'}
           </p>
         </button>
@@ -272,8 +272,8 @@ const MobileOrder = ({ symbol }) => {
           className="w-full flex items-center justify-between p-3 rounded-lg"
           style={{ backgroundColor: '#0d0d0d', border: '1px solid #1a1a1a' }}
         >
-          <span className="text-sm" style={{ color: '#ef4444' }}>Stop Loss</span>
-          <Plus size={16} color="#ef4444" />
+          <span className="text-sm" style={{ color: '#d4af37' }}>Stop Loss</span>
+          <Plus size={16} color="#d4af37" />
         </button>
         {showSL && (
           <input
@@ -308,7 +308,7 @@ const MobileOrder = ({ symbol }) => {
         disabled={submitting || (orderType === 'pending' && !pendingPrice)}
         className="w-full py-4 rounded-xl font-bold text-base flex items-center justify-center gap-2"
         style={{ 
-          backgroundColor: tradeType === 'buy' ? '#22c55e' : '#ef4444',
+          backgroundColor: tradeType === 'buy' ? '#22c55e' : '#d4af37',
           color: '#000',
           opacity: submitting || (orderType === 'pending' && !pendingPrice) ? 0.5 : 1
         }}

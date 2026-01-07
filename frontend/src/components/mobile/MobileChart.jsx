@@ -229,7 +229,7 @@ const MobileChart = () => {
           onClick={() => handleTrade('sell')}
           disabled={loading}
           className="flex-1 py-2.5 rounded-full font-semibold text-white text-sm transition-all active:scale-95 disabled:opacity-50 flex items-center justify-center gap-2"
-          style={{ background: 'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)' }}
+          style={{ background: 'linear-gradient(135deg, #d4af37 0%, #dc2626 100%)' }}
         >
           <span>SELL</span>
           <span className="text-xs opacity-80">{formatPrice(price.bid, selectedSymbol)}</span>

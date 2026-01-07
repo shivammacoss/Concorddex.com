@@ -228,6 +228,15 @@ router.post('/follow/:masterId', [
     master.stats.activeFollowers += 1;
     await master.save();
 
+    // Activate master referral if exists
+    try {
+      const MasterReferralEngine = require('../services/masterReferralEngine');
+      const masterReferralEngine = new MasterReferralEngine();
+      await masterReferralEngine.activateReferral(follower);
+    } catch (refErr) {
+      console.error('[CopyTrade] Activate referral error:', refErr);
+    }
+
     res.status(201).json({
       success: true,
       message: 'Now following trade master',

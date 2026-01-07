@@ -177,7 +177,7 @@ const TradeNotifications = () => {
       case 'success':
         return { bg: 'rgba(59, 130, 246, 0.95)', border: '#3b82f6', iconColor: '#fff' }
       case 'error':
-        return { bg: 'rgba(239, 68, 68, 0.95)', border: '#ef4444', iconColor: '#fff' }
+        return { bg: 'rgba(239, 68, 68, 0.95)', border: '#d4af37', iconColor: '#fff' }
       case 'warning':
         return { bg: 'rgba(251, 191, 36, 0.95)', border: '#fbbf24', iconColor: '#000' }
       case 'info':
@@ -189,11 +189,11 @@ const TradeNotifications = () => {
   const getDialogIcon = (type) => {
     switch (type) {
       case 'stop_loss':
-        return <Shield size={48} style={{ color: '#ef4444' }} />
+        return <Shield size={48} style={{ color: '#d4af37' }} />
       case 'take_profit':
         return <Target size={48} style={{ color: '#3b82f6' }} />
       case 'stop_out':
-        return <AlertTriangle size={48} style={{ color: '#ef4444' }} />
+        return <AlertTriangle size={48} style={{ color: '#d4af37' }} />
       case 'margin_call':
         return <AlertTriangle size={48} style={{ color: '#fbbf24' }} />
       default:

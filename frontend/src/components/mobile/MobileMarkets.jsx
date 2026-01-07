@@ -113,7 +113,7 @@ const MobileMarkets = ({ onSelect, selectedSymbol }) => {
                 </div>
               </div>
               <div className="text-right">
-                <p className="text-sm" style={{ color: '#ef4444' }}>
+                <p className="text-sm" style={{ color: '#d4af37' }}>
                   {price?.bid?.toFixed(inst.symbol.includes('JPY') ? 3 : 5) || '-.--'}
                 </p>
                 <p className="text-sm" style={{ color: '#22c55e' }}>

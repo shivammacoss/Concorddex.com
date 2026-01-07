@@ -261,7 +261,7 @@ const BankSettings = () => {
                         <Edit size={16} style={{ color: '#3b82f6' }} />
                       </button>
                       <button onClick={() => deleteBank(index)} className="p-2 rounded-lg" style={{ backgroundColor: 'rgba(239, 68, 68, 0.1)' }}>
-                        <Trash2 size={16} style={{ color: '#ef4444' }} />
+                        <Trash2 size={16} style={{ color: '#d4af37' }} />
                       </button>
                     </div>
                   </div>
@@ -309,7 +309,7 @@ const BankSettings = () => {
                       <Edit size={16} className="mx-auto" style={{ color: '#8b5cf6' }} />
                     </button>
                     <button onClick={() => deleteUpi(index)} className="flex-1 p-2 rounded-lg" style={{ backgroundColor: 'rgba(239, 68, 68, 0.1)' }}>
-                      <Trash2 size={16} className="mx-auto" style={{ color: '#ef4444' }} />
+                      <Trash2 size={16} className="mx-auto" style={{ color: '#d4af37' }} />
                     </button>
                   </div>
                 </div>

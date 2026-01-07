@@ -181,7 +181,7 @@ const MobileWallet = () => {
     switch (status) {
       case 'completed': return '#22c55e'
       case 'pending': return '#fbbf24'
-      case 'rejected': return '#ef4444'
+      case 'rejected': return '#d4af37'
       default: return '#6b7280'
     }
   }
@@ -196,7 +196,7 @@ const MobileWallet = () => {
 
   const tabs = [
     { id: 'deposit', label: 'Deposit', icon: ArrowDownCircle, color: '#22c55e' },
-    { id: 'withdraw', label: 'Withdraw', icon: ArrowUpCircle, color: '#ef4444' },
+    { id: 'withdraw', label: 'Withdraw', icon: ArrowUpCircle, color: '#d4af37' },
     { id: 'history', label: 'History', icon: Clock, color: '#3b82f6' }
   ]
 
@@ -370,7 +370,7 @@ const MobileWallet = () => {
                           <p className="text-xs" style={{ color: textSecondary }}>{acc.type === 'bank' ? `****${acc.accountNumber?.slice(-4)}` : acc.upiId}</p>
                         </div>
                       </div>
-                      <button onClick={(e) => { e.stopPropagation(); handleDeleteBankAccount(acc._id); }}><Trash2 size={14} color="#ef4444" /></button>
+                      <button onClick={(e) => { e.stopPropagation(); handleDeleteBankAccount(acc._id); }}><Trash2 size={14} color="#d4af37" /></button>
                     </div>
                   </div>
                 ))}
@@ -389,7 +389,7 @@ const MobileWallet = () => {
               <input type="number" value={withdrawAmount} onChange={(e) => setWithdrawAmount(e.target.value)} placeholder="Enter amount" max={balance} className="w-full p-3 rounded-lg" style={{ backgroundColor: bgInput, color: textPrimary, border: `1px solid ${borderColor}` }} />
             </div>
 
-            <button onClick={handleWithdraw} disabled={submitting || !selectedBankAccount} className="w-full py-3 rounded-xl font-medium flex items-center justify-center gap-2" style={{ backgroundColor: '#ef4444', color: '#fff' }}>
+            <button onClick={handleWithdraw} disabled={submitting || !selectedBankAccount} className="w-full py-3 rounded-xl font-medium flex items-center justify-center gap-2" style={{ backgroundColor: '#d4af37', color: '#fff' }}>
               {submitting && <Loader2 className="animate-spin" size={16} />}
               Request Withdrawal
             </button>
@@ -405,13 +405,13 @@ const MobileWallet = () => {
               <div key={tx._id} className="p-3 rounded-lg" style={{ backgroundColor: bgCard, border: `1px solid ${borderColor}` }}>
                 <div className="flex items-center justify-between mb-1">
                   <div className="flex items-center gap-2">
-                    {tx.type === 'deposit' ? <ArrowDownCircle size={16} color="#22c55e" /> : <ArrowUpCircle size={16} color="#ef4444" />}
+                    {tx.type === 'deposit' ? <ArrowDownCircle size={16} color="#22c55e" /> : <ArrowUpCircle size={16} color="#d4af37" />}
                     <span className="text-sm capitalize" style={{ color: textPrimary }}>{tx.type}</span>
                   </div>
                   <span className="text-xs px-2 py-0.5 rounded capitalize" style={{ backgroundColor: `${getStatusColor(tx.status)}20`, color: getStatusColor(tx.status) }}>{tx.status}</span>
                 </div>
                 <div className="flex items-center justify-between">
-                  <span className="font-medium" style={{ color: tx.type === 'deposit' ? '#22c55e' : '#ef4444' }}>{tx.type === 'deposit' ? '+' : '-'}${tx.amount?.toFixed(2)}</span>
+                  <span className="font-medium" style={{ color: tx.type === 'deposit' ? '#22c55e' : '#d4af37' }}>{tx.type === 'deposit' ? '+' : '-'}${tx.amount?.toFixed(2)}</span>
                   <span className="text-xs" style={{ color: textSecondary }}>{new Date(tx.createdAt).toLocaleDateString()}</span>
                 </div>
               </div>

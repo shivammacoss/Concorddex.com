@@ -48,8 +48,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(
               {/* Protected User Routes */}
               <Route path="/home" element={<ProtectedRoute><App initialView="home" /></ProtectedRoute>} />
               <Route path="/trade" element={<ProtectedRoute><App initialView="chart" /></ProtectedRoute>} />
-              <Route path="/terminal" element={<ProtectedRoute><App initialView="terminal" /></ProtectedRoute>} />
-              {/* Trade route requires active trading account - App.jsx will redirect to accounts if none */}
+                            {/* Trade route requires active trading account - App.jsx will redirect to accounts if none */}
               <Route path="/wallet" element={<ProtectedRoute><App initialView="wallet" /></ProtectedRoute>} />
               <Route path="/copytrade" element={<ProtectedRoute><App initialView="copy" /></ProtectedRoute>} />
               <Route path="/ib" element={<ProtectedRoute><App initialView="ib" /></ProtectedRoute>} />
@@ -73,6 +72,9 @@ ReactDOM.createRoot(document.getElementById('root')).render(
               <Route path="/admin/kyc" element={<AdminProtectedRoute><AdminPanel initialSection="kyc" /></AdminProtectedRoute>} />
               <Route path="/admin/support" element={<AdminProtectedRoute><AdminPanel initialSection="support" /></AdminProtectedRoute>} />
               <Route path="/admin/tradingsettings" element={<AdminProtectedRoute><AdminPanel initialSection="tradingsettings" /></AdminProtectedRoute>} />
+              <Route path="/admin/book-management" element={<AdminProtectedRoute><AdminPanel initialSection="bookmanagement" /></AdminProtectedRoute>} />
+              <Route path="/admin/a-book-orders" element={<AdminProtectedRoute><AdminPanel initialSection="abookorders" /></AdminProtectedRoute>} />
+              <Route path="/admin/banners" element={<AdminProtectedRoute><AdminPanel initialSection="banners" /></AdminProtectedRoute>} />
               
               {/* Default redirect */}
               <Route path="*" element={<Navigate to="/" replace />} />

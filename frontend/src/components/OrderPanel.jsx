@@ -48,6 +48,8 @@ const OrderPanel = ({ symbol, orderType, setOrderType, onClose }) => {
   const [maxLeverage, setMaxLeverage] = useState(100)
   const [chargesInfo, setChargesInfo] = useState(null)
   const [tradingAccountId, setTradingAccountId] = useState(null)
+  const [isCentAccount, setIsCentAccount] = useState(false)
+  const [balanceMultiplier, setBalanceMultiplier] = useState(1)
 
   const getAuthHeader = () => ({
     headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
@@ -69,6 +71,9 @@ const OrderPanel = ({ symbol, orderType, setOrderType, onClose }) => {
             const account = accountRes.data.data
             setMarginFree(account.balance || 0)
             setMaxLeverage(account.leverage || 100)
+            // Set cent account info
+            setIsCentAccount(account.isCentAccount || false)
+            setBalanceMultiplier(account.isCentAccount ? 100 : 1)
             // Set selected leverage to account max by default
             if (selectedLeverage > account.leverage) {
               setSelectedLeverage(account.leverage)
@@ -308,11 +313,11 @@ const OrderPanel = ({ symbol, orderType, setOrderType, onClose }) => {
                 className="rounded-lg p-3 text-center transition-colors"
                 style={{ 
                   backgroundColor: tradeType === 'sell' ? 'rgba(239, 68, 68, 0.3)' : 'rgba(239, 68, 68, 0.1)', 
-                  border: tradeType === 'sell' ? '2px solid var(--accent-red)' : '1px solid var(--accent-red)'
+                  border: tradeType === 'sell' ? '2px solid var(--ask-color)' : '1px solid var(--ask-color)'
                 }}
               >
                 <div className="text-xs mb-1" style={{ color: 'var(--text-secondary)' }}>Sell</div>
-                <div className="font-semibold" style={{ color: 'var(--accent-red)' }}>
+                <div className="font-semibold" style={{ color: 'var(--ask-color)' }}>
                   {formatPrice(sellPrice)}
                 </div>
               </button>
@@ -321,11 +326,11 @@ const OrderPanel = ({ symbol, orderType, setOrderType, onClose }) => {
                 className="rounded-lg p-3 text-center transition-colors"
                 style={{ 
                   backgroundColor: tradeType === 'buy' ? 'rgba(59, 130, 246, 0.3)' : 'rgba(59, 130, 246, 0.1)', 
-                  border: tradeType === 'buy' ? '2px solid #3b82f6' : '1px solid #3b82f6'
+                  border: tradeType === 'buy' ? '2px solid var(--bid-color)' : '1px solid var(--bid-color)'
                 }}
               >
                 <div className="text-xs mb-1" style={{ color: 'var(--text-secondary)' }}>Buy</div>
-                <div className="font-semibold" style={{ color: '#3b82f6' }}>
+                <div className="font-semibold" style={{ color: 'var(--bid-color)' }}>
                   {formatPrice(buyPrice)}
                 </div>
               </button>
@@ -456,12 +461,12 @@ const OrderPanel = ({ symbol, orderType, setOrderType, onClose }) => {
                 <option key={lev} value={lev}>1:{lev}</option>
               ))}
             </select>
-            <div className="text-xs px-2 py-1 rounded" style={{ backgroundColor: 'rgba(59, 130, 246, 0.1)', color: '#3b82f6' }}>
-              ${(marginFree * selectedLeverage).toLocaleString()}
+            <div className="text-xs px-2 py-1 rounded" style={{ backgroundColor: 'rgba(212, 175, 55, 0.1)', color: 'var(--accent-gold)' }}>
+              {isCentAccount ? '¢' : '$'}{((marginFree * balanceMultiplier) * selectedLeverage).toLocaleString()}
             </div>
           </div>
           <p className="text-xs mt-1" style={{ color: 'var(--text-muted)' }}>
-            Trading power: ${marginFree.toFixed(2)} × {selectedLeverage} = ${(marginFree * selectedLeverage).toLocaleString()}
+            Trading power: {isCentAccount ? '¢' : '$'}{(marginFree * balanceMultiplier).toFixed(2)} × {selectedLeverage} = {isCentAccount ? '¢' : '$'}{((marginFree * balanceMultiplier) * selectedLeverage).toLocaleString()}
           </p>
         </div>
         
@@ -470,7 +475,7 @@ const OrderPanel = ({ symbol, orderType, setOrderType, onClose }) => {
           <button
             onClick={() => setShowTakeProfit(!showTakeProfit)}
             className="flex items-center justify-between w-full text-sm py-2"
-            style={{ color: 'var(--accent-green)' }}
+            style={{ color: 'var(--accent-gold)' }}
           >
             <span>Take profit</span>
             <Plus size={16} />
@@ -492,7 +497,7 @@ const OrderPanel = ({ symbol, orderType, setOrderType, onClose }) => {
           <button
             onClick={() => setShowStopLoss(!showStopLoss)}
             className="flex items-center justify-between w-full text-sm py-2"
-            style={{ color: 'var(--accent-red)' }}
+            style={{ color: 'var(--accent-gold)' }}
           >
             <span>Stop loss</span>
             <Plus size={16} />
@@ -525,7 +530,7 @@ const OrderPanel = ({ symbol, orderType, setOrderType, onClose }) => {
               {chargesInfo.commission > 0 && (
                 <div className="flex justify-between">
                   <span style={{ color: 'var(--text-muted)' }}>Commission</span>
-                  <span style={{ color: 'var(--text-secondary)' }}>${chargesInfo.commission.toFixed(2)} (${chargesInfo.commissionPerLot}/lot)</span>
+                  <span style={{ color: 'var(--text-secondary)' }}>{isCentAccount ? '¢' : '$'}{(chargesInfo.commission * balanceMultiplier).toFixed(2)} ({isCentAccount ? '¢' : '$'}{chargesInfo.commissionPerLot * balanceMultiplier}/lot)</span>
                 </div>
               )}
             </div>
@@ -535,26 +540,26 @@ const OrderPanel = ({ symbol, orderType, setOrderType, onClose }) => {
         {/* Margin Info */}
         <div className="flex items-center justify-between text-sm mb-2">
           <span style={{ color: 'var(--text-secondary)' }}>Margin Required</span>
-          <span style={{ color: 'var(--text-primary)' }}>${marginRequired.toFixed(2)}</span>
+          <span style={{ color: 'var(--text-primary)' }}>{isCentAccount ? '¢' : '$'}{(marginRequired * balanceMultiplier).toFixed(2)}</span>
         </div>
         <div className="flex items-center justify-between text-sm mb-2">
           <span style={{ color: 'var(--text-secondary)' }}>+ Charges</span>
-          <span style={{ color: '#f59e0b' }}>${chargesInfo?.totalCharges?.toFixed(2) || '0.00'}</span>
+          <span style={{ color: '#f59e0b' }}>{isCentAccount ? '¢' : '$'}{((chargesInfo?.totalCharges || 0) * balanceMultiplier).toFixed(2)}</span>
         </div>
         <div className="flex items-center justify-between text-sm mb-4 pt-2 border-t" style={{ borderColor: 'var(--border-color)' }}>
           <span className="font-medium" style={{ color: 'var(--text-primary)' }}>Total Required</span>
-          <span className="font-semibold" style={{ color: 'var(--accent-green)' }}>
-            ${getTotalRequired().toFixed(2)}
+          <span className="font-semibold" style={{ color: 'var(--accent-gold)' }}>
+            {isCentAccount ? '¢' : '$'}{(getTotalRequired() * balanceMultiplier).toFixed(2)}
           </span>
         </div>
         <div className="flex items-center justify-between text-xs mb-4">
-          <span style={{ color: 'var(--text-muted)' }}>Wallet Balance</span>
-          <span style={{ color: 'var(--text-secondary)' }}>${marginFree.toLocaleString()}</span>
+          <span style={{ color: 'var(--text-muted)' }}>Wallet Balance {isCentAccount && <span className="text-yellow-500">(Cents)</span>}</span>
+          <span style={{ color: 'var(--text-secondary)' }}>{isCentAccount ? '¢' : '$'}{(marginFree * balanceMultiplier).toLocaleString()}</span>
         </div>
 
         {getTotalRequired() > marginFree && (
           <div className="text-xs text-red-500 mb-4 p-2 rounded-lg bg-red-500/10">
-            ⚠️ Insufficient balance. Required: ${getTotalRequired().toFixed(2)}
+            ⚠️ Insufficient balance. Required: {isCentAccount ? '¢' : '$'}{(getTotalRequired() * balanceMultiplier).toFixed(2)}
           </div>
         )}
       </div>
@@ -568,7 +573,7 @@ const OrderPanel = ({ symbol, orderType, setOrderType, onClose }) => {
               disabled={submitting || getTotalRequired() > marginFree || (tradeType === 'buy' ? !buyPrice : !sellPrice)}
               className="w-full font-semibold py-3 rounded-lg transition-colors hover:opacity-90 disabled:opacity-50 flex items-center justify-center gap-2"
               style={{ 
-                backgroundColor: tradeType === 'buy' ? '#3b82f6' : 'var(--accent-red)', 
+                backgroundColor: tradeType === 'buy' ? 'var(--bid-color)' : 'var(--ask-color)', 
                 color: '#fff' 
               }}
             >
@@ -586,7 +591,7 @@ const OrderPanel = ({ symbol, orderType, setOrderType, onClose }) => {
               disabled={submitting || !entryPrice || getTotalRequired() > marginFree}
               className="w-full font-semibold py-3 rounded-lg transition-colors hover:opacity-90 disabled:opacity-50 flex items-center justify-center gap-2"
               style={{ 
-                backgroundColor: pendingOrderType.includes('BUY') ? '#3b82f6' : 'var(--accent-red)', 
+                backgroundColor: pendingOrderType.includes('BUY') ? 'var(--bid-color)' : 'var(--ask-color)', 
                 color: '#fff' 
               }}
             >

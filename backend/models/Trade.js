@@ -129,6 +129,29 @@ const tradeSchema = new mongoose.Schema({
   notes: {
     type: String,
     default: ''
+  },
+  // Liquidity Provider fields for A Book trades
+  lpTradeId: {
+    type: String,
+    default: null
+  },
+  lpStatus: {
+    type: String,
+    enum: ['pending', 'sent', 'failed', null],
+    default: null
+  },
+  lpError: {
+    type: String,
+    default: null
+  },
+  lpCloseStatus: {
+    type: String,
+    enum: ['pending', 'sent', 'failed', null],
+    default: null
+  },
+  lpCloseError: {
+    type: String,
+    default: null
   }
 }, {
   timestamps: true

@@ -8,6 +8,7 @@ const Header = ({ onTradeClick, showOrderPanel }) => {
   const navigate = useNavigate()
   const { isDark, toggleTheme } = useTheme()
   const [balance, setBalance] = useState(0)
+  const [isCentAccount, setIsCentAccount] = useState(false)
   const [showSettingsMenu, setShowSettingsMenu] = useState(false)
   const [showKillSwitch, setShowKillSwitch] = useState(false)
   const [killDuration, setKillDuration] = useState('1')
@@ -22,10 +23,29 @@ const Header = ({ onTradeClick, showOrderPanel }) => {
     if (!token) return
 
     try {
+      // Check for active trading account first
+      const savedAccount = localStorage.getItem('activeTradingAccount')
+      if (savedAccount) {
+        const accountData = JSON.parse(savedAccount)
+        const accountRes = await axios.get(`/api/trading-accounts/${accountData._id}`, {
+          headers: { Authorization: `Bearer ${token}` }
+        })
+        if (accountRes.data.success && accountRes.data.data) {
+          const account = accountRes.data.data
+          const isCent = account.isCentAccount || false
+          setIsCentAccount(isCent)
+          // For cent accounts, show balance in cents (multiply by 100)
+          setBalance(isCent ? (account.balance || 0) * 100 : (account.balance || 0))
+          return
+        }
+      }
+      
+      // Fallback to user wallet balance
       const res = await axios.get('/api/auth/me', {
         headers: { Authorization: `Bearer ${token}` }
       })
       if (res.data.success) {
+        setIsCentAccount(false)
         setBalance(res.data.data.balance || 0)
       }
     } catch (err) {
@@ -153,7 +173,7 @@ const Header = ({ onTradeClick, showOrderPanel }) => {
           style={{ backgroundColor: 'var(--bg-card)' }}
         >
           <Wallet size={18} style={{ color: 'var(--accent-green)' }} />
-          <span className="font-medium" style={{ color: 'var(--text-primary)' }}>${balance.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
+          <span className="font-medium" style={{ color: 'var(--text-primary)' }}>{isCentAccount ? '¢' : '$'}{balance.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
           <ChevronDown size={16} style={{ color: 'var(--text-secondary)' }} />
         </div>
         

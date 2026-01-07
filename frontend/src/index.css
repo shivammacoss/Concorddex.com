@@ -25,7 +25,11 @@
   --accent-gold-dark: #b8960c;
   --accent-green: #22c55e;
   --accent-red: #ef4444;
-  --accent-blue: #d4af37;
+  --accent-blue: #3b82f6;
+  --bid-color: #3b82f6;
+  --ask-color: #ef4444;
+  --pnl-positive: #3b82f6;
+  --pnl-negative: #ef4444;
   --gradient-gold: linear-gradient(135deg, #d4af37 0%, #f4d03f 50%, #d4af37 100%);
   --gradient-gold-dark: linear-gradient(135deg, #b8960c 0%, #d4af37 100%);
 }
@@ -47,7 +51,11 @@
   --accent-gold-dark: #b8960c;
   --accent-green: #22c55e;
   --accent-red: #ef4444;
-  --accent-blue: #d4af37;
+  --accent-blue: #3b82f6;
+  --bid-color: #3b82f6;
+  --ask-color: #ef4444;
+  --pnl-positive: #3b82f6;
+  --pnl-negative: #ef4444;
   --gradient-gold: linear-gradient(135deg, #d4af37 0%, #f4d03f 50%, #d4af37 100%);
   --gradient-gold-dark: linear-gradient(135deg, #b8960c 0%, #d4af37 100%);
 }
@@ -117,4 +125,54 @@ input[type="number"]::-webkit-outer-spin-button {
 
 input[type="number"] {
   -moz-appearance: textfield;
+}
+
+/* Gold Shine Button Animation */
+@keyframes goldShine {
+  0% {
+    background-position: -200% center;
+  }
+  100% {
+    background-position: 200% center;
+  }
+}
+
+.gold-shine-btn {
+  background: linear-gradient(
+    90deg,
+    #d4af37 0%,
+    #f4d03f 25%,
+    #fffacd 50%,
+    #f4d03f 75%,
+    #d4af37 100%
+  );
+  background-size: 200% auto;
+  animation: goldShine 3s linear infinite;
+  color: #000;
+  font-weight: 700;
+  border: none;
+  box-shadow: 0 0 20px rgba(212, 175, 55, 0.4), 0 0 40px rgba(212, 175, 55, 0.2);
+  transition: all 0.3s ease;
+}
+
+.gold-shine-btn:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 30px rgba(212, 175, 55, 0.6), 0 0 60px rgba(212, 175, 55, 0.3);
+}
+
+/* Gold Shine Text Animation */
+.gold-shine-text {
+  background: linear-gradient(
+    90deg,
+    #d4af37 0%,
+    #f4d03f 25%,
+    #fffacd 50%,
+    #f4d03f 75%,
+    #d4af37 100%
+  );
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: goldShine 3s linear infinite;
 }

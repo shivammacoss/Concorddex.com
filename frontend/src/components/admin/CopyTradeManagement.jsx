@@ -17,9 +17,11 @@ import {
   Loader2,
   X,
   UserCheck,
-  AlertTriangle
+  AlertTriangle,
+  Link2
 } from 'lucide-react'
 import axios from 'axios'
+import MasterReferralManagement from './MasterReferralManagement'
 
 const CopyTradeManagement = () => {
   const [activeTab, setActiveTab] = useState('requests')
@@ -232,6 +234,17 @@ const CopyTradeManagement = () => {
         >
           <DollarSign size={16} /> Commissions
         </button>
+        <button
+          onClick={() => setActiveTab('referrals')}
+          className="px-5 py-2 rounded-xl text-sm font-medium transition-colors flex items-center gap-2"
+          style={{
+            backgroundColor: activeTab === 'referrals' ? 'var(--accent-gold)' : 'var(--bg-card)',
+            color: activeTab === 'referrals' ? '#000' : 'var(--text-secondary)',
+            border: activeTab === 'referrals' ? 'none' : '1px solid var(--border-color)'
+          }}
+        >
+          <Link2 size={16} /> Referral Levels
+        </button>
       </div>
 
       {/* Requests Tab */}
@@ -276,7 +289,7 @@ const CopyTradeManagement = () => {
                               {actionLoading === req._id ? <Loader2 className="animate-spin" size={16} style={{ color: '#22c55e' }} /> : <CheckCircle size={16} style={{ color: '#22c55e' }} />}
                             </button>
                             <button onClick={() => { setSelectedItem(req); setShowRejectModal(true); }} className="p-2 rounded-lg bg-red-500/10" title="Reject">
-                              <XCircle size={16} style={{ color: '#ef4444' }} />
+                              <XCircle size={16} style={{ color: '#d4af37' }} />
                             </button>
                           </div>
                         )}
@@ -337,7 +350,7 @@ const CopyTradeManagement = () => {
                       <td className="py-4 px-4">
                         <div className="flex items-center gap-2">
                           <button onClick={() => handleSuspendMaster(m)} disabled={actionLoading === m._id} className={`p-2 rounded-lg ${m.status === 'suspended' ? 'bg-green-500/10' : 'bg-red-500/10'}`}>
-                            {m.status === 'suspended' ? <UserCheck size={16} style={{ color: '#22c55e' }} /> : <Ban size={16} style={{ color: '#ef4444' }} />}
+                            {m.status === 'suspended' ? <UserCheck size={16} style={{ color: '#22c55e' }} /> : <Ban size={16} style={{ color: '#d4af37' }} />}
                           </button>
                         </div>
                       </td>
@@ -378,7 +391,7 @@ const CopyTradeManagement = () => {
                       <td className="py-4 px-4 text-sm" style={{ color: 'var(--text-secondary)' }}>{f.masterId?.displayName || f.masterId?.masterId}</td>
                       <td className="py-4 px-4 text-sm" style={{ color: 'var(--text-secondary)' }}>{f.copyMode} {f.copyMode === 'fixed_lot' ? `(${f.fixedLot})` : `(${f.multiplier}x)`}</td>
                       <td className="py-4 px-4 text-sm" style={{ color: 'var(--text-primary)' }}>{f.stats?.totalCopiedTrades || 0}</td>
-                      <td className="py-4 px-4 text-sm font-semibold" style={{ color: (f.stats?.totalPnL || 0) >= 0 ? '#22c55e' : '#ef4444' }}>
+                      <td className="py-4 px-4 text-sm font-semibold" style={{ color: (f.stats?.totalPnL || 0) >= 0 ? '#22c55e' : '#d4af37' }}>
                         ${(f.stats?.totalPnL || 0).toFixed(2)}
                       </td>
                       <td className="py-4 px-4">
@@ -418,7 +431,7 @@ const CopyTradeManagement = () => {
                     <tr key={c._id} style={{ borderBottom: '1px solid var(--border-color)' }}>
                       <td className="py-4 px-4 text-sm" style={{ color: 'var(--text-primary)' }}>{c.masterUserId?.firstName} {c.masterUserId?.lastName}</td>
                       <td className="py-4 px-4 text-sm" style={{ color: 'var(--text-secondary)' }}>{c.followerUserId?.firstName} {c.followerUserId?.lastName}</td>
-                      <td className="py-4 px-4 text-sm font-semibold" style={{ color: c.tradePnL >= 0 ? '#22c55e' : '#ef4444' }}>
+                      <td className="py-4 px-4 text-sm font-semibold" style={{ color: c.tradePnL >= 0 ? '#22c55e' : '#d4af37' }}>
                         ${c.tradePnL?.toFixed(2)}
                       </td>
                       <td className="py-4 px-4 text-sm font-semibold" style={{ color: '#22c55e' }}>${c.commissionAmount?.toFixed(2)}</td>
@@ -461,6 +474,11 @@ const CopyTradeManagement = () => {
             </div>
           </div>
         </div>
+      )}
+
+      {/* Referrals Tab */}
+      {activeTab === 'referrals' && (
+        <MasterReferralManagement />
       )}
     </div>
   )

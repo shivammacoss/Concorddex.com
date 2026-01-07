@@ -30,6 +30,8 @@ const AccountTypeManagement = () => {
     color: '#3b82f6',
     sortOrder: 0,
     isDemo: false,
+    isCentAccount: false,
+    balanceMultiplier: 1,
     isActive: true
   })
   const [newFeature, setNewFeature] = useState('')
@@ -114,6 +116,8 @@ const AccountTypeManagement = () => {
       color: type.color,
       sortOrder: type.sortOrder,
       isDemo: type.isDemo,
+      isCentAccount: type.isCentAccount || false,
+      balanceMultiplier: type.balanceMultiplier || 1,
       isActive: type.isActive
     })
     setShowModal(true)
@@ -162,6 +166,8 @@ const AccountTypeManagement = () => {
       color: '#3b82f6',
       sortOrder: 0,
       isDemo: false,
+      isCentAccount: false,
+      balanceMultiplier: 1,
       isActive: true
     })
   }
@@ -196,7 +202,7 @@ const AccountTypeManagement = () => {
     { value: '#ec4899', label: 'Pink' },
     { value: '#f59e0b', label: 'Amber' },
     { value: '#10b981', label: 'Emerald' },
-    { value: '#ef4444', label: 'Red' },
+    { value: '#d4af37', label: 'Red' },
     { value: '#06b6d4', label: 'Cyan' }
   ]
 
@@ -569,8 +575,35 @@ const AccountTypeManagement = () => {
                 </div>
               </div>
 
+              {/* Cent Account Settings */}
+              <div className="p-4 rounded-xl bg-yellow-900/20 border border-yellow-600/30">
+                <h3 className="text-sm font-medium text-yellow-400 mb-3 flex items-center gap-2">
+                  <DollarSign size={16} /> Cent Account Settings
+                </h3>
+                <div className="flex items-center gap-6">
+                  <label className="flex items-center gap-2 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={formData.isCentAccount}
+                      onChange={(e) => setFormData({ 
+                        ...formData, 
+                        isCentAccount: e.target.checked,
+                        balanceMultiplier: e.target.checked ? 100 : 1
+                      })}
+                      className="w-4 h-4 rounded bg-gray-700 border-gray-600 text-yellow-600 focus:ring-yellow-500"
+                    />
+                    <span className="text-sm text-gray-300">Cent Account (100x display)</span>
+                  </label>
+                  {formData.isCentAccount && (
+                    <p className="text-xs text-yellow-400">
+                      $100 deposit = 10,000¢ displayed balance
+                    </p>
+                  )}
+                </div>
+              </div>
+
               {/* Toggles */}
-              <div className="flex gap-6">
+              <div className="flex flex-wrap gap-6">
                 <label className="flex items-center gap-2 cursor-pointer">
                   <input
                     type="checkbox"

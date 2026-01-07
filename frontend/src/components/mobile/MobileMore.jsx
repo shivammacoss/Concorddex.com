@@ -97,8 +97,8 @@ const MobileMore = ({ onClose, onNavigate }) => {
             className="flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-xl active:opacity-70"
             style={{ backgroundColor: 'rgba(239, 68, 68, 0.1)' }}
           >
-            <LogOut size={14} color="#ef4444" />
-            <span className="text-xs font-medium" style={{ color: '#ef4444' }}>Logout</span>
+            <LogOut size={14} color="#d4af37" />
+            <span className="text-xs font-medium" style={{ color: '#d4af37' }}>Logout</span>
           </button>
         </div>
       </div>

@@ -374,8 +374,8 @@ const TradeManagement = () => {
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         <div className="p-4 rounded-2xl" style={{ backgroundColor: 'var(--bg-card)', border: '1px solid var(--border-color)' }}>
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ backgroundColor: 'rgba(59, 130, 246, 0.1)' }}>
-              <TrendingUp size={20} style={{ color: '#3b82f6' }} />
+            <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ backgroundColor: 'rgba(212, 175, 55, 0.1)' }}>
+              <TrendingUp size={20} style={{ color: '#d4af37' }} />
             </div>
             <div>
               <p className="text-xs" style={{ color: 'var(--text-muted)' }}>Total Trades</p>
@@ -396,8 +396,8 @@ const TradeManagement = () => {
         </div>
         <div className="p-4 rounded-2xl" style={{ backgroundColor: 'var(--bg-card)', border: '1px solid var(--border-color)' }}>
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ backgroundColor: 'rgba(139, 92, 246, 0.1)' }}>
-              <TrendingUp size={20} style={{ color: '#8b5cf6' }} />
+            <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ backgroundColor: 'rgba(212, 175, 55, 0.1)' }}>
+              <TrendingUp size={20} style={{ color: '#d4af37' }} />
             </div>
             <div>
               <p className="text-xs" style={{ color: 'var(--text-muted)' }}>Total Volume</p>
@@ -407,12 +407,12 @@ const TradeManagement = () => {
         </div>
         <div className="p-4 rounded-2xl" style={{ backgroundColor: 'var(--bg-card)', border: '1px solid var(--border-color)' }}>
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ backgroundColor: totalProfit >= 0 ? 'rgba(34, 197, 94, 0.1)' : 'rgba(239, 68, 68, 0.1)' }}>
-              {totalProfit >= 0 ? <TrendingUp size={20} style={{ color: '#22c55e' }} /> : <TrendingDown size={20} style={{ color: '#ef4444' }} />}
+            <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ backgroundColor: totalProfit >= 0 ? 'rgba(34, 197, 94, 0.1)' : 'rgba(59, 130, 246, 0.1)' }}>
+              {totalProfit >= 0 ? <TrendingUp size={20} style={{ color: '#22c55e' }} /> : <TrendingDown size={20} style={{ color: '#3b82f6' }} />}
             </div>
             <div>
               <p className="text-xs" style={{ color: 'var(--text-muted)' }}>Total P&L</p>
-              <p className="text-xl font-bold" style={{ color: totalProfit >= 0 ? '#22c55e' : '#ef4444' }}>
+              <p className="text-xl font-bold" style={{ color: totalProfit >= 0 ? '#22c55e' : '#3b82f6' }}>
                 {totalProfit >= 0 ? '+' : ''}${totalProfit.toFixed(2)}
               </p>
             </div>
@@ -432,8 +432,8 @@ const TradeManagement = () => {
             onClick={() => setActiveTab(tab.id)}
             className="px-4 py-3 text-sm font-medium transition-colors relative"
             style={{ 
-              color: activeTab === tab.id ? 'var(--accent-green)' : 'var(--text-secondary)',
-              borderBottom: activeTab === tab.id ? '2px solid var(--accent-green)' : '2px solid transparent'
+              color: activeTab === tab.id ? 'var(--accent-gold)' : 'var(--text-secondary)',
+              borderBottom: activeTab === tab.id ? '2px solid var(--accent-gold)' : '2px solid transparent'
             }}
           >
             {tab.label} ({tab.count})
@@ -550,8 +550,8 @@ const TradeManagement = () => {
                       <span 
                         className="px-2 py-1 rounded text-xs font-medium uppercase"
                         style={{
-                          backgroundColor: trade.type === 'buy' ? 'rgba(34, 197, 94, 0.1)' : 'rgba(239, 68, 68, 0.1)',
-                          color: trade.type === 'buy' ? '#22c55e' : '#ef4444'
+                          backgroundColor: trade.type === 'buy' ? 'rgba(59, 130, 246, 0.2)' : 'rgba(34, 197, 94, 0.2)',
+                          color: trade.type === 'buy' ? '#3b82f6' : '#22c55e'
                         }}
                       >
                         {trade.type}
@@ -563,7 +563,7 @@ const TradeManagement = () => {
                     <td className="py-4 px-4 text-sm font-mono" style={{ color: 'var(--text-primary)' }}>
                       {getCurrentPrice(trade)}
                     </td>
-                    <td className="py-4 px-4 text-sm font-semibold" style={{ color: calculatePnL(trade) >= 0 ? '#22c55e' : '#ef4444' }}>
+                    <td className="py-4 px-4 text-sm font-semibold" style={{ color: calculatePnL(trade) >= 0 ? '#22c55e' : '#3b82f6' }}>
                       {calculatePnL(trade) >= 0 ? '+' : ''}${calculatePnL(trade).toFixed(2)}
                     </td>
                     <td className="py-4 px-4">
@@ -600,7 +600,7 @@ const TradeManagement = () => {
                               style={{ backgroundColor: 'rgba(239, 68, 68, 0.1)' }} 
                               title="Close Trade"
                             >
-                              <XCircle size={16} style={{ color: '#ef4444' }} />
+                              <XCircle size={16} style={{ color: '#d4af37' }} />
                             </button>
                           </>
                         )}
@@ -620,7 +620,7 @@ const TradeManagement = () => {
                               style={{ backgroundColor: 'rgba(239, 68, 68, 0.1)' }} 
                               title="Cancel Order"
                             >
-                              <XCircle size={16} style={{ color: '#ef4444' }} />
+                              <XCircle size={16} style={{ color: '#d4af37' }} />
                             </button>
                           </>
                         )}
@@ -698,7 +698,7 @@ const TradeManagement = () => {
                       ))}
                     </select>
                   ) : (
-                    <p className="text-sm py-2" style={{ color: '#ef4444' }}>No trading accounts found for this user</p>
+                    <p className="text-sm py-2" style={{ color: '#d4af37' }}>No trading accounts found for this user</p>
                   )}
                 </div>
               )}
@@ -763,7 +763,7 @@ const TradeManagement = () => {
                       onClick={() => setCreateForm({ ...createForm, type: 'sell' })}
                       className="py-3 rounded-xl font-medium"
                       style={{ 
-                        backgroundColor: createForm.type === 'sell' ? '#ef4444' : 'var(--bg-hover)',
+                        backgroundColor: createForm.type === 'sell' ? '#d4af37' : 'var(--bg-hover)',
                         color: createForm.type === 'sell' ? '#fff' : 'var(--text-secondary)'
                       }}
                     >
@@ -817,7 +817,7 @@ const TradeManagement = () => {
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm mb-2" style={{ color: '#ef4444' }}>Stop Loss (optional)</label>
+                  <label className="block text-sm mb-2" style={{ color: '#d4af37' }}>Stop Loss (optional)</label>
                   <input
                     type="number"
                     step="0.00001"
@@ -867,7 +867,7 @@ const TradeManagement = () => {
                   type="submit"
                   disabled={actionLoading === 'create' || (createForm.userId && !createForm.tradingAccountId)}
                   className="flex-1 py-3 rounded-xl font-medium text-white flex items-center justify-center gap-2"
-                  style={{ backgroundColor: createForm.orderType === 'pending' ? '#f59e0b' : (createForm.type === 'buy' ? '#22c55e' : '#ef4444') }}
+                  style={{ backgroundColor: createForm.orderType === 'pending' ? '#f59e0b' : (createForm.type === 'buy' ? '#22c55e' : '#d4af37') }}
                 >
                   {actionLoading === 'create' && <Loader2 size={16} className="animate-spin" />}
                   {createForm.orderType === 'pending' ? 'Place Pending Order' : (createForm.type === 'buy' ? 'Open BUY' : 'Open SELL')}
@@ -895,7 +895,7 @@ const TradeManagement = () => {
               </div>
               <div className="flex justify-between mb-2">
                 <span style={{ color: 'var(--text-muted)' }}>Type</span>
-                <span className="uppercase" style={{ color: selectedTrade.type === 'buy' ? '#22c55e' : '#ef4444' }}>{selectedTrade.type}</span>
+                <span className="uppercase" style={{ color: selectedTrade.type === 'buy' ? '#22c55e' : '#d4af37' }}>{selectedTrade.type}</span>
               </div>
               <div className="flex justify-between">
                 <span style={{ color: 'var(--text-muted)' }}>Entry Price</span>
@@ -935,7 +935,7 @@ const TradeManagement = () => {
                       onClick={() => setModifyForm({ ...modifyForm, type: 'sell' })}
                       className="py-2 rounded-xl font-medium text-sm"
                       style={{ 
-                        backgroundColor: modifyForm.type === 'sell' ? '#ef4444' : 'var(--bg-hover)',
+                        backgroundColor: modifyForm.type === 'sell' ? '#d4af37' : 'var(--bg-hover)',
                         color: modifyForm.type === 'sell' ? '#fff' : 'var(--text-secondary)'
                       }}
                     >
@@ -975,7 +975,7 @@ const TradeManagement = () => {
               
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm mb-2" style={{ color: '#ef4444' }}>Stop Loss</label>
+                  <label className="block text-sm mb-2" style={{ color: '#d4af37' }}>Stop Loss</label>
                   <input
                     type="number"
                     step="0.00001"
@@ -1109,7 +1109,7 @@ const TradeManagement = () => {
               </div>
               <div className="flex justify-between mb-2">
                 <span style={{ color: 'var(--text-muted)' }}>Type</span>
-                <span className="uppercase" style={{ color: selectedTrade.type === 'buy' ? '#22c55e' : '#ef4444' }}>{selectedTrade.type}</span>
+                <span className="uppercase" style={{ color: selectedTrade.type === 'buy' ? '#22c55e' : '#d4af37' }}>{selectedTrade.type}</span>
               </div>
               <div className="flex justify-between mb-2">
                 <span style={{ color: 'var(--text-muted)' }}>Volume</span>
@@ -1121,7 +1121,7 @@ const TradeManagement = () => {
               </div>
               <div className="flex justify-between">
                 <span style={{ color: 'var(--text-muted)' }}>Floating P/L</span>
-                <span style={{ color: (selectedTrade.profit || 0) >= 0 ? '#22c55e' : '#ef4444' }}>
+                <span style={{ color: (selectedTrade.profit || 0) >= 0 ? '#22c55e' : '#d4af37' }}>
                   {(selectedTrade.profit || 0) >= 0 ? '+' : ''}${(selectedTrade.profit || 0).toFixed(2)}
                 </span>
               </div>

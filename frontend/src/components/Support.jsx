@@ -137,7 +137,7 @@ const Support = () => {
 
   const getPriorityStyle = (priority) => {
     switch (priority) {
-      case 'urgent': return { bg: 'rgba(239, 68, 68, 0.1)', color: '#ef4444' }
+      case 'urgent': return { bg: 'rgba(239, 68, 68, 0.1)', color: '#d4af37' }
       case 'high': return { bg: 'rgba(249, 115, 22, 0.1)', color: '#f97316' }
       case 'medium': return { bg: 'rgba(251, 191, 36, 0.1)', color: '#fbbf24' }
       case 'low': return { bg: 'rgba(34, 197, 94, 0.1)', color: '#22c55e' }

@@ -23,7 +23,7 @@ router.post('/register', [
       });
     }
 
-    const { email, password, firstName, lastName, referralCode } = req.body;
+    const { email, password, firstName, lastName, referralCode, masterRef, ref } = req.body;
 
     // Check if user exists
     const existingUser = await User.findOne({ email });
@@ -42,15 +42,26 @@ router.post('/register', [
       lastName
     });
 
-    // Process referral if code provided
+    // Process IB referral if code provided
     if (referralCode) {
       try {
         const ibEngine = new IBCommissionEngine();
         await ibEngine.registerReferral(user, referralCode);
-        console.log(`[Auth] User ${user.email} registered with referral: ${referralCode}`);
+        console.log(`[Auth] User ${user.email} registered with IB referral: ${referralCode}`);
       } catch (refErr) {
-        console.error('[Auth] Referral processing error:', refErr);
-        // Don't fail registration if referral fails
+        console.error('[Auth] IB Referral processing error:', refErr);
+      }
+    }
+
+    // Process master referral if masterRef and ref provided
+    if (masterRef && ref) {
+      try {
+        const MasterReferralEngine = require('../services/masterReferralEngine');
+        const masterReferralEngine = new MasterReferralEngine();
+        await masterReferralEngine.registerReferral(user, masterRef, ref);
+        console.log(`[Auth] User ${user.email} registered with master referral: ${masterRef} by ${ref}`);
+      } catch (refErr) {
+        console.error('[Auth] Master Referral processing error:', refErr);
       }
     }
 

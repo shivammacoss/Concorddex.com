@@ -299,7 +299,7 @@ const MobileProfile = ({ onBack }) => {
         <button 
           onClick={handleLogout}
           className="w-full py-3 rounded-xl mt-4 flex items-center justify-center gap-2"
-          style={{ backgroundColor: 'rgba(239, 68, 68, 0.1)', border: '1px solid #ef4444', color: '#ef4444' }}
+          style={{ backgroundColor: 'rgba(239, 68, 68, 0.1)', border: '1px solid #d4af37', color: '#d4af37' }}
         >
           <LogOut size={16} />
           Logout

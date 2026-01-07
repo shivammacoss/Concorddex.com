@@ -288,7 +288,7 @@ const Profile = () => {
           onClick={() => setActiveTab('delete')}
           className="flex items-center gap-2 px-5 py-2.5 rounded-xl font-medium transition-all"
           style={{ 
-            background: activeTab === 'delete' ? 'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)' : 'var(--bg-card)', 
+            background: activeTab === 'delete' ? 'linear-gradient(135deg, #d4af37 0%, #dc2626 100%)' : 'var(--bg-card)', 
             color: activeTab === 'delete' ? '#fff' : 'var(--text-secondary)' 
           }}
         >
@@ -470,7 +470,7 @@ const Profile = () => {
               <div className="w-14 h-14 rounded-xl flex items-center justify-center" style={{ 
                 background: kycStatus.status === 'verified' ? 'linear-gradient(135deg, #22c55e 0%, #16a34a 100%)' :
                            kycStatus.status === 'submitted' ? 'linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%)' :
-                           kycStatus.status === 'rejected' ? 'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)' :
+                           kycStatus.status === 'rejected' ? 'linear-gradient(135deg, #d4af37 0%, #dc2626 100%)' :
                            'linear-gradient(135deg, #6b7280 0%, #4b5563 100%)'
               }}>
                 {kycStatus.status === 'verified' ? <CheckCircle size={28} style={{ color: '#fff' }} /> :
@@ -630,12 +630,12 @@ const Profile = () => {
           }}>
             <div className="flex items-start gap-4">
               <div className="w-14 h-14 rounded-xl flex items-center justify-center" style={{ 
-                background: 'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)'
+                background: 'linear-gradient(135deg, #d4af37 0%, #dc2626 100%)'
               }}>
                 <AlertTriangle size={28} style={{ color: '#fff' }} />
               </div>
               <div>
-                <h3 className="text-lg font-semibold" style={{ color: '#ef4444' }}>
+                <h3 className="text-lg font-semibold" style={{ color: '#d4af37' }}>
                   Danger Zone
                 </h3>
                 <p className="text-sm mt-1" style={{ color: 'var(--text-secondary)' }}>
@@ -676,7 +676,7 @@ const Profile = () => {
 
               <div>
                 <label className="block text-sm mb-2" style={{ color: 'var(--text-secondary)' }}>
-                  Type <span style={{ color: '#ef4444', fontWeight: 'bold' }}>DELETE</span> to confirm
+                  Type <span style={{ color: '#d4af37', fontWeight: 'bold' }}>DELETE</span> to confirm
                 </label>
                 <input
                   type="text"
@@ -693,7 +693,7 @@ const Profile = () => {
                 type="submit"
                 disabled={deleting || deleteForm.confirmText !== 'DELETE' || !deleteForm.password}
                 className="flex items-center gap-2 px-6 py-3 rounded-xl font-medium disabled:opacity-50"
-                style={{ background: 'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)', color: '#fff' }}
+                style={{ background: 'linear-gradient(135deg, #d4af37 0%, #dc2626 100%)', color: '#fff' }}
               >
                 {deleting ? <Loader2 size={18} className="animate-spin" /> : <Trash2 size={18} />}
                 Permanently Delete Account
