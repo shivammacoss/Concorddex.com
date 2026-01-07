@@ -17,6 +17,8 @@ const PositionsTable = () => {
   const [showOneClick, setShowOneClick] = useState(false)
   const [quickLots, setQuickLots] = useState(0.01)
   const [quickLeverage, setQuickLeverage] = useState(100)
+  const [isCentAccount, setIsCentAccount] = useState(false)
+  const [balanceMultiplier, setBalanceMultiplier] = useState(1)
 
   // Check if trading is locked (kill switch)
   const isTradingLocked = () => {
@@ -175,7 +177,29 @@ const PositionsTable = () => {
 
     try {
       setLoading(true)
-      const res = await axios.get('/api/trades', getAuthHeader())
+      
+      // Get active trading account to filter trades
+      const savedAccount = localStorage.getItem('activeTradingAccount')
+      let tradingAccountId = null
+      
+      if (savedAccount) {
+        const accountData = JSON.parse(savedAccount)
+        tradingAccountId = accountData._id
+        
+        // Check if it's a cent account
+        const accountRes = await axios.get(`/api/trading-accounts/${accountData._id}`, getAuthHeader())
+        if (accountRes.data.success && accountRes.data.data) {
+          setIsCentAccount(accountRes.data.data.isCentAccount || false)
+          setBalanceMultiplier(accountRes.data.data.isCentAccount ? 100 : 1)
+        }
+      }
+      
+      // Fetch trades filtered by trading account
+      const url = tradingAccountId 
+        ? `/api/trades?tradingAccountId=${tradingAccountId}` 
+        : '/api/trades'
+      const res = await axios.get(url, getAuthHeader())
+      
       if (res.data.success) {
         const trades = res.data.data?.trades || res.data.data || []
         setPositions(trades.filter(t => t.status === 'open'))
@@ -281,7 +305,7 @@ const PositionsTable = () => {
 
   return (
     <div className="h-full flex flex-col transition-colors" style={styles.container}>
-      {/* Tabs Row */}
+      {/* Tabs Row with One Click Trading */}
       <div 
         className="flex flex-wrap items-center justify-between px-2 sm:px-4 gap-2"
         style={{ borderBottom: '1px solid var(--border-color)' }}
@@ -295,7 +319,7 @@ const PositionsTable = () => {
               className="px-2 sm:px-4 py-2 sm:py-3 text-xs sm:text-sm font-medium transition-colors whitespace-nowrap"
               style={{ 
                 color: activeTab === tab.id ? 'var(--text-primary)' : 'var(--text-secondary)',
-                borderBottom: activeTab === tab.id ? '2px solid var(--accent-green)' : '2px solid transparent'
+                borderBottom: activeTab === tab.id ? '2px solid var(--accent-gold)' : '2px solid transparent'
               }}
             >
               <span className="hidden sm:inline">{tab.label}</span>
@@ -305,20 +329,113 @@ const PositionsTable = () => {
           ))}
         </div>
         
-        {/* Right: One Click Toggle & P/L */}
+        {/* Right: One Click Trading Controls & P/L */}
         <div className="flex items-center gap-2 sm:gap-3 flex-shrink-0">
+          {/* One Click Trading Controls - Inline */}
+          {showOneClick && (
+            <div className="flex items-center gap-1.5 rounded-full px-2 py-1" style={{ backgroundColor: 'rgba(212, 175, 55, 0.2)' }}>
+              {/* Sell Button */}
+              <button
+                onClick={async () => {
+                  if (isTradingLocked()) {
+                    alert('Trading is currently locked. Kill switch is active.')
+                    return
+                  }
+                  const symbol = localStorage.getItem('selectedSymbol') || 'XAUUSD'
+                  const activeAccount = JSON.parse(localStorage.getItem('activeTradingAccount') || '{}')
+                  console.log('[QuickTrade] SELL', symbol, quickLots, 'Leverage:', quickLeverage)
+                  try {
+                    const token = localStorage.getItem('token')
+                    const res = await axios.post('/api/trades', { 
+                      symbol, type: 'sell', amount: quickLots, orderType: 'market',
+                      tradingAccountId: activeAccount._id,
+                      leverage: quickLeverage
+                    }, { headers: { Authorization: `Bearer ${token}` }})
+                    if (res.data.success) {
+                      fetchPositions()
+                      window.dispatchEvent(new Event('tradeCreated'))
+                    }
+                  } catch (err) { 
+                    alert(err.response?.data?.message || 'Trade failed')
+                  }
+                }}
+                className="w-6 h-6 sm:w-7 sm:h-7 rounded-full flex items-center justify-center text-xs font-bold transition-all hover:scale-110"
+                style={{ backgroundColor: 'var(--ask-color)', color: 'white' }}
+              >S</button>
+              
+              {/* Lots Input */}
+              <input 
+                type="number" 
+                inputMode="decimal"
+                value={quickLots} 
+                onChange={(e) => setQuickLots(parseFloat(e.target.value) || 0.01)} 
+                onFocus={(e) => e.target.select()}
+                step="0.01" 
+                min="0.01"
+                className="w-10 sm:w-12 text-center text-xs font-semibold rounded px-1 py-0.5" 
+                style={{ backgroundColor: 'var(--bg-card)', color: 'var(--text-primary)', border: '1px solid var(--border-color)' }} 
+              />
+              
+              {/* Buy Button */}
+              <button
+                onClick={async () => {
+                  if (isTradingLocked()) {
+                    alert('Trading is currently locked. Kill switch is active.')
+                    return
+                  }
+                  const symbol = localStorage.getItem('selectedSymbol') || 'XAUUSD'
+                  const activeAccount = JSON.parse(localStorage.getItem('activeTradingAccount') || '{}')
+                  console.log('[QuickTrade] BUY', symbol, quickLots, 'Leverage:', quickLeverage)
+                  try {
+                    const token = localStorage.getItem('token')
+                    const res = await axios.post('/api/trades', { 
+                      symbol, type: 'buy', amount: quickLots, orderType: 'market',
+                      tradingAccountId: activeAccount._id,
+                      leverage: quickLeverage
+                    }, { headers: { Authorization: `Bearer ${token}` }})
+                    if (res.data.success) {
+                      fetchPositions()
+                      window.dispatchEvent(new Event('tradeCreated'))
+                    }
+                  } catch (err) { 
+                    alert(err.response?.data?.message || 'Trade failed')
+                  }
+                }}
+                className="w-6 h-6 sm:w-7 sm:h-7 rounded-full flex items-center justify-center text-xs font-bold transition-all hover:scale-110"
+                style={{ backgroundColor: 'var(--bid-color)', color: 'white' }}
+              >B</button>
+              
+              {/* Leverage Selector */}
+              <select
+                value={quickLeverage}
+                onChange={(e) => setQuickLeverage(parseInt(e.target.value))}
+                className="text-xs font-semibold rounded px-1 py-0.5 cursor-pointer"
+                style={{ backgroundColor: 'var(--bg-card)', color: 'var(--text-primary)', border: '1px solid var(--border-color)' }}
+              >
+                <option value={1}>1:1</option>
+                <option value={10}>1:10</option>
+                <option value={25}>1:25</option>
+                <option value={50}>1:50</option>
+                <option value={100}>1:100</option>
+                <option value={200}>1:200</option>
+                <option value={500}>1:500</option>
+                <option value={1000}>1:1000</option>
+              </select>
+            </div>
+          )}
+          
           {/* One Click Trading Toggle */}
           <div className="flex items-center gap-1 sm:gap-2">
-            <span className="text-xs hidden sm:inline" style={{ color: 'var(--text-muted)' }}>One Click</span>
+            <span className="text-xs hidden sm:inline" style={{ color: 'var(--text-muted)' }}>1-Click</span>
             <button
               onClick={() => setShowOneClick(!showOneClick)}
-              className="relative w-9 sm:w-10 h-5 rounded-full transition-all flex-shrink-0"
-              style={{ backgroundColor: showOneClick ? '#3b82f6' : 'var(--bg-hover)' }}
+              className="relative w-8 sm:w-9 h-4 sm:h-5 rounded-full transition-all flex-shrink-0"
+              style={{ backgroundColor: showOneClick ? 'var(--accent-gold)' : 'var(--bg-hover)' }}
               title="Toggle One Click Trading"
             >
               <div 
-                className="absolute top-0.5 w-4 h-4 rounded-full bg-white transition-all shadow"
-                style={{ left: showOneClick ? '18px' : '2px' }}
+                className="absolute top-0.5 w-3 h-3 sm:w-4 sm:h-4 rounded-full bg-white transition-all shadow"
+                style={{ left: showOneClick ? '16px' : '2px' }}
               />
             </button>
           </div>
@@ -328,129 +445,14 @@ const PositionsTable = () => {
             <span className="text-xs hidden sm:inline" style={{ color: 'var(--text-muted)' }}>P/L:</span>
             <span 
               className="text-xs sm:text-sm font-bold"
-              style={{ color: totalPnL >= 0 ? '#3b82f6' : 'var(--accent-red)' }}
+              style={{ color: totalPnL >= 0 ? 'var(--pnl-positive)' : 'var(--pnl-negative)' }}
             >
-              {totalPnL >= 0 ? '+' : ''}${totalPnL.toFixed(2)}
+              {totalPnL >= 0 ? '+' : ''}{isCentAccount ? '¢' : '$'}{(totalPnL * balanceMultiplier).toFixed(2)}
             </span>
+            {isCentAccount && <span className="text-xs text-yellow-500">¢</span>}
           </div>
         </div>
       </div>
-      
-      {/* One Click Trading Panel - Separate Row */}
-      {showOneClick && (
-        <div 
-          className="flex flex-wrap items-center justify-center gap-2 sm:gap-3 px-2 sm:px-4 py-2"
-          style={{ backgroundColor: 'rgba(59, 130, 246, 0.1)', borderBottom: '1px solid var(--border-color)' }}
-        >
-          {/* Leverage Selector */}
-          <div className="flex items-center gap-1 sm:gap-2">
-            <span className="text-xs" style={{ color: 'var(--text-muted)' }}>Leverage:</span>
-            <select
-              value={quickLeverage}
-              onChange={(e) => setQuickLeverage(parseInt(e.target.value))}
-              className="text-xs sm:text-sm font-semibold rounded px-1 sm:px-2 py-1 cursor-pointer"
-              style={{ backgroundColor: 'var(--bg-hover)', color: 'var(--text-primary)', border: '1px solid var(--border-color)' }}
-            >
-              <option value={1}>1:1</option>
-              <option value={10}>1:10</option>
-              <option value={25}>1:25</option>
-              <option value={50}>1:50</option>
-              <option value={100}>1:100</option>
-              <option value={200}>1:200</option>
-              <option value={500}>1:500</option>
-              <option value={1000}>1:1000</option>
-            </select>
-          </div>
-          
-          {/* Quick Trade Controls */}
-          <div className="flex items-center gap-1.5 rounded-full px-2 sm:px-3 py-1" style={{ backgroundColor: 'rgba(0,0,0,0.4)' }}>
-            <button
-              onClick={async () => {
-                if (isTradingLocked()) {
-                  alert('Trading is currently locked. Kill switch is active.')
-                  return
-                }
-                const symbol = localStorage.getItem('selectedSymbol') || 'XAUUSD'
-                const activeAccount = JSON.parse(localStorage.getItem('activeTradingAccount') || '{}')
-                console.log('[QuickTrade] SELL', symbol, quickLots, 'Leverage:', quickLeverage)
-                try {
-                  const token = localStorage.getItem('token')
-                  const res = await axios.post('/api/trades', { 
-                    symbol, type: 'sell', amount: quickLots, orderType: 'market',
-                    tradingAccountId: activeAccount._id,
-                    leverage: quickLeverage
-                  }, { headers: { Authorization: `Bearer ${token}` }})
-                  if (res.data.success) {
-                    fetchPositions()
-                    window.dispatchEvent(new Event('tradeCreated'))
-                  }
-                } catch (err) { 
-                  alert(err.response?.data?.message || 'Trade failed')
-                }
-              }}
-              className="w-7 h-7 sm:w-8 sm:h-8 rounded-full flex items-center justify-center text-xs sm:text-sm font-bold transition-all hover:scale-110"
-              style={{ backgroundColor: '#ef4444', color: 'white' }}
-            >S</button>
-            
-            <input 
-              type="number" 
-              inputMode="decimal"
-              value={quickLots} 
-              onChange={(e) => setQuickLots(parseFloat(e.target.value) || 0.01)} 
-              onFocus={(e) => e.target.select()}
-              step="0.01" 
-              min="0.01"
-              className="w-12 sm:w-14 text-center text-xs font-semibold rounded px-1 py-1" 
-              style={{ backgroundColor: 'rgba(255,255,255,0.15)', color: 'white', border: '1px solid rgba(255,255,255,0.2)' }} 
-            />
-            
-            <button
-              onClick={async () => {
-                if (isTradingLocked()) {
-                  alert('Trading is currently locked. Kill switch is active.')
-                  return
-                }
-                const symbol = localStorage.getItem('selectedSymbol') || 'XAUUSD'
-                const activeAccount = JSON.parse(localStorage.getItem('activeTradingAccount') || '{}')
-                console.log('[QuickTrade] BUY', symbol, quickLots, 'Leverage:', quickLeverage)
-                try {
-                  const token = localStorage.getItem('token')
-                  const res = await axios.post('/api/trades', { 
-                    symbol, type: 'buy', amount: quickLots, orderType: 'market',
-                    tradingAccountId: activeAccount._id,
-                    leverage: quickLeverage
-                  }, { headers: { Authorization: `Bearer ${token}` }})
-                  if (res.data.success) {
-                    fetchPositions()
-                    window.dispatchEvent(new Event('tradeCreated'))
-                  }
-                } catch (err) { 
-                  alert(err.response?.data?.message || 'Trade failed')
-                }
-              }}
-              className="w-7 h-7 sm:w-8 sm:h-8 rounded-full flex items-center justify-center text-xs sm:text-sm font-bold transition-all hover:scale-110"
-              style={{ backgroundColor: '#3b82f6', color: 'white' }}
-            >B</button>
-          </div>
-          
-          {/* Quick Lot Presets */}
-          <div className="flex items-center gap-1">
-            {[0.01, 0.1, 0.5, 1.0].map(lot => (
-              <button
-                key={lot}
-                onClick={() => setQuickLots(lot)}
-                className="px-2 py-1 text-xs rounded transition-all"
-                style={{ 
-                  backgroundColor: quickLots === lot ? '#3b82f6' : 'var(--bg-hover)', 
-                  color: quickLots === lot ? 'white' : 'var(--text-secondary)' 
-                }}
-              >
-                {lot}
-              </button>
-            ))}
-          </div>
-        </div>
-      )}
       
       {/* Table Header */}
       <div 
@@ -495,8 +497,8 @@ const PositionsTable = () => {
                   <span 
                     className="px-2 py-0.5 rounded text-xs font-medium uppercase"
                     style={{ 
-                      backgroundColor: pos.type === 'buy' ? 'rgba(59, 130, 246, 0.2)' : 'rgba(239, 68, 68, 0.2)',
-                      color: pos.type === 'buy' ? '#3b82f6' : 'var(--accent-red)'
+                      backgroundColor: pos.type === 'buy' ? 'rgba(59, 130, 246, 0.2)' : 'rgba(34, 197, 94, 0.2)',
+                      color: pos.type === 'buy' ? 'var(--ask-color)' : 'var(--bid-color)'
                     }}
                   >
                     {pos.type}
@@ -505,15 +507,15 @@ const PositionsTable = () => {
                 <div style={{ color: 'var(--text-secondary)' }}>{(pos.amount || 0).toFixed(2)}</div>
                 <div style={{ color: 'var(--text-secondary)' }}>{formatPrice(pos.price, pos.symbol)}</div>
                 <div style={{ color: 'var(--text-primary)' }}>{formatPrice(currentPrice, pos.symbol)}</div>
-                <div style={{ color: pos.stopLoss ? '#ef4444' : 'var(--text-muted)' }}>{pos.stopLoss || '-'}</div>
-                <div style={{ color: pos.takeProfit ? '#22c55e' : 'var(--text-muted)' }}>{pos.takeProfit || '-'}</div>
-                <div style={{ color: 'var(--text-muted)' }}>${(pos.tradingCharge || pos.commission || 0).toFixed(2)}</div>
+                <div style={{ color: pos.stopLoss ? 'var(--accent-gold)' : 'var(--text-muted)' }}>{pos.stopLoss || '-'}</div>
+                <div style={{ color: pos.takeProfit ? 'var(--accent-gold)' : 'var(--text-muted)' }}>{pos.takeProfit || '-'}</div>
+                <div style={{ color: 'var(--text-muted)' }}>{isCentAccount ? '¢' : '$'}{((pos.tradingCharge || pos.commission || 0) * balanceMultiplier).toFixed(2)}</div>
                 <div style={{ color: '#fbbf24' }}>{pos.spread || 0} pips</div>
                 <div 
                   className="font-medium"
-                  style={{ color: pnl >= 0 ? '#3b82f6' : 'var(--accent-red)' }}
+                  style={{ color: pnl >= 0 ? 'var(--pnl-positive)' : 'var(--pnl-negative)' }}
                 >
-                  {pnl >= 0 ? '+' : ''}${pnl.toFixed(2)}
+                  {pnl >= 0 ? '+' : ''}{isCentAccount ? '¢' : '$'}{(pnl * balanceMultiplier).toFixed(2)}
                 </div>
                 <div className="flex items-center gap-2">
                   <button 
@@ -555,8 +557,8 @@ const PositionsTable = () => {
                 <span 
                   className="px-2 py-0.5 rounded text-xs font-medium uppercase"
                   style={{ 
-                    backgroundColor: order.type === 'buy' ? 'rgba(59, 130, 246, 0.2)' : 'rgba(239, 68, 68, 0.2)',
-                    color: order.type === 'buy' ? '#3b82f6' : 'var(--accent-red)'
+                    backgroundColor: order.type === 'buy' ? 'rgba(59, 130, 246, 0.2)' : 'rgba(34, 197, 94, 0.2)',
+                    color: order.type === 'buy' ? 'var(--ask-color)' : 'var(--bid-color)'
                   }}
                 >
                   {order.type}
@@ -565,9 +567,9 @@ const PositionsTable = () => {
               <div style={{ color: 'var(--text-secondary)' }}>{(order.amount || 0).toFixed(2)}</div>
               <div style={{ color: '#fbbf24' }}>{formatPrice(order.price, order.symbol)} ({order.orderType})</div>
               <div style={{ color: 'var(--text-muted)' }}>-</div>
-              <div style={{ color: order.stopLoss ? '#ef4444' : 'var(--text-muted)' }}>{order.stopLoss || '-'}</div>
-              <div style={{ color: order.takeProfit ? '#22c55e' : 'var(--text-muted)' }}>{order.takeProfit || '-'}</div>
-              <div style={{ color: 'var(--text-muted)' }}>${(order.tradingCharge || order.commission || 0).toFixed(2)}</div>
+              <div style={{ color: order.stopLoss ? 'var(--accent-gold)' : 'var(--text-muted)' }}>{order.stopLoss || '-'}</div>
+              <div style={{ color: order.takeProfit ? 'var(--accent-gold)' : 'var(--text-muted)' }}>{order.takeProfit || '-'}</div>
+              <div style={{ color: 'var(--text-muted)' }}>{isCentAccount ? '¢' : '$'}{((order.tradingCharge || order.commission || 0) * balanceMultiplier).toFixed(2)}</div>
               <div style={{ color: '#fbbf24' }}>{order.spread || 0} pips</div>
               <div style={{ color: 'var(--text-muted)' }}>Pending</div>
               <div className="flex items-center gap-2">
@@ -598,8 +600,8 @@ const PositionsTable = () => {
                 <span 
                   className="px-2 py-0.5 rounded text-xs font-medium uppercase"
                   style={{ 
-                    backgroundColor: trade.type === 'buy' ? 'rgba(59, 130, 246, 0.2)' : 'rgba(239, 68, 68, 0.2)',
-                    color: trade.type === 'buy' ? '#3b82f6' : 'var(--accent-red)'
+                    backgroundColor: trade.type === 'buy' ? 'rgba(59, 130, 246, 0.2)' : 'rgba(34, 197, 94, 0.2)',
+                    color: trade.type === 'buy' ? 'var(--ask-color)' : 'var(--bid-color)'
                   }}
                 >
                   {trade.type}
@@ -610,13 +612,13 @@ const PositionsTable = () => {
               <div style={{ color: 'var(--text-primary)' }}>{formatPrice(trade.closePrice, trade.symbol)}</div>
               <div style={{ color: 'var(--text-muted)' }}>{trade.stopLoss || '-'}</div>
               <div style={{ color: 'var(--text-muted)' }}>{trade.takeProfit || '-'}</div>
-              <div style={{ color: 'var(--text-muted)' }}>${(trade.tradingCharge || trade.commission || 0).toFixed(2)}</div>
+              <div style={{ color: 'var(--text-muted)' }}>{isCentAccount ? '¢' : '$'}{((trade.tradingCharge || trade.commission || 0) * balanceMultiplier).toFixed(2)}</div>
               <div style={{ color: '#fbbf24' }}>{trade.spread || 0} pips</div>
               <div 
                 className="font-medium"
-                style={{ color: (trade.profit || 0) >= 0 ? '#3b82f6' : 'var(--accent-red)' }}
+                style={{ color: (trade.profit || 0) >= 0 ? 'var(--pnl-positive)' : 'var(--pnl-negative)' }}
               >
-                {(trade.profit || 0) >= 0 ? '+' : ''}${(trade.profit || 0).toFixed(2)}
+                {(trade.profit || 0) >= 0 ? '+' : ''}{isCentAccount ? '¢' : '$'}{((trade.profit || 0) * balanceMultiplier).toFixed(2)}
               </div>
               <div className="text-xs" style={{ color: 'var(--text-muted)' }}>
                 {trade.closeReason || 'manual'}
@@ -676,7 +678,7 @@ const PositionsTable = () => {
                 <button
                   onClick={() => modifyTrade(modifyingTrade._id)}
                   className="flex-1 py-2 rounded-lg text-white"
-                  style={{ background: 'linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%)' }}
+                  style={{ background: 'var(--gradient-gold)' }}
                 >
                   Save
                 </button>
@@ -700,7 +702,7 @@ const PositionsTable = () => {
               </div>
               <div className="flex justify-between mb-2">
                 <span style={{ color: 'var(--text-muted)' }}>Type</span>
-                <span className="uppercase" style={{ color: showCloseDialog.type === 'buy' ? '#3b82f6' : '#ef4444' }}>
+                <span className="uppercase" style={{ color: showCloseDialog.type === 'buy' ? 'var(--ask-color)' : 'var(--bid-color)' }}>
                   {showCloseDialog.type}
                 </span>
               </div>
@@ -713,9 +715,9 @@ const PositionsTable = () => {
                 <span style={{ color: 'var(--text-primary)' }}>{formatPrice(showCloseDialog.price, showCloseDialog.symbol)}</span>
               </div>
               <div className="flex justify-between">
-                <span style={{ color: 'var(--text-muted)' }}>Floating P/L</span>
-                <span style={{ color: calculatePnL(showCloseDialog) >= 0 ? '#3b82f6' : '#ef4444' }}>
-                  {calculatePnL(showCloseDialog) >= 0 ? '+' : ''}${calculatePnL(showCloseDialog).toFixed(2)}
+                <span style={{ color: 'var(--text-muted)' }}>Floating P/L {isCentAccount && '(Cents)'}</span>
+                <span style={{ color: calculatePnL(showCloseDialog) >= 0 ? 'var(--pnl-positive)' : 'var(--pnl-negative)' }}>
+                  {calculatePnL(showCloseDialog) >= 0 ? '+' : ''}{isCentAccount ? '¢' : '$'}{(calculatePnL(showCloseDialog) * balanceMultiplier).toFixed(2)}
                 </span>
               </div>
             </div>

@@ -21,9 +21,11 @@ import {
   Search,
   Filter,
   Clock,
-  Percent
+  Percent,
+  Link2
 } from 'lucide-react'
 import axios from 'axios'
+import MasterReferralDashboard from './MasterReferralDashboard'
 
 const CopyTrade = () => {
   const [activeTab, setActiveTab] = useState('masters')
@@ -34,6 +36,7 @@ const CopyTrade = () => {
   const [searchTerm, setSearchTerm] = useState('')
   const [sortBy, setSortBy] = useState('followers')
   const [riskFilter, setRiskFilter] = useState('all')
+  const [userReferrerId, setUserReferrerId] = useState(null)
   
   // Modals
   const [showFollowModal, setShowFollowModal] = useState(false)
@@ -78,11 +81,12 @@ const CopyTrade = () => {
   const fetchData = async () => {
     try {
       setLoading(true)
-      const [mastersRes, followsRes, statusRes, accountsRes] = await Promise.all([
+      const [mastersRes, followsRes, statusRes, accountsRes, referrerRes] = await Promise.all([
         axios.get(`/api/copy-trade/masters?sort=${sortBy}${riskFilter !== 'all' ? `&riskLevel=${riskFilter}` : ''}`, getAuthHeader()),
         axios.get('/api/copy-trade/my-follows', getAuthHeader()),
         axios.get('/api/copy-trade/my-master-status', getAuthHeader()),
-        axios.get('/api/trading-accounts', getAuthHeader())
+        axios.get('/api/trading-accounts', getAuthHeader()),
+        axios.get('/api/master-referral/my-referrer-id', getAuthHeader()).catch(() => ({ data: { success: false } }))
       ])
 
       if (mastersRes.data.success) setMasters(mastersRes.data.data)
@@ -95,6 +99,9 @@ const CopyTrade = () => {
         if (activeAccounts.length > 0 && !followForm.tradingAccountId) {
           setFollowForm(prev => ({ ...prev, tradingAccountId: activeAccounts[0]._id }))
         }
+      }
+      if (referrerRes.data.success) {
+        setUserReferrerId(referrerRes.data.data.referrerId)
       }
     } catch (err) {
       console.error('Failed to fetch copy trade data:', err)
@@ -208,9 +215,15 @@ const CopyTrade = () => {
     switch (risk) {
       case 'Low': return '#22c55e'
       case 'Medium': return '#fbbf24'
-      case 'High': return '#ef4444'
+      case 'High': return '#d4af37'
       default: return '#6b7280'
     }
+  }
+
+  const copyReferralLink = (master) => {
+    const link = `${window.location.origin}/register?masterRef=${master.masterId}${userReferrerId ? `&ref=${userReferrerId}` : ''}`
+    navigator.clipboard.writeText(link)
+    alert('Referral link copied to clipboard!')
   }
 
   const filteredMasters = masters.filter(m => 
@@ -222,6 +235,66 @@ const CopyTrade = () => {
     return (
       <div className="flex items-center justify-center h-full">
         <Loader2 className="animate-spin" size={32} style={{ color: 'var(--text-muted)' }} />
+      </div>
+    )
+  }
+
+  // Referrals Tab - render before main return
+  if (activeTab === 'referrals') {
+    return (
+      <div className="flex-1 overflow-y-auto p-6" style={{ backgroundColor: 'var(--bg-primary)' }}>
+        {/* Header */}
+        <div className="flex items-center justify-between mb-6">
+          <div>
+            <h1 className="text-2xl font-bold" style={{ color: 'var(--text-primary)' }}>Copy Trading</h1>
+            <p className="text-sm" style={{ color: 'var(--text-muted)' }}>Follow expert traders and copy their trades automatically</p>
+          </div>
+          {!myMasterStatus?.isMaster && myMasterStatus?.latestRequest?.status !== 'pending' && (
+            <button
+              onClick={() => setShowRequestModal(true)}
+              className="flex items-center gap-2 px-4 py-2 rounded-xl bg-gradient-to-r from-purple-500 to-blue-500 text-white font-medium"
+            >
+              <Award size={18} /> Become a Master
+            </button>
+          )}
+        </div>
+
+        {/* Tabs */}
+        <div className="flex flex-wrap gap-2 mb-6">
+          <button
+            onClick={() => setActiveTab('masters')}
+            className="flex items-center gap-2 px-5 py-3 rounded-xl font-medium transition-all"
+            style={{ backgroundColor: 'var(--bg-card)', color: 'var(--text-secondary)' }}
+          >
+            <Users size={18} /> Trade Masters
+          </button>
+          <button
+            onClick={() => setActiveTab('following')}
+            className="flex items-center gap-2 px-5 py-3 rounded-xl font-medium transition-all"
+            style={{ backgroundColor: 'var(--bg-card)', color: 'var(--text-secondary)' }}
+          >
+            <UserPlus size={18} /> My Follows ({myFollows.length})
+          </button>
+          {myMasterStatus?.isMaster && (
+            <button
+              onClick={() => setActiveTab('dashboard')}
+              className="flex items-center gap-2 px-5 py-3 rounded-xl font-medium transition-all"
+              style={{ backgroundColor: 'var(--bg-card)', color: 'var(--text-secondary)' }}
+            >
+              <BarChart3 size={18} /> Master Dashboard
+            </button>
+          )}
+          <button
+            onClick={() => setActiveTab('referrals')}
+            className="flex items-center gap-2 px-5 py-3 rounded-xl font-medium transition-all"
+            style={{ backgroundColor: 'var(--accent-gold)', color: '#000' }}
+          >
+            <Link2 size={18} /> My Referrals
+          </button>
+        </div>
+
+        {/* Referrals Dashboard */}
+        <MasterReferralDashboard />
       </div>
     )
   }
@@ -274,6 +347,13 @@ const CopyTrade = () => {
             <BarChart3 size={18} /> Master Dashboard
           </button>
         )}
+        <button
+          onClick={() => setActiveTab('referrals')}
+          className={`flex items-center gap-2 px-5 py-3 rounded-xl font-medium transition-all`}
+          style={{ backgroundColor: activeTab === 'referrals' ? 'var(--accent-gold)' : 'var(--bg-card)', color: activeTab === 'referrals' ? '#000' : 'var(--text-secondary)' }}
+        >
+          <Link2 size={18} /> My Referrals
+        </button>
       </div>
 
       {/* Trade Masters Tab */}
@@ -358,7 +438,7 @@ const CopyTrade = () => {
                     <p className="text-xs" style={{ color: 'var(--text-muted)' }}>Followers</p>
                   </div>
                   <div className="text-center p-2 rounded-lg" style={{ backgroundColor: 'var(--bg-hover)' }}>
-                    <p className="text-lg font-bold" style={{ color: master.stats?.profit30Days >= 0 ? '#22c55e' : '#ef4444' }}>
+                    <p className="text-lg font-bold" style={{ color: master.stats?.profit30Days >= 0 ? '#22c55e' : '#d4af37' }}>
                       {master.stats?.profit30Days >= 0 ? '+' : ''}{master.stats?.profit30Days || 0}%
                     </p>
                     <p className="text-xs" style={{ color: 'var(--text-muted)' }}>30D Profit</p>
@@ -375,23 +455,33 @@ const CopyTrade = () => {
                   </span>
                 </div>
 
-                {/* Action Button */}
-                {master.isFollowing ? (
+                {/* Action Buttons */}
+                <div className="flex gap-2">
+                  {master.isFollowing ? (
+                    <button
+                      className="flex-1 py-3 rounded-xl font-medium flex items-center justify-center gap-2"
+                      style={{ backgroundColor: 'var(--bg-hover)', color: 'var(--text-secondary)' }}
+                      disabled
+                    >
+                      <CheckCircle size={18} /> Following
+                    </button>
+                  ) : (
+                    <button
+                      onClick={() => openFollowModal(master)}
+                      className="flex-1 py-3 rounded-xl font-medium text-white flex items-center justify-center gap-2 bg-gradient-to-r from-green-500 to-emerald-600 hover:opacity-90"
+                    >
+                      <UserPlus size={18} /> Follow
+                    </button>
+                  )}
                   <button
-                    className="w-full py-3 rounded-xl font-medium flex items-center justify-center gap-2"
-                    style={{ backgroundColor: 'var(--bg-hover)', color: 'var(--text-secondary)' }}
-                    disabled
+                    onClick={() => copyReferralLink(master)}
+                    className="px-4 py-3 rounded-xl font-medium flex items-center justify-center gap-2"
+                    style={{ backgroundColor: 'var(--accent-gold)', color: '#000' }}
+                    title="Copy Referral Link"
                   >
-                    <CheckCircle size={18} /> Following
+                    <Link2 size={18} />
                   </button>
-                ) : (
-                  <button
-                    onClick={() => openFollowModal(master)}
-                    className="w-full py-3 rounded-xl font-medium text-white flex items-center justify-center gap-2 bg-gradient-to-r from-green-500 to-emerald-600 hover:opacity-90"
-                  >
-                    <UserPlus size={18} /> Follow Master
-                  </button>
-                )}
+                </div>
               </div>
             ))}
           </div>
@@ -434,7 +524,7 @@ const CopyTrade = () => {
                 <div className="flex items-center gap-4">
                   {/* Stats */}
                   <div className="text-right">
-                    <p className="text-lg font-bold" style={{ color: follow.stats?.totalPnL >= 0 ? '#22c55e' : '#ef4444' }}>
+                    <p className="text-lg font-bold" style={{ color: follow.stats?.totalPnL >= 0 ? '#22c55e' : '#d4af37' }}>
                       {follow.stats?.totalPnL >= 0 ? '+' : ''}${follow.stats?.totalPnL?.toFixed(2) || '0.00'}
                     </p>
                     <p className="text-xs" style={{ color: 'var(--text-muted)' }}>{follow.stats?.totalCopiedTrades || 0} trades copied</p>
@@ -461,7 +551,7 @@ const CopyTrade = () => {
                       style={{ backgroundColor: 'rgba(239, 68, 68, 0.1)' }}
                       title="Stop Following"
                     >
-                      <UserMinus size={18} style={{ color: '#ef4444' }} />
+                      <UserMinus size={18} style={{ color: '#d4af37' }} />
                     </button>
                   </div>
                 </div>
@@ -515,7 +605,7 @@ const CopyTrade = () => {
                       }`}>
                         <div className="flex justify-between items-center">
                           <span className="text-sm" style={{ color: 'var(--text-secondary)' }}>Account Balance:</span>
-                          <span className="font-bold text-lg" style={{ color: getSelectedAccount()?.balance >= selectedMaster?.minCopyAmount ? '#22c55e' : '#ef4444' }}>
+                          <span className="font-bold text-lg" style={{ color: getSelectedAccount()?.balance >= selectedMaster?.minCopyAmount ? '#22c55e' : '#d4af37' }}>
                             ${getSelectedAccount()?.balance?.toFixed(2)}
                           </span>
                         </div>
@@ -534,7 +624,7 @@ const CopyTrade = () => {
                     )}
                   </>
                 ) : (
-                  <div className="p-3 rounded-xl text-sm" style={{ backgroundColor: 'rgba(239, 68, 68, 0.1)', color: '#ef4444' }}>
+                  <div className="p-3 rounded-xl text-sm" style={{ backgroundColor: 'rgba(239, 68, 68, 0.1)', color: '#d4af37' }}>
                     No active trading accounts found. Please create a live trading account first.
                   </div>
                 )}
@@ -846,7 +936,7 @@ const MasterDashboard = ({ masterProfile }) => {
         </div>
         <div className="p-4 rounded-2xl" style={{ backgroundColor: 'var(--bg-card)', border: '1px solid var(--border-color)' }}>
           <p className="text-sm" style={{ color: 'var(--text-muted)' }}>Total PnL</p>
-          <p className="text-2xl font-bold" style={{ color: profile?.stats?.totalPnL >= 0 ? '#22c55e' : '#ef4444' }}>
+          <p className="text-2xl font-bold" style={{ color: profile?.stats?.totalPnL >= 0 ? '#22c55e' : '#d4af37' }}>
             ${profile?.stats?.totalPnL?.toFixed(2) || '0.00'}
           </p>
         </div>

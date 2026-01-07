@@ -604,6 +604,25 @@ class CopyTradeEngine {
         await follower.save();
       }
 
+      // Process master referral commission (if follower was referred)
+      try {
+        const MasterReferralEngine = require('./masterReferralEngine');
+        const masterReferralEngine = new MasterReferralEngine(this.io);
+        await masterReferralEngine.processReferralCommission({
+          masterId: tradeMaster._id,
+          masterUserId: tradeMaster.userId,
+          followerUserId: copyMap.followerUserId,
+          copyTradeMapId: copyMap._id,
+          masterTradeId: copyMap.masterTradeId,
+          followerTradeId: copyMap.followerTradeId,
+          symbol: copyMap.symbol,
+          lots: copyMap.followerLot,
+          masterCommissionAmount: commissionAmount
+        });
+      } catch (refErr) {
+        console.error('[CopyEngine] Master referral commission error:', refErr);
+      }
+
       console.log(`[CopyEngine] Processed commission: $${commissionAmount}`);
     } catch (error) {
       console.error('[CopyEngine] Process commission error:', error);

@@ -85,6 +85,19 @@ const userSchema = new mongoose.Schema({
     postalCode: { type: String, default: '' },
     country: { type: String, default: '' }
   },
+  // A Book / B Book Management
+  bookType: {
+    type: String,
+    enum: ['A', 'B'],
+    default: 'B'
+  },
+  bookTypeChangedAt: {
+    type: Date
+  },
+  bookTypeChangedBy: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Admin'
+  },
   // IB Referral tracking
   referredBy: {
     type: mongoose.Schema.Types.ObjectId,

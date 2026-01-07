@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { Wallet, TrendingUp, TrendingDown, BarChart3, ArrowUpRight, Activity, Target, Clock, Newspaper, Calendar, RefreshCw, Globe, Zap } from 'lucide-react'
+import { Wallet, TrendingUp, TrendingDown, BarChart3, ArrowUpRight, Activity, Target, Clock, Newspaper, Calendar, RefreshCw, Globe, Zap, Receipt, DollarSign } from 'lucide-react'
 import axios from 'axios'
 import { useTheme } from '../../context/ThemeContext'
 
@@ -7,18 +7,19 @@ const MobileHome = () => {
   const { isDark } = useTheme()
   const [userData, setUserData] = useState({
     name: 'Trader',
-    balance: 0,
-    equity: 0,
+    walletBalance: 0,
+    totalPnL: 0,
+    totalCharges: 0,
     totalTrades: 0,
     openTrades: 0,
     winRate: 0,
     todayPnL: 0,
     weekPnL: 0,
-    monthPnL: 0,
-    avgProfit: 0,
-    avgLoss: 0
+    monthPnL: 0
   })
   const [loading, setLoading] = useState(true)
+  const [activeAccount, setActiveAccount] = useState(null)
+  const [isCentAccount, setIsCentAccount] = useState(false)
   const [news, setNews] = useState([])
   const [events, setEvents] = useState([])
   const [newsLoading, setNewsLoading] = useState(true)
@@ -40,10 +41,31 @@ const MobileHome = () => {
         const profileRes = await axios.get('/api/auth/me', getAuthHeader())
         let balance = 0
         let name = 'Trader'
+        let account = null
+        let isCent = false
         
         if (profileRes.data.success) {
           balance = profileRes.data.data.balance || 0
           name = profileRes.data.data.firstName || 'Trader'
+        }
+        
+        // Check for active trading account
+        const savedAccount = localStorage.getItem('activeTradingAccount')
+        if (savedAccount) {
+          const accountData = JSON.parse(savedAccount)
+          try {
+            const accountRes = await axios.get(`/api/trading-accounts/${accountData._id}`, getAuthHeader())
+            if (accountRes.data.success && accountRes.data.data) {
+              account = accountRes.data.data
+              isCent = account.isCentAccount || false
+              // For cent accounts, show balance in cents (multiply by 100)
+              balance = isCent ? (account.balance || 0) * 100 : (account.balance || 0)
+              setActiveAccount(account)
+              setIsCentAccount(isCent)
+            }
+          } catch (e) {
+            console.log('Failed to fetch trading account:', e)
+          }
         }
 
         // Fetch trades for stats
@@ -55,11 +77,12 @@ const MobileHome = () => {
             const closedTrades = trades.filter(t => t.status === 'closed')
             const openTrades = trades.filter(t => t.status === 'open')
             const winningTrades = closedTrades.filter(t => (t.profit || 0) > 0)
-            const losingTrades = closedTrades.filter(t => (t.profit || 0) < 0)
             
             const winRate = closedTrades.length > 0 ? Math.round((winningTrades.length / closedTrades.length) * 100) : 0
-            const avgProfit = winningTrades.length > 0 ? winningTrades.reduce((sum, t) => sum + (t.profit || 0), 0) / winningTrades.length : 0
-            const avgLoss = losingTrades.length > 0 ? Math.abs(losingTrades.reduce((sum, t) => sum + (t.profit || 0), 0) / losingTrades.length) : 0
+
+            // Calculate total P&L and charges
+            const totalPnL = closedTrades.reduce((sum, t) => sum + (t.profit || 0), 0)
+            const totalCharges = trades.reduce((sum, t) => sum + (t.fee || 0) + (t.commission || 0) + (t.spreadCost || 0), 0)
 
             // Calculate P&L by time periods
             const now = new Date()
@@ -75,28 +98,23 @@ const MobileHome = () => {
             const weekPnL = weekTrades.reduce((sum, t) => sum + (t.profit || 0), 0)
             const monthPnL = monthTrades.reduce((sum, t) => sum + (t.profit || 0), 0)
 
-            // Calculate floating PnL from open trades
-            const floatingPnL = openTrades.reduce((sum, t) => sum + (t.profit || 0), 0)
-            const equity = balance + floatingPnL
-
             setUserData({
               name,
-              balance,
-              equity,
+              walletBalance: balance,
+              totalPnL,
+              totalCharges,
               totalTrades: trades.length,
               openTrades: openTrades.length,
               winRate,
               todayPnL,
               weekPnL,
-              monthPnL,
-              avgProfit,
-              avgLoss
+              monthPnL
             })
           } else {
-            setUserData(prev => ({ ...prev, name, balance }))
+            setUserData(prev => ({ ...prev, name, walletBalance: balance }))
           }
         } catch (e) {
-          setUserData(prev => ({ ...prev, name, balance }))
+          setUserData(prev => ({ ...prev, name, walletBalance: balance }))
         }
       } catch (error) {
         console.error('Failed to fetch user data:', error)
@@ -165,84 +183,75 @@ const MobileHome = () => {
         <h1 className="text-lg font-bold" style={{ color: textPrimary }}>{userData.name}! 👋</h1>
       </div>
 
-      {/* Balance & Equity Card */}
-      <div className="p-4 rounded-xl mb-3" style={{ background: 'linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%)' }}>
-        <div className="flex items-center justify-between mb-3">
-          <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ backgroundColor: 'rgba(255,255,255,0.2)' }}>
-              <Wallet size={16} color="#fff" />
-            </div>
-            <div>
-              <p className="text-xs" style={{ color: 'rgba(255,255,255,0.7)' }}>Balance</p>
-              <p className="text-lg font-bold text-white">${userData.balance?.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
-            </div>
-          </div>
-          <div className="text-right">
-            <p className="text-xs" style={{ color: 'rgba(255,255,255,0.7)' }}>Equity</p>
-            <p className="text-lg font-bold text-white">${userData.equity?.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
-          </div>
-        </div>
-        {userData.openTrades > 0 && (
-          <div className="flex items-center gap-1 text-xs" style={{ color: '#fbbf24' }}>
-            <Activity size={12} />
-            <span>{userData.openTrades} open position{userData.openTrades > 1 ? 's' : ''}</span>
-          </div>
-        )}
-      </div>
-
-      {/* P&L Cards */}
-      <div className="grid grid-cols-3 gap-2 mb-3">
-        <div className="p-3 rounded-xl" style={{ backgroundColor: bgCard, border: `1px solid ${borderColor}` }}>
-          <p className="text-xs mb-1" style={{ color: textSecondary }}>Today</p>
-          <p className="text-sm font-bold" style={{ color: userData.todayPnL >= 0 ? '#22c55e' : '#ef4444' }}>
-            {userData.todayPnL >= 0 ? '+' : ''}${userData.todayPnL?.toFixed(2)}
-          </p>
-        </div>
-        <div className="p-3 rounded-xl" style={{ backgroundColor: bgCard, border: `1px solid ${borderColor}` }}>
-          <p className="text-xs mb-1" style={{ color: textSecondary }}>7 Days</p>
-          <p className="text-sm font-bold" style={{ color: userData.weekPnL >= 0 ? '#22c55e' : '#ef4444' }}>
-            {userData.weekPnL >= 0 ? '+' : ''}${userData.weekPnL?.toFixed(2)}
-          </p>
-        </div>
-        <div className="p-3 rounded-xl" style={{ backgroundColor: bgCard, border: `1px solid ${borderColor}` }}>
-          <p className="text-xs mb-1" style={{ color: textSecondary }}>30 Days</p>
-          <p className="text-sm font-bold" style={{ color: userData.monthPnL >= 0 ? '#22c55e' : '#ef4444' }}>
-            {userData.monthPnL >= 0 ? '+' : ''}${userData.monthPnL?.toFixed(2)}
-          </p>
-        </div>
-      </div>
-
-      {/* Stats Grid */}
+      {/* Stats Cards - 2x2 Grid matching Dashboard */}
       <div className="grid grid-cols-2 gap-2 mb-3">
-        <div className="p-3 rounded-xl" style={{ backgroundColor: bgCard, border: `1px solid ${borderColor}` }}>
-          <div className="flex items-center gap-2 mb-1">
-            <BarChart3 size={14} color="#8b5cf6" />
-            <span className="text-xs" style={{ color: textSecondary }}>Total Trades</span>
+        {/* Wallet Balance */}
+        <div className="p-3 rounded-xl" style={{ backgroundColor: bgCard, border: '1px solid rgba(212, 175, 55, 0.3)' }}>
+          <div className="flex items-center gap-2 mb-2">
+            <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ background: 'linear-gradient(135deg, #d4af37 0%, #f4d03f 100%)' }}>
+              <Wallet size={16} color="#000" />
+            </div>
           </div>
-          <p className="text-lg font-bold" style={{ color: textPrimary }}>{userData.totalTrades}</p>
+          <p className="text-xs mb-0.5" style={{ color: textSecondary }}>
+            {activeAccount ? (isCentAccount ? 'Balance (Cents)' : 'Account Balance') : 'Wallet Balance'}
+          </p>
+          <p className="text-lg font-bold" style={{ color: textPrimary }}>
+            {isCentAccount ? '¢' : '$'}{userData.walletBalance?.toFixed(2)}
+          </p>
+          {isCentAccount && (
+            <p className="text-xs" style={{ color: '#eab308' }}>¢ Cent</p>
+          )}
         </div>
-        <div className="p-3 rounded-xl" style={{ backgroundColor: bgCard, border: `1px solid ${borderColor}` }}>
-          <div className="flex items-center gap-2 mb-1">
-            <Target size={14} color="#22c55e" />
-            <span className="text-xs" style={{ color: textSecondary }}>Win Rate</span>
+
+        {/* Total P&L */}
+        <div className="p-3 rounded-xl" style={{ backgroundColor: bgCard, border: `1px solid ${userData.totalPnL >= 0 ? 'rgba(34, 197, 94, 0.3)' : 'rgba(239, 68, 68, 0.3)'}` }}>
+          <div className="flex items-center gap-2 mb-2">
+            <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ background: userData.totalPnL >= 0 ? 'linear-gradient(135deg, #22c55e 0%, #10b981 100%)' : 'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)' }}>
+              {userData.totalPnL >= 0 ? <TrendingUp size={16} color="#fff" /> : <TrendingDown size={16} color="#fff" />}
+            </div>
           </div>
-          <p className="text-lg font-bold" style={{ color: userData.winRate >= 50 ? '#22c55e' : '#ef4444' }}>{userData.winRate}%</p>
+          <p className="text-xs mb-0.5" style={{ color: textSecondary }}>Total P&L</p>
+          <p className="text-lg font-bold" style={{ color: userData.totalPnL >= 0 ? '#22c55e' : '#ef4444' }}>
+            {userData.totalPnL >= 0 ? '+' : ''}${userData.totalPnL?.toFixed(2)}
+          </p>
         </div>
-        <div className="p-3 rounded-xl" style={{ backgroundColor: bgCard, border: `1px solid ${borderColor}` }}>
-          <div className="flex items-center gap-2 mb-1">
-            <TrendingUp size={14} color="#22c55e" />
-            <span className="text-xs" style={{ color: textSecondary }}>Avg Profit</span>
+
+        {/* Total Charges */}
+        <div className="p-3 rounded-xl" style={{ backgroundColor: bgCard, border: '1px solid rgba(212, 175, 55, 0.4)' }}>
+          <div className="flex items-center gap-2 mb-2">
+            <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ background: 'linear-gradient(135deg, #d4af37 0%, #b8960c 100%)' }}>
+              <Receipt size={16} color="#000" />
+            </div>
           </div>
-          <p className="text-lg font-bold" style={{ color: '#22c55e' }}>+${userData.avgProfit?.toFixed(2)}</p>
+          <p className="text-xs mb-0.5" style={{ color: textSecondary }}>Total Charges</p>
+          <p className="text-lg font-bold" style={{ color: '#d4af37' }}>
+            ${userData.totalCharges?.toFixed(2)}
+          </p>
         </div>
-        <div className="p-3 rounded-xl" style={{ backgroundColor: bgCard, border: `1px solid ${borderColor}` }}>
-          <div className="flex items-center gap-2 mb-1">
-            <TrendingDown size={14} color="#ef4444" />
-            <span className="text-xs" style={{ color: textSecondary }}>Avg Loss</span>
+
+        {/* Total Trades */}
+        <div className="p-3 rounded-xl" style={{ backgroundColor: bgCard, border: '1px solid rgba(212, 175, 55, 0.5)' }}>
+          <div className="flex items-center gap-2 mb-2">
+            <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ background: 'linear-gradient(135deg, #d4af37 0%, #f4d03f 100%)' }}>
+              <BarChart3 size={16} color="#000" />
+            </div>
           </div>
-          <p className="text-lg font-bold" style={{ color: '#ef4444' }}>-${userData.avgLoss?.toFixed(2)}</p>
+          <p className="text-xs mb-0.5" style={{ color: textSecondary }}>Total Trades</p>
+          <p className="text-lg font-bold" style={{ color: textPrimary }}>
+            {userData.totalTrades}
+          </p>
         </div>
       </div>
+
+      {/* Open Positions Indicator */}
+      {userData.openTrades > 0 && (
+        <div className="flex items-center gap-2 p-3 rounded-xl mb-3" style={{ backgroundColor: 'rgba(212, 175, 55, 0.1)', border: '1px solid rgba(212, 175, 55, 0.3)' }}>
+          <Activity size={14} color="#d4af37" />
+          <span className="text-xs font-medium" style={{ color: '#d4af37' }}>
+            {userData.openTrades} open position{userData.openTrades > 1 ? 's' : ''}
+          </span>
+        </div>
+      )}
 
       {/* Economic Calendar */}
       <div className="mb-4">

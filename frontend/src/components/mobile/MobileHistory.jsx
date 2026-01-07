@@ -67,7 +67,19 @@ const MobileHistory = () => {
       return
     }
     try {
-      const res = await axios.get('/api/trades?limit=100', {
+      // Get active trading account to filter trades
+      const savedAccount = localStorage.getItem('activeTradingAccount')
+      let tradingAccountId = null
+      if (savedAccount) {
+        const accountData = JSON.parse(savedAccount)
+        tradingAccountId = accountData._id
+      }
+      
+      // Fetch trades filtered by trading account
+      const url = tradingAccountId 
+        ? `/api/trades?limit=100&tradingAccountId=${tradingAccountId}` 
+        : '/api/trades?limit=100'
+      const res = await axios.get(url, {
         headers: { Authorization: `Bearer ${token}` }
       })
       if (res.data.success) {
@@ -140,7 +152,7 @@ const MobileHistory = () => {
         <div className="grid grid-cols-3 gap-2 mb-3">
           <div className="rounded-xl p-3" style={{ backgroundColor: isDark ? '#1a1a1a' : '#fff', border: isDark ? 'none' : '1px solid #e5e5ea' }}>
             <div className="text-xs mb-1" style={{ color: isDark ? '#6b7280' : '#8e8e93' }}>Total P/L</div>
-            <div className="text-lg font-bold" style={{ color: totalPnL >= 0 ? '#22c55e' : '#ef4444' }}>
+            <div className="text-lg font-bold" style={{ color: totalPnL >= 0 ? '#22c55e' : '#d4af37' }}>
               {totalPnL >= 0 ? '+' : ''}${totalPnL.toFixed(2)}
             </div>
           </div>
@@ -166,7 +178,7 @@ const MobileHistory = () => {
               onClick={() => setFilter(f.id)}
               className="px-4 py-1.5 rounded-full text-sm font-medium transition-all"
               style={{
-                backgroundColor: filter === f.id ? (f.id === 'profit' ? '#22c55e' : f.id === 'loss' ? '#ef4444' : '#3b82f6') : (isDark ? '#1a1a1a' : '#e5e5ea'),
+                backgroundColor: filter === f.id ? (f.id === 'profit' ? '#22c55e' : f.id === 'loss' ? '#d4af37' : '#3b82f6') : (isDark ? '#1a1a1a' : '#e5e5ea'),
                 color: filter === f.id ? '#fff' : (isDark ? '#9ca3af' : '#6b7280')
               }}
             >
@@ -198,7 +210,7 @@ const MobileHistory = () => {
                   >
                     {trade.type === 'buy' ? 
                       <TrendingUp size={14} color="#22c55e" /> : 
-                      <TrendingDown size={14} color="#ef4444" />
+                      <TrendingDown size={14} color="#d4af37" />
                     }
                   </span>
                   <span className="font-semibold" style={{ color: isDark ? '#fff' : '#000' }}>{trade.symbol}</span>
@@ -206,13 +218,13 @@ const MobileHistory = () => {
                     className="text-xs px-1.5 py-0.5 rounded"
                     style={{ 
                       backgroundColor: trade.type === 'buy' ? 'rgba(34,197,94,0.2)' : 'rgba(239,68,68,0.2)',
-                      color: trade.type === 'buy' ? '#22c55e' : '#ef4444'
+                      color: trade.type === 'buy' ? '#22c55e' : '#d4af37'
                     }}
                   >
                     {trade.type?.toUpperCase()}
                   </span>
                 </div>
-                <span className="font-bold" style={{ color: (trade.profit || 0) >= 0 ? '#22c55e' : '#ef4444' }}>
+                <span className="font-bold" style={{ color: (trade.profit || 0) >= 0 ? '#22c55e' : '#d4af37' }}>
                   {(trade.profit || 0) >= 0 ? '+' : ''}${(trade.profit || 0).toFixed(2)}
                 </span>
               </div>

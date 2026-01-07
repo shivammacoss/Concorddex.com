@@ -254,7 +254,7 @@ const Wallet = () => {
     switch (status) {
       case 'completed': return { bg: 'rgba(34, 197, 94, 0.1)', color: '#22c55e' }
       case 'pending': return { bg: 'rgba(251, 191, 36, 0.1)', color: '#fbbf24' }
-      case 'rejected': return { bg: 'rgba(239, 68, 68, 0.1)', color: '#ef4444' }
+      case 'rejected': return { bg: 'rgba(239, 68, 68, 0.1)', color: '#d4af37' }
       default: return { bg: 'rgba(107, 114, 128, 0.1)', color: '#6b7280' }
     }
   }
@@ -294,7 +294,7 @@ const Wallet = () => {
         <button
           onClick={() => setActiveTab('withdraw')}
           className={`flex items-center gap-2 px-6 py-3 rounded-xl font-medium transition-all ${activeTab === 'withdraw' ? 'text-white' : ''}`}
-          style={{ backgroundColor: activeTab === 'withdraw' ? '#ef4444' : 'var(--bg-card)', color: activeTab === 'withdraw' ? '#fff' : 'var(--text-secondary)' }}
+          style={{ backgroundColor: activeTab === 'withdraw' ? '#d4af37' : 'var(--bg-card)', color: activeTab === 'withdraw' ? '#fff' : 'var(--text-secondary)' }}
         >
           <ArrowUpCircle size={20} /> Withdraw
         </button>
@@ -757,7 +757,7 @@ const Wallet = () => {
                           onClick={(e) => { e.stopPropagation(); handleDeleteBankAccount(account._id); }}
                           className="p-2 rounded-lg hover:bg-red-500/10"
                         >
-                          <Trash2 size={16} style={{ color: '#ef4444' }} />
+                          <Trash2 size={16} style={{ color: '#d4af37' }} />
                         </button>
                       </div>
                     </div>
@@ -817,7 +817,7 @@ const Wallet = () => {
                     <div key={tx._id} className="flex items-center justify-between p-4 rounded-xl" style={{ backgroundColor: 'var(--bg-hover)' }}>
                       <div className="flex items-center gap-4">
                         <div className={`w-10 h-10 rounded-full flex items-center justify-center ${tx.type === 'deposit' ? 'bg-green-500/10' : 'bg-red-500/10'}`}>
-                          {tx.type === 'deposit' ? <ArrowDownCircle size={20} style={{ color: '#22c55e' }} /> : <ArrowUpCircle size={20} style={{ color: '#ef4444' }} />}
+                          {tx.type === 'deposit' ? <ArrowDownCircle size={20} style={{ color: '#22c55e' }} /> : <ArrowUpCircle size={20} style={{ color: '#d4af37' }} />}
                         </div>
                         <div>
                           <p className="font-medium capitalize" style={{ color: 'var(--text-primary)' }}>{tx.type}</p>
@@ -825,7 +825,7 @@ const Wallet = () => {
                         </div>
                       </div>
                       <div className="text-right">
-                        <p className="font-semibold" style={{ color: tx.type === 'deposit' ? '#22c55e' : '#ef4444' }}>
+                        <p className="font-semibold" style={{ color: tx.type === 'deposit' ? '#22c55e' : '#d4af37' }}>
                           {tx.type === 'deposit' ? '+' : '-'}${tx.amount.toLocaleString()}
                         </p>
                         <span className="text-xs px-2 py-1 rounded-full capitalize" style={{ backgroundColor: statusStyle.bg, color: statusStyle.color }}>

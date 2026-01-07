@@ -84,9 +84,9 @@ const Signup = ({ onSignup }) => {
           {/* Top Header */}
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <img src="/assets/logo.jpeg" alt="Concorddex" className="h-10" />
+              <img src="/assets/logo.png" alt="Concorddex" className="h-10" />
             </div>
-            <a href="https://concorddex.com" className="flex items-center gap-2 px-4 py-2 rounded-full border text-gray-400 hover:bg-white/5 transition-all text-sm" style={{ borderColor: 'rgba(212, 175, 55, 0.3)' }}>
+            <a href="/" className="flex items-center gap-2 px-4 py-2 rounded-full border text-gray-400 hover:bg-white/5 transition-all text-sm" style={{ borderColor: 'rgba(212, 175, 55, 0.3)' }}>
               <ArrowRight size={16} className="rotate-180" />
               Back to Home
             </a>
@@ -159,7 +159,7 @@ const Signup = ({ onSignup }) => {
         <div className="max-w-md w-full mx-auto">
           {/* Mobile Logo */}
           <div className="lg:hidden flex items-center gap-3 mb-6">
-            <img src="/assets/logo.jpeg" alt="Concorddex" className="h-10" />
+            <img src="/assets/logo.png" alt="Concorddex" className="h-10" />
           </div>
 
           {/* Heading */}

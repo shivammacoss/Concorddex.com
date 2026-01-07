@@ -1,6 +1,6 @@
 {
-  "host": "127.0.0.1",
+  "host": "localhost",
   "port": 27017,
-  "name": "concorddex",
-  "timestamp": "2026-01-03T11:05:30.299Z"
+  "name": "concorddex_trading",
+  "timestamp": "2026-01-07T06:51:30.404Z"
 }

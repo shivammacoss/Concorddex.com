@@ -46,6 +46,19 @@ router.get('/', protect, async (req, res) => {
       // Only wallet balance is withdrawable (credit is NEVER withdrawable)
       const withdrawable = Math.max(0, walletBalance);
       
+      // Cent account display values (multiply by 100 for cent accounts)
+      // Check both the account itself and the account type for cent account flag
+      const accountTypeIsCent = account.accountType && account.accountType.isCentAccount === true;
+      const accountIsCent = account.isCentAccount === true;
+      const isCentAccount = accountIsCent || accountTypeIsCent;
+      const multiplier = isCentAccount ? 100 : (account.balanceMultiplier || account.accountType?.balanceMultiplier || 1);
+      const currencySymbol = isCentAccount ? '¢' : '$';
+      
+      // Debug log for cent accounts
+      if (isCentAccount) {
+        console.log(`[CENT ACCOUNT] ${account.accountNumber}: Balance $${walletBalance} -> ¢${walletBalance * multiplier}`);
+      }
+      
       accountsWithEquity.push({
         ...account.toObject(),
         // Override with calculated values
@@ -63,7 +76,16 @@ router.get('/', protect, async (req, res) => {
         stopOutLevel: account.stopOutLevel || 20,
         marginCallLevel: account.marginCallLevel || 50,
         isMarginCall: marginLevel !== null && marginLevel <= (account.marginCallLevel || 50),
-        isStopOut: marginLevel !== null && marginLevel <= (account.stopOutLevel || 20)
+        isStopOut: marginLevel !== null && marginLevel <= (account.stopOutLevel || 20),
+        // Cent account display values
+        isCentAccount,
+        balanceMultiplier: multiplier,
+        currencySymbol,
+        displayBalance: walletBalance * multiplier,
+        displayEquity: equity * multiplier,
+        displayFloatingPnL: floatingPnL * multiplier,
+        displayFreeMargin: freeMargin * multiplier,
+        displayCreditBalance: creditBalance * multiplier
       });
     }
     
@@ -126,6 +148,13 @@ router.get('/:id', protect, async (req, res) => {
     const buyingPower = equity * account.leverage;
     const withdrawable = Math.max(0, walletBalance);
     
+    // Cent account display values
+    const accountTypeIsCent = account.accountType && account.accountType.isCentAccount === true;
+    const accountIsCent = account.isCentAccount === true;
+    const isCentAccount = accountIsCent || accountTypeIsCent;
+    const multiplier = isCentAccount ? 100 : (account.balanceMultiplier || account.accountType?.balanceMultiplier || 1);
+    const currencySymbol = isCentAccount ? '¢' : '$';
+    
     res.json({
       success: true,
       data: {
@@ -145,7 +174,16 @@ router.get('/:id', protect, async (req, res) => {
         stopOutLevel: account.stopOutLevel || 20,
         marginCallLevel: account.marginCallLevel || 50,
         isMarginCall: marginLevel !== null && marginLevel <= (account.marginCallLevel || 50),
-        isStopOut: marginLevel !== null && marginLevel <= (account.stopOutLevel || 20)
+        isStopOut: marginLevel !== null && marginLevel <= (account.stopOutLevel || 20),
+        // Cent account display values
+        isCentAccount,
+        balanceMultiplier: multiplier,
+        currencySymbol,
+        displayBalance: walletBalance * multiplier,
+        displayEquity: equity * multiplier,
+        displayFloatingPnL: floatingPnL * multiplier,
+        displayFreeMargin: freeMargin * multiplier,
+        displayCreditBalance: creditBalance * multiplier
       },
       openTrades: openTrades.length,
       positions
@@ -179,6 +217,10 @@ router.post('/', protect, async (req, res) => {
     }
     
     // Create trading account (auto-approved)
+    // Check if this is a cent account type
+    const isCentAccount = accountType.isCentAccount || false;
+    const balanceMultiplier = isCentAccount ? 100 : (accountType.balanceMultiplier || 1);
+    
     const tradingAccount = await TradingAccount.create({
       user: req.user._id,
       accountType: accountType._id,
@@ -188,7 +230,9 @@ router.post('/', protect, async (req, res) => {
       nickname: nickname || `${accountType.name} Account`,
       status: 'active',
       balance: isDemo ? 10000 : 0, // Demo accounts get $10,000
-      server: isDemo ? 'concorddex-Demo' : 'concorddex-Live'
+      server: isDemo ? 'concorddex-Demo' : 'concorddex-Live',
+      isCentAccount,
+      balanceMultiplier
     });
     
     await tradingAccount.populate('accountType');

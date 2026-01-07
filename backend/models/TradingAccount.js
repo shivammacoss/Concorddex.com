@@ -81,6 +81,15 @@ const tradingAccountSchema = new mongoose.Schema({
     type: Boolean,
     default: false
   },
+  // Cent Account Support
+  isCentAccount: {
+    type: Boolean,
+    default: false
+  },
+  balanceMultiplier: {
+    type: Number,
+    default: 1  // 1 for standard, 100 for cent (display balance = real balance * multiplier)
+  },
   // Trading statistics
   totalDeposits: {
     type: Number,

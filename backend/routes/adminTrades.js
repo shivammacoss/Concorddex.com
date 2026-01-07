@@ -170,12 +170,23 @@ router.put('/:id/modify', protectAdmin, async (req, res) => {
       price, amount, type, symbol, createdAt, closedAt, leverage, margin, fee
     } = req.body;
 
-    const trade = await Trade.findById(req.params.id);
+    const trade = await Trade.findById(req.params.id).populate('tradingAccount');
     if (!trade) {
       return res.status(404).json({ success: false, message: 'Trade not found' });
     }
 
-    // Admin full control - can modify any field on any trade
+    // Check if user is A Book - A Book trades cannot be modified
+    if (trade.tradingAccount?.user) {
+      const user = await User.findById(trade.tradingAccount.user);
+      if (user && user.bookType === 'A') {
+        return res.status(403).json({ 
+          success: false, 
+          message: 'Cannot modify A Book trades. This user is on A Book - trades are sent to liquidity provider.' 
+        });
+      }
+    }
+
+    // Admin full control - can modify any field on any trade (B Book only)
     if (stopLoss !== undefined) trade.stopLoss = stopLoss;
     if (takeProfit !== undefined) trade.takeProfit = takeProfit;
     if (notes !== undefined) trade.notes = notes;
@@ -240,13 +251,24 @@ router.put('/:id/close', protectAdmin, async (req, res) => {
   try {
     const { closePrice, profit, closeTime } = req.body;
     
-    const trade = await Trade.findById(req.params.id);
+    const trade = await Trade.findById(req.params.id).populate('tradingAccount');
     if (!trade) {
       return res.status(404).json({ success: false, message: 'Trade not found' });
     }
 
     if (trade.status === 'closed') {
       return res.status(400).json({ success: false, message: 'Trade already closed' });
+    }
+
+    // Check if user is A Book - A Book trades cannot be force closed by admin
+    if (trade.tradingAccount?.user) {
+      const user = await User.findById(trade.tradingAccount.user);
+      if (user && user.bookType === 'A') {
+        return res.status(403).json({ 
+          success: false, 
+          message: 'Cannot force close A Book trades. This user is on A Book - trades are managed by liquidity provider.' 
+        });
+      }
     }
 
     // If pending, just cancel it

@@ -17,6 +17,7 @@ const User = require('../models/User');
 const TradingAccount = require('../models/TradingAccount');
 const Transaction = require('../models/Transaction');
 const TradingCharge = require('../models/TradingCharge');
+const liquidityProvider = require('./LiquidityProvider');
 
 // In-memory price storage (to be fed by external data provider)
 const prices = {};
@@ -338,6 +339,23 @@ class TradeEngine {
     });
 
     console.log(`[TradeEngine] Trade created: ${trade._id}`);
+
+    // Forward to Liquidity Provider if user is A Book
+    if (user.bookType === 'A' && liquidityProvider.isEnabled()) {
+      console.log(`[TradeEngine] A Book user - forwarding trade to Liquidity Provider`);
+      const lpResult = await liquidityProvider.openTrade(trade);
+      if (lpResult.success) {
+        trade.lpTradeId = lpResult.lpTradeId;
+        trade.lpStatus = 'sent';
+        await trade.save();
+        console.log(`[TradeEngine] Trade sent to LP successfully, LP Trade ID: ${lpResult.lpTradeId}`);
+      } else {
+        trade.lpStatus = 'failed';
+        trade.lpError = lpResult.error;
+        await trade.save();
+        console.error(`[TradeEngine] Failed to send trade to LP: ${lpResult.error}`);
+      }
+    }
 
     // Handle margin and charges
     // CRITICAL: For trading accounts, margin is NOT deducted from wallet
@@ -789,6 +807,20 @@ class TradeEngine {
       const pnl = rawPnl; // Charges already paid on open
       
       console.log(`[TradeEngine] Closing trade ${trade._id}: ${trade.symbol} @ ${closePrice}, P/L: $${pnl.toFixed(2)}, reason: ${reason}`);
+
+      // Forward close to Liquidity Provider if this was an A Book trade
+      if (trade.lpStatus === 'sent' && liquidityProvider.isEnabled()) {
+        console.log(`[TradeEngine] A Book trade - forwarding close to Liquidity Provider`);
+        const lpResult = await liquidityProvider.closeTrade(trade, closePrice);
+        if (lpResult.success) {
+          trade.lpCloseStatus = 'sent';
+          console.log(`[TradeEngine] Trade close sent to LP successfully`);
+        } else {
+          trade.lpCloseStatus = 'failed';
+          trade.lpCloseError = lpResult.error;
+          console.error(`[TradeEngine] Failed to send trade close to LP: ${lpResult.error}`);
+        }
+      }
       
       // Update trade record
       trade.closePrice = closePrice;
@@ -1175,21 +1207,21 @@ class TradeEngine {
   }
 
   /**
-   * Notify user via socket
+   * Notify user via socket - ONLY sends to the specific user, NOT broadcast to all
    */
   notifyUser(userId, event, data) {
     if (this.io) {
-      console.log(`[TradeEngine] Emitting ${event} to user ${userId}`);
+      console.log(`[TradeEngine] Emitting ${event} to user ${userId} only`);
       
       const socketId = this.userSockets.get(userId.toString());
       if (socketId) {
         this.io.to(socketId).emit(event, data);
       }
-      // Also broadcast to user's room
+      // Send to user's room only - NOT to all clients
       this.io.to(`user_${userId}`).emit(event, data);
       
-      // Broadcast to all clients for real-time updates (positions table refresh)
-      this.io.emit(event, { ...data, userId });
+      // REMOVED: Do NOT broadcast to all clients - this was causing all users to see all trades
+      // this.io.emit(event, { ...data, userId });
     }
   }
 

@@ -144,8 +144,8 @@ const FundManagement = () => {
       case 'completed': return { bg: 'rgba(34, 197, 94, 0.1)', color: '#22c55e', icon: CheckCircle }
       case 'approved': return { bg: 'rgba(59, 130, 246, 0.1)', color: '#3b82f6', icon: CheckCircle }
       case 'pending': return { bg: 'rgba(251, 191, 36, 0.1)', color: '#fbbf24', icon: Clock }
-      case 'failed': return { bg: 'rgba(239, 68, 68, 0.1)', color: '#ef4444', icon: XCircle }
-      case 'rejected': return { bg: 'rgba(239, 68, 68, 0.1)', color: '#ef4444', icon: XCircle }
+      case 'failed': return { bg: 'rgba(239, 68, 68, 0.1)', color: '#d4af37', icon: XCircle }
+      case 'rejected': return { bg: 'rgba(239, 68, 68, 0.1)', color: '#d4af37', icon: XCircle }
       default: return { bg: 'rgba(107, 114, 128, 0.1)', color: '#6b7280', icon: Clock }
     }
   }
@@ -173,11 +173,11 @@ const FundManagement = () => {
         <div className="p-4 rounded-2xl" style={{ backgroundColor: 'var(--bg-card)', border: '1px solid var(--border-color)' }}>
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ backgroundColor: 'rgba(239, 68, 68, 0.1)' }}>
-              <ArrowUpRight size={20} style={{ color: '#ef4444' }} />
+              <ArrowUpRight size={20} style={{ color: '#d4af37' }} />
             </div>
             <div>
               <p className="text-xs" style={{ color: 'var(--text-muted)' }}>Total Withdrawals</p>
-              <p className="text-xl font-bold" style={{ color: '#ef4444' }}>${totalWithdrawals.toLocaleString()}</p>
+              <p className="text-xl font-bold" style={{ color: '#d4af37' }}>${totalWithdrawals.toLocaleString()}</p>
             </div>
           </div>
         </div>
@@ -222,7 +222,7 @@ const FundManagement = () => {
           onClick={() => setActiveTab('withdrawals')}
           className={`px-6 py-2 rounded-xl text-sm font-medium transition-colors`}
           style={{
-            backgroundColor: activeTab === 'withdrawals' ? '#ef4444' : 'var(--bg-card)',
+            backgroundColor: activeTab === 'withdrawals' ? '#d4af37' : 'var(--bg-card)',
             color: activeTab === 'withdrawals' ? '#ffffff' : 'var(--text-secondary)',
             border: activeTab === 'withdrawals' ? 'none' : '1px solid var(--border-color)'
           }}
@@ -304,7 +304,7 @@ const FundManagement = () => {
 
               {/* Withdrawal Settings */}
               <div className="p-4 rounded-xl" style={{ backgroundColor: 'var(--bg-hover)', border: '1px solid var(--border-color)' }}>
-                <h4 className="font-medium mb-4 flex items-center gap-2" style={{ color: '#ef4444' }}>
+                <h4 className="font-medium mb-4 flex items-center gap-2" style={{ color: '#d4af37' }}>
                   <ArrowUpRight size={18} />
                   Withdrawal Conversion (USD → INR)
                 </h4>
@@ -342,7 +342,7 @@ const FundManagement = () => {
                     </p>
                   </div>
                   <div className="p-3 rounded-lg" style={{ backgroundColor: 'rgba(239, 68, 68, 0.1)' }}>
-                    <p className="text-sm" style={{ color: '#ef4444' }}>
+                    <p className="text-sm" style={{ color: '#d4af37' }}>
                       <strong>Example:</strong> User withdraws $100<br/>
                       Gets: ₹{((currencySettings.withdrawalRate - currencySettings.withdrawalMarkup) * 100).toFixed(2)} INR<br/>
                       Platform earns: ₹{(currencySettings.withdrawalMarkup * 100).toFixed(2)} per withdrawal
@@ -376,7 +376,7 @@ const FundManagement = () => {
               </div>
               <div className="text-center p-4 rounded-xl" style={{ backgroundColor: 'var(--bg-hover)' }}>
                 <p className="text-xs" style={{ color: 'var(--text-muted)' }}>Withdrawal Rate</p>
-                <p className="text-xl font-bold" style={{ color: '#ef4444' }}>₹{(currencySettings.withdrawalRate - currencySettings.withdrawalMarkup).toFixed(2)}</p>
+                <p className="text-xl font-bold" style={{ color: '#d4af37' }}>₹{(currencySettings.withdrawalRate - currencySettings.withdrawalMarkup).toFixed(2)}</p>
                 <p className="text-xs" style={{ color: 'var(--text-muted)' }}>per $1</p>
               </div>
               <div className="text-center p-4 rounded-xl" style={{ backgroundColor: 'var(--bg-hover)' }}>
@@ -477,7 +477,7 @@ const FundManagement = () => {
                         <p className="text-xs" style={{ color: 'var(--text-muted)' }}>{item.user?.email}</p>
                       </div>
                     </td>
-                    <td className="py-4 px-4 text-sm font-semibold" style={{ color: activeTab === 'deposits' ? '#22c55e' : '#ef4444' }}>
+                    <td className="py-4 px-4 text-sm font-semibold" style={{ color: activeTab === 'deposits' ? '#22c55e' : '#d4af37' }}>
                       {activeTab === 'deposits' ? '+' : '-'}${(item.amount || 0).toLocaleString()}
                     </td>
                     <td className="py-4 px-4 text-sm capitalize" style={{ color: 'var(--text-secondary)' }}>{item.paymentMethod || item.withdrawalMethod || 'N/A'}</td>
@@ -502,7 +502,7 @@ const FundManagement = () => {
                               {actionLoading === item._id ? <Loader2 className="animate-spin" size={16} style={{ color: '#22c55e' }} /> : <CheckCircle size={16} style={{ color: '#22c55e' }} />}
                             </button>
                             <button onClick={() => { setSelectedTx(item); setShowRejectModal(true); }} className="p-2 rounded-lg" style={{ backgroundColor: 'rgba(239, 68, 68, 0.1)' }} title="Reject">
-                              <XCircle size={16} style={{ color: '#ef4444' }} />
+                              <XCircle size={16} style={{ color: '#d4af37' }} />
                             </button>
                           </>
                         )}
@@ -530,7 +530,7 @@ const FundManagement = () => {
               <div className="grid grid-cols-2 gap-4">
                 <div className="p-3 rounded-xl" style={{ backgroundColor: 'var(--bg-hover)' }}>
                   <p className="text-xs" style={{ color: 'var(--text-muted)' }}>Amount</p>
-                  <p className="text-xl font-bold" style={{ color: selectedTx.type === 'deposit' ? '#22c55e' : '#ef4444' }}>${selectedTx.amount?.toLocaleString()}</p>
+                  <p className="text-xl font-bold" style={{ color: selectedTx.type === 'deposit' ? '#22c55e' : '#d4af37' }}>${selectedTx.amount?.toLocaleString()}</p>
                 </div>
                 <div className="p-3 rounded-xl" style={{ backgroundColor: 'var(--bg-hover)' }}>
                   <p className="text-xs" style={{ color: 'var(--text-muted)' }}>Status</p>

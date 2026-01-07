@@ -149,7 +149,19 @@ const MobilePositions = () => {
       return
     }
     try {
-      const res = await axios.get('/api/trades?limit=50', {
+      // Get active trading account to filter trades
+      const savedAccount = localStorage.getItem('activeTradingAccount')
+      let tradingAccountId = null
+      if (savedAccount) {
+        const accountData = JSON.parse(savedAccount)
+        tradingAccountId = accountData._id
+      }
+      
+      // Fetch trades filtered by trading account
+      const url = tradingAccountId 
+        ? `/api/trades?limit=50&tradingAccountId=${tradingAccountId}` 
+        : '/api/trades?limit=50'
+      const res = await axios.get(url, {
         headers: { Authorization: `Bearer ${token}` }
       })
       if (res.data.success) {
@@ -401,7 +413,7 @@ const MobilePositions = () => {
       <div className="px-4 py-2" style={{ backgroundColor: isDark ? '#0d0d0d' : '#fff', borderBottom: `1px solid ${isDark ? '#1a1a1a' : '#e5e5ea'}` }}>
         <div className="flex justify-between">
           <span style={{ color: isDark ? '#9ca3af' : '#6b7280' }}>Floating PL</span>
-          <span className="font-bold" style={{ color: floatingPnL >= 0 ? '#3b82f6' : '#ef4444' }}>
+          <span className="font-bold" style={{ color: floatingPnL >= 0 ? '#3b82f6' : '#d4af37' }}>
             {floatingPnL.toFixed(2)}
           </span>
         </div>
@@ -453,7 +465,7 @@ const MobilePositions = () => {
                       className="w-5 h-5 rounded flex items-center justify-center"
                       style={{ 
                         backgroundColor: trade.type === 'buy' ? 'rgba(34, 197, 94, 0.2)' : 'rgba(239, 68, 68, 0.2)',
-                        color: trade.type === 'buy' ? '#22c55e' : '#ef4444'
+                        color: trade.type === 'buy' ? '#22c55e' : '#d4af37'
                       }}
                     >
                       {trade.type === 'buy' ? <TrendingUp size={12} /> : <TrendingDown size={12} />}
@@ -462,7 +474,7 @@ const MobilePositions = () => {
                     <span className="text-xs" style={{ color: isDark ? '#6b7280' : '#8e8e93' }}>{trade.amount} lots</span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <span className="text-sm font-bold" style={{ color: livePnL >= 0 ? '#22c55e' : '#ef4444' }}>
+                    <span className="text-sm font-bold" style={{ color: livePnL >= 0 ? '#22c55e' : '#d4af37' }}>
                       ${livePnL >= 0 ? '+' : ''}{livePnL.toFixed(2)}
                     </span>
                     {activeTab === 'positions' && (
@@ -479,7 +491,7 @@ const MobilePositions = () => {
                           className="w-6 h-6 rounded flex items-center justify-center"
                           style={{ backgroundColor: isDark ? 'rgba(239,68,68,0.2)' : 'rgba(239,68,68,0.1)' }}
                         >
-                          <X size={12} color="#ef4444" />
+                          <X size={12} color="#d4af37" />
                         </button>
                       </>
                     )}
@@ -497,7 +509,7 @@ const MobilePositions = () => {
                       </div>
                       <div>
                         <span style={{ color: isDark ? '#6b7280' : '#8e8e93' }} className="block">Current</span>
-                        <span style={{ color: livePnL >= 0 ? '#22c55e' : '#ef4444' }}>
+                        <span style={{ color: livePnL >= 0 ? '#22c55e' : '#d4af37' }}>
                           {formatPrice(livePrice, trade.symbol)}
                         </span>
                       </div>
@@ -511,7 +523,7 @@ const MobilePositions = () => {
                     <div className="grid grid-cols-3 gap-2 text-xs mt-2">
                       <div>
                         <span style={{ color: isDark ? '#6b7280' : '#8e8e93' }} className="block">SL</span>
-                        <span style={{ color: '#ef4444' }}>{trade.stopLoss ? formatPrice(trade.stopLoss, trade.symbol) : '---'}</span>
+                        <span style={{ color: '#d4af37' }}>{trade.stopLoss ? formatPrice(trade.stopLoss, trade.symbol) : '---'}</span>
                       </div>
                       <div>
                         <span style={{ color: isDark ? '#6b7280' : '#8e8e93' }} className="block">TP</span>

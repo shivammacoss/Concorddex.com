@@ -32,8 +32,7 @@ function App({ initialView = 'home' }) {
     const pathToView = {
       '/home': 'home',
       '/trade': 'chart',
-      '/terminal': 'terminal',
-      '/wallet': 'wallet',
+            '/wallet': 'wallet',
       '/copytrade': 'copy',
       '/ib': 'ib',
       '/orders': 'orders',
@@ -880,17 +879,7 @@ function App({ initialView = 'home' }) {
         )}
 
 
-        {/* Terminal View - Same as chart but dedicated */}
-        {activeView === 'terminal' && (
-          <div className="flex-1 flex flex-col overflow-hidden">
-            <div className="flex-1 flex min-h-[200px]">
-              <div className="flex-1 relative">
-                <TradingViewChart symbol={selectedSymbol} />
-              </div>
-            </div>
-          </div>
-        )}
-
+        
         {/* Non-chart views only show bottom status bar */}
         {activeView !== 'chart' && null}
       </div>

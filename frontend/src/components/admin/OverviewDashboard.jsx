@@ -127,19 +127,19 @@ const OverviewDashboard = () => {
   }
 
   const statsDisplay = [
-    { label: 'Total Users', value: stats.totalUsers?.toString() || '0', icon: Users, color: '#3b82f6' },
-    { label: 'User Wallet Balance', value: `$${(stats.totalUserFund || 0).toLocaleString(undefined, { minimumFractionDigits: 2 })}`, icon: Wallet, color: '#22c55e' },
-    { label: 'Live Account Balance', value: `$${(stats.liveAccountBalance || 0).toLocaleString(undefined, { minimumFractionDigits: 2 })}`, icon: CreditCard, color: '#3b82f6' },
+    { label: 'Total Users', value: stats.totalUsers?.toString() || '0', icon: Users, color: '#d4af37' },
+    { label: 'User Wallet Balance', value: `$${(stats.totalUserFund || 0).toLocaleString(undefined, { minimumFractionDigits: 2 })}`, icon: Wallet, color: '#d4af37' },
+    { label: 'Live Account Balance', value: `$${(stats.liveAccountBalance || 0).toLocaleString(undefined, { minimumFractionDigits: 2 })}`, icon: CreditCard, color: '#d4af37' },
     { label: 'Demo Account Balance', value: `$${(stats.demoAccountBalance || 0).toLocaleString(undefined, { minimumFractionDigits: 2 })}`, icon: CreditCard, color: '#6b7280' },
     { label: 'Pending Deposits', value: stats.pendingDeposits?.toString() || '0', icon: ArrowDownRight, color: '#22c55e' },
-    { label: 'Pending Withdrawals', value: stats.pendingWithdrawals?.toString() || '0', icon: ArrowUpRight, color: '#ef4444' },
+    { label: 'Pending Withdrawals', value: stats.pendingWithdrawals?.toString() || '0', icon: ArrowUpRight, color: '#3b82f6' },
   ]
 
   const earningsDisplay = [
-    { label: 'Total Fees', value: `$${(stats.totalFees || 0).toFixed(2)}`, color: '#8b5cf6' },
-    { label: 'Total Commission', value: `$${(stats.totalCommission || 0).toFixed(2)}`, color: '#f59e0b' },
-    { label: 'Total Spread', value: `$${(stats.totalSpread || 0).toFixed(2)}`, color: '#3b82f6' },
-    { label: 'Broker Profit', value: `$${(stats.brokerProfit || 0).toFixed(2)}`, color: stats.brokerProfit >= 0 ? '#22c55e' : '#ef4444' },
+    { label: 'Total Fees', value: `$${(stats.totalFees || 0).toFixed(2)}`, color: '#d4af37' },
+    { label: 'Total Commission', value: `$${(stats.totalCommission || 0).toFixed(2)}`, color: '#d4af37' },
+    { label: 'Total Spread', value: `$${(stats.totalSpread || 0).toFixed(2)}`, color: '#d4af37' },
+    { label: 'Broker Profit', value: `$${(stats.brokerProfit || 0).toFixed(2)}`, color: stats.brokerProfit >= 0 ? '#22c55e' : '#3b82f6' },
   ]
 
   if (loading) {
@@ -179,7 +179,7 @@ const OverviewDashboard = () => {
         {/* Earnings Breakdown */}
         <div className="p-5 rounded-2xl" style={{ backgroundColor: 'var(--bg-card)', border: '1px solid var(--border-color)' }}>
           <h3 className="font-semibold mb-4 flex items-center gap-2" style={{ color: 'var(--text-primary)' }}>
-            <BarChart3 size={18} style={{ color: '#8b5cf6' }} />
+            <BarChart3 size={18} style={{ color: '#d4af37' }} />
             Earnings Breakdown
           </h3>
           <div className="grid grid-cols-2 gap-4">
@@ -201,7 +201,7 @@ const OverviewDashboard = () => {
         {/* Currency Settings */}
         <div className="p-5 rounded-2xl" style={{ backgroundColor: 'var(--bg-card)', border: '1px solid var(--border-color)' }}>
           <h3 className="font-semibold mb-4 flex items-center gap-2" style={{ color: 'var(--text-primary)' }}>
-            <DollarSign size={18} style={{ color: '#3b82f6' }} />
+            <DollarSign size={18} style={{ color: '#d4af37' }} />
             Currency Conversion Rates (INR ⇄ USD)
           </h3>
           <div className="grid grid-cols-2 gap-4">
@@ -214,7 +214,7 @@ const OverviewDashboard = () => {
             </div>
             <div className="p-3 rounded-xl" style={{ backgroundColor: 'var(--bg-hover)' }}>
               <p className="text-xs" style={{ color: 'var(--text-muted)' }}>Withdrawal Rate</p>
-              <p className="text-xl font-bold" style={{ color: '#ef4444' }}>
+              <p className="text-xl font-bold" style={{ color: '#3b82f6' }}>
                 ₹{((stats.currencySettings?.withdrawalRate || 83) - (stats.currencySettings?.withdrawalMarkup || 0)).toFixed(2)}
               </p>
               <p className="text-xs" style={{ color: 'var(--text-muted)' }}>per $1 (Markup: ₹{stats.currencySettings?.withdrawalMarkup || 0})</p>
@@ -225,9 +225,9 @@ const OverviewDashboard = () => {
               <p className="text-xs" style={{ color: '#22c55e' }}>Total Deposits</p>
               <p className="text-lg font-bold" style={{ color: '#22c55e' }}>${(stats.totalDeposits || 0).toLocaleString()}</p>
             </div>
-            <div className="p-3 rounded-xl" style={{ backgroundColor: 'rgba(239, 68, 68, 0.1)' }}>
-              <p className="text-xs" style={{ color: '#ef4444' }}>Total Withdrawals</p>
-              <p className="text-lg font-bold" style={{ color: '#ef4444' }}>${(stats.totalWithdrawals || 0).toLocaleString()}</p>
+            <div className="p-3 rounded-xl" style={{ backgroundColor: 'rgba(59, 130, 246, 0.1)' }}>
+              <p className="text-xs" style={{ color: '#3b82f6' }}>Total Withdrawals</p>
+              <p className="text-lg font-bold" style={{ color: '#3b82f6' }}>${(stats.totalWithdrawals || 0).toLocaleString()}</p>
             </div>
           </div>
         </div>
@@ -237,7 +237,7 @@ const OverviewDashboard = () => {
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         <div className="p-4 rounded-2xl" style={{ backgroundColor: 'var(--bg-card)', border: '1px solid var(--border-color)' }}>
           <p className="text-xs" style={{ color: 'var(--text-muted)' }}>Open Trades</p>
-          <p className="text-2xl font-bold" style={{ color: '#3b82f6' }}>{stats.openTradesCount || 0}</p>
+          <p className="text-2xl font-bold" style={{ color: '#d4af37' }}>{stats.openTradesCount || 0}</p>
         </div>
         <div className="p-4 rounded-2xl" style={{ backgroundColor: 'var(--bg-card)', border: '1px solid var(--border-color)' }}>
           <p className="text-xs" style={{ color: 'var(--text-muted)' }}>Closed Trades</p>
@@ -299,7 +299,7 @@ const OverviewDashboard = () => {
                         className="px-2 py-1 rounded-full text-xs font-medium"
                         style={{
                           backgroundColor: user.isActive ? 'rgba(34, 197, 94, 0.1)' : 'rgba(239, 68, 68, 0.1)',
-                          color: user.isActive ? '#22c55e' : '#ef4444'
+                          color: user.isActive ? '#22c55e' : '#d4af37'
                         }}
                       >
                         {user.isActive ? 'Active' : 'Inactive'}
@@ -342,7 +342,7 @@ const OverviewDashboard = () => {
                     }}
                   >
                     <Clock size={18} style={{ 
-                      color: action.type === 'withdrawal' ? '#ef4444' :
+                      color: action.type === 'withdrawal' ? '#d4af37' :
                              action.type === 'deposit' ? '#22c55e' : '#3b82f6'
                     }} />
                   </div>
@@ -397,23 +397,23 @@ const OverviewDashboard = () => {
                     <span 
                       className="px-2 py-1 rounded text-xs font-medium uppercase"
                       style={{
-                        backgroundColor: trade.type === 'buy' ? 'rgba(34, 197, 94, 0.1)' : 'rgba(239, 68, 68, 0.1)',
-                        color: trade.type === 'buy' ? '#22c55e' : '#ef4444'
+                        backgroundColor: trade.type === 'buy' ? 'rgba(59, 130, 246, 0.2)' : 'rgba(34, 197, 94, 0.2)',
+                        color: trade.type === 'buy' ? '#3b82f6' : '#22c55e'
                       }}
                     >
                       {trade.type}
                     </span>
                   </td>
                   <td className="py-3 px-2 text-sm" style={{ color: 'var(--text-primary)' }}>${(trade.amount || 0).toLocaleString()}</td>
-                  <td className="py-3 px-2 text-sm font-medium" style={{ color: (trade.profit || 0) >= 0 ? '#22c55e' : '#ef4444' }}>
+                  <td className="py-3 px-2 text-sm font-medium" style={{ color: (trade.profit || 0) >= 0 ? '#22c55e' : '#3b82f6' }}>
                     {(trade.profit || 0) >= 0 ? '+' : ''}${(trade.profit || 0).toLocaleString()}
                   </td>
                   <td className="py-3 px-2">
                     <span 
                       className="px-2 py-1 rounded-full text-xs font-medium capitalize"
                       style={{
-                        backgroundColor: trade.status === 'open' ? 'rgba(59, 130, 246, 0.1)' : 'rgba(107, 114, 128, 0.1)',
-                        color: trade.status === 'open' ? '#3b82f6' : '#6b7280'
+                        backgroundColor: trade.status === 'open' ? 'rgba(212, 175, 55, 0.1)' : 'rgba(107, 114, 128, 0.1)',
+                        color: trade.status === 'open' ? '#d4af37' : '#6b7280'
                       }}
                     >
                       {trade.status}

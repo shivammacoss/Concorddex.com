@@ -100,11 +100,11 @@ const TradingChart = ({ symbol }) => {
 
     const series = chart.addSeries(CandlestickSeries, {
       upColor: '#22c55e',
-      downColor: '#ef4444',
+      downColor: '#d4af37',
       borderUpColor: '#22c55e',
-      borderDownColor: '#ef4444',
+      borderDownColor: '#d4af37',
       wickUpColor: '#22c55e',
-      wickDownColor: '#ef4444'
+      wickDownColor: '#d4af37'
     })
 
     chartRef.current = chart

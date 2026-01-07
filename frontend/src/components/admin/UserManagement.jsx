@@ -387,7 +387,7 @@ const UserManagement = () => {
     switch (status) {
       case 'Active': return { bg: 'rgba(34, 197, 94, 0.1)', color: '#22c55e' }
       case 'Pending': return { bg: 'rgba(251, 191, 36, 0.1)', color: '#fbbf24' }
-      case 'Suspended': return { bg: 'rgba(239, 68, 68, 0.1)', color: '#ef4444' }
+      case 'Suspended': return { bg: 'rgba(239, 68, 68, 0.1)', color: '#d4af37' }
       case 'Inactive': return { bg: 'rgba(107, 114, 128, 0.1)', color: '#6b7280' }
       default: return { bg: 'rgba(107, 114, 128, 0.1)', color: '#6b7280' }
     }
@@ -460,7 +460,7 @@ const UserManagement = () => {
         </div>
         <div className="p-4 rounded-2xl" style={{ backgroundColor: 'var(--bg-card)', border: '1px solid var(--border-color)' }}>
           <p className="text-sm" style={{ color: 'var(--text-muted)' }}>Inactive</p>
-          <p className="text-2xl font-bold mt-1" style={{ color: '#ef4444' }}>{stats.inactiveUsers}</p>
+          <p className="text-2xl font-bold mt-1" style={{ color: '#d4af37' }}>{stats.inactiveUsers}</p>
         </div>
       </div>
 
@@ -551,10 +551,10 @@ const UserManagement = () => {
                       <Key size={16} style={{ color: 'var(--text-secondary)' }} />
                     </button>
                     <button onClick={() => handleToggleBan(user)} className="p-2 rounded-lg" style={{ backgroundColor: user.isActive ? 'rgba(239, 68, 68, 0.1)' : 'rgba(34, 197, 94, 0.1)' }} title={user.isActive ? 'Ban' : 'Unban'}>
-                      <Ban size={16} style={{ color: user.isActive ? '#ef4444' : '#22c55e' }} />
+                      <Ban size={16} style={{ color: user.isActive ? '#d4af37' : '#22c55e' }} />
                     </button>
                     <button onClick={() => handleDeleteUser(user)} className="p-2 rounded-lg" style={{ backgroundColor: 'rgba(239, 68, 68, 0.1)' }} title="Delete">
-                      <Trash2 size={16} style={{ color: '#ef4444' }} />
+                      <Trash2 size={16} style={{ color: '#d4af37' }} />
                     </button>
                   </div>
                 </div>
@@ -662,10 +662,10 @@ const UserManagement = () => {
                             <Key size={16} style={{ color: 'var(--text-secondary)' }} />
                           </button>
                           <button onClick={() => handleToggleBan(user)} className="p-2 rounded-lg hover:bg-opacity-80" style={{ backgroundColor: user.isActive ? 'rgba(239, 68, 68, 0.1)' : 'rgba(34, 197, 94, 0.1)' }} title={user.isActive ? 'Ban' : 'Unban'}>
-                            <Ban size={16} style={{ color: user.isActive ? '#ef4444' : '#22c55e' }} />
+                            <Ban size={16} style={{ color: user.isActive ? '#d4af37' : '#22c55e' }} />
                           </button>
                           <button onClick={() => handleDeleteUser(user)} className="p-2 rounded-lg hover:bg-opacity-80" style={{ backgroundColor: 'rgba(239, 68, 68, 0.1)' }} title="Delete">
-                            <Trash2 size={16} style={{ color: '#ef4444' }} />
+                            <Trash2 size={16} style={{ color: '#d4af37' }} />
                           </button>
                         </div>
                       </td>
@@ -857,7 +857,7 @@ const UserManagement = () => {
                     <div className="flex items-center justify-between mb-3">
                       <div>
                         <span className="font-semibold" style={{ color: 'var(--text-primary)' }}>{account.accountNumber}</span>
-                        <span className="ml-2 text-xs px-2 py-1 rounded" style={{ backgroundColor: account.status === 'active' ? 'rgba(34, 197, 94, 0.1)' : 'rgba(239, 68, 68, 0.1)', color: account.status === 'active' ? '#22c55e' : '#ef4444' }}>
+                        <span className="ml-2 text-xs px-2 py-1 rounded" style={{ backgroundColor: account.status === 'active' ? 'rgba(34, 197, 94, 0.1)' : 'rgba(239, 68, 68, 0.1)', color: account.status === 'active' ? '#22c55e' : '#d4af37' }}>
                           {account.status}
                         </span>
                       </div>
@@ -997,7 +997,7 @@ const UserManagement = () => {
                   <label className="block text-sm mb-2" style={{ color: 'var(--text-secondary)' }}>Select Trading Account</label>
                   {userTradingAccounts.length === 0 ? (
                     <div className="p-3 rounded-xl text-center" style={{ backgroundColor: 'rgba(239, 68, 68, 0.1)' }}>
-                      <p className="text-sm" style={{ color: '#ef4444' }}>No trading accounts found for this user</p>
+                      <p className="text-sm" style={{ color: '#d4af37' }}>No trading accounts found for this user</p>
                     </div>
                   ) : (
                     <select
@@ -1040,8 +1040,8 @@ const UserManagement = () => {
                     className="flex-1 flex items-center justify-center gap-2 py-3 rounded-xl font-medium transition-all"
                     style={{ 
                       backgroundColor: creditForm.type === 'deduct' ? 'rgba(239, 68, 68, 0.2)' : 'var(--bg-hover)',
-                      border: creditForm.type === 'deduct' ? '2px solid #ef4444' : '2px solid transparent',
-                      color: creditForm.type === 'deduct' ? '#ef4444' : 'var(--text-secondary)'
+                      border: creditForm.type === 'deduct' ? '2px solid #d4af37' : '2px solid transparent',
+                      color: creditForm.type === 'deduct' ? '#d4af37' : 'var(--text-secondary)'
                     }}
                   >
                     <MinusCircle size={18} /> Deduct
@@ -1081,7 +1081,7 @@ const UserManagement = () => {
               {creditForm.amount && creditForm.balanceType === 'fund' && (
                 <div className="p-3 rounded-xl" style={{ backgroundColor: creditForm.type === 'add' ? 'rgba(34, 197, 94, 0.1)' : 'rgba(239, 68, 68, 0.1)' }}>
                   <p className="text-sm" style={{ color: 'var(--text-secondary)' }}>
-                    New Wallet Balance: <span className="font-bold" style={{ color: creditForm.type === 'add' ? '#22c55e' : '#ef4444' }}>
+                    New Wallet Balance: <span className="font-bold" style={{ color: creditForm.type === 'add' ? '#22c55e' : '#d4af37' }}>
                       ${(creditForm.type === 'add' 
                         ? (selectedUser.balance || 0) + parseFloat(creditForm.amount || 0)
                         : (selectedUser.balance || 0) - parseFloat(creditForm.amount || 0)
@@ -1107,7 +1107,7 @@ const UserManagement = () => {
                 style={{ 
                   background: creditForm.type === 'add' 
                     ? 'linear-gradient(135deg, #22c55e 0%, #16a34a 100%)' 
-                    : 'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)' 
+                    : 'linear-gradient(135deg, #d4af37 0%, #dc2626 100%)' 
                 }}
               >
                 {actionLoading ? 'Processing...' : `${creditForm.type === 'add' ? 'Add' : 'Deduct'} $${creditForm.amount || '0.00'} ${creditForm.balanceType === 'fund' ? 'to Wallet' : 'Credit'}`}

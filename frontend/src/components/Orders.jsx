@@ -107,6 +107,26 @@ const Orders = () => {
     return account?.accountNumber || 'N/A'
   }
 
+  // Helper to check if trade's account is a cent account
+  const isCentAccountTrade = (trade) => {
+    const accountId = trade.tradingAccountId?._id || trade.tradingAccountId
+    const account = tradingAccounts.find(a => a._id === accountId)
+    return account?.isCentAccount || false
+  }
+
+  // Helper to get balance multiplier for trade
+  const getTradeMultiplier = (trade) => {
+    return isCentAccountTrade(trade) ? 100 : 1
+  }
+
+  // Helper to format currency based on account type
+  const formatCurrency = (amount, trade) => {
+    const isCent = isCentAccountTrade(trade)
+    const multiplier = isCent ? 100 : 1
+    const symbol = isCent ? '¢' : '$'
+    return `${symbol}${(amount * multiplier).toFixed(2)}`
+  }
+
   const downloadStatement = (format) => {
     const filtered = getFilteredTrades()
     
@@ -180,10 +200,10 @@ const Orders = () => {
           <p className="text-sm" style={{ color: 'var(--text-muted)' }}>Closed Orders</p>
           <p className="text-2xl font-bold" style={{ color: '#a855f7' }}>{historyCount}</p>
         </div>
-        <div className="p-4 rounded-2xl" style={{ background: totalPnL >= 0 ? 'linear-gradient(135deg, rgba(34, 197, 94, 0.15) 0%, rgba(22, 163, 74, 0.15) 100%)' : 'linear-gradient(135deg, rgba(239, 68, 68, 0.15) 0%, rgba(220, 38, 38, 0.15) 100%)', border: `1px solid ${totalPnL >= 0 ? 'rgba(34, 197, 94, 0.3)' : 'rgba(239, 68, 68, 0.3)'}` }}>
+        <div className="p-4 rounded-2xl" style={{ background: totalPnL >= 0 ? 'linear-gradient(135deg, rgba(59, 130, 246, 0.15) 0%, rgba(37, 99, 235, 0.15) 100%)' : 'linear-gradient(135deg, rgba(239, 68, 68, 0.15) 0%, rgba(220, 38, 38, 0.15) 100%)', border: `1px solid ${totalPnL >= 0 ? 'rgba(59, 130, 246, 0.3)' : 'rgba(239, 68, 68, 0.3)'}` }}>
           <p className="text-sm" style={{ color: 'var(--text-muted)' }}>Total P&L</p>
-          <p className="text-2xl font-bold" style={{ color: totalPnL >= 0 ? '#22c55e' : '#ef4444' }}>
-            {totalPnL >= 0 ? '+' : ''}${totalPnL.toFixed(2)}
+          <p className="text-2xl font-bold" style={{ color: totalPnL >= 0 ? 'var(--pnl-positive)' : 'var(--pnl-negative)' }}>
+            {totalPnL >= 0 ? '+' : ''}{selectedAccountId !== 'all' && tradingAccounts.find(a => a._id === selectedAccountId)?.isCentAccount ? '¢' : '$'}{(totalPnL * (selectedAccountId !== 'all' && tradingAccounts.find(a => a._id === selectedAccountId)?.isCentAccount ? 100 : 1)).toFixed(2)}
           </p>
         </div>
       </div>
@@ -336,7 +356,7 @@ const Orders = () => {
                     </td>
                     <td className="py-4 px-4 text-sm capitalize" style={{ color: 'var(--text-secondary)' }}>{trade.orderType}</td>
                     <td className="py-4 px-4">
-                      <span className={`flex items-center gap-1 text-sm font-medium ${trade.side === 'buy' ? 'text-green-500' : 'text-red-500'}`}>
+                      <span className={`flex items-center gap-1 text-sm font-medium ${trade.side === 'buy' ? 'text-blue-500' : 'text-red-500'}`}>
                         {trade.side === 'buy' ? <TrendingUp size={14} /> : <TrendingDown size={14} />}
                         {trade.side?.toUpperCase()}
                       </span>
@@ -348,8 +368,9 @@ const Orders = () => {
                     </td>
                     <td className="py-4 px-4">
                       <span className={`text-sm font-bold ${(trade.profit || 0) >= 0 ? 'text-blue-500' : 'text-red-500'}`}>
-                        {(trade.profit || 0) >= 0 ? '+' : ''}${(trade.profit || 0).toFixed(2)}
+                        {(trade.profit || 0) >= 0 ? '+' : ''}{formatCurrency(trade.profit || 0, trade)}
                       </span>
+                      {isCentAccountTrade(trade) && <span className="ml-1 text-xs text-yellow-500">¢</span>}
                     </td>
                     <td className="py-4 px-4">
                       <span className={`px-2 py-1 rounded-full text-xs font-medium ${

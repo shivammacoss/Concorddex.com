@@ -373,7 +373,7 @@ const IBManagement = () => {
                             <Edit size={16} style={{ color: '#3b82f6' }} />
                           </button>
                           <button onClick={() => handleSuspendIB(ib)} disabled={actionLoading === ib._id} className={`p-2 rounded-lg ${ib.status === 'suspended' ? 'bg-green-500/10' : 'bg-red-500/10'}`}>
-                            {ib.status === 'suspended' ? <UserCheck size={16} style={{ color: '#22c55e' }} /> : <Ban size={16} style={{ color: '#ef4444' }} />}
+                            {ib.status === 'suspended' ? <UserCheck size={16} style={{ color: '#22c55e' }} /> : <Ban size={16} style={{ color: '#d4af37' }} />}
                           </button>
                         </div>
                       </td>
@@ -478,7 +478,7 @@ const IBManagement = () => {
                     const newLevels = commissionSettings.levels.filter((_, i) => i !== idx)
                     setCommissionSettings({ ...commissionSettings, levels: newLevels })
                   }} className="p-2 rounded-lg bg-red-500/10">
-                    <Trash2 size={16} style={{ color: '#ef4444' }} />
+                    <Trash2 size={16} style={{ color: '#d4af37' }} />
                   </button>
                 </div>
               ))}
@@ -530,7 +530,7 @@ const IBManagement = () => {
                             <CheckCircle size={16} style={{ color: '#22c55e' }} />
                           </button>
                           <button onClick={() => handleRejectUpgrade(ib._id)} disabled={actionLoading === ib._id} className="p-2 rounded-lg bg-red-500/10">
-                            <X size={16} style={{ color: '#ef4444' }} />
+                            <X size={16} style={{ color: '#d4af37' }} />
                           </button>
                         </div>
                       </td>
@@ -664,7 +664,7 @@ const IBManagement = () => {
                               <CheckCircle size={16} style={{ color: '#22c55e' }} />
                             </button>
                             <button onClick={() => handleRejectWithdrawal(w)} disabled={actionLoading === w._id} className="p-2 rounded-lg bg-red-500/10">
-                              <X size={16} style={{ color: '#ef4444' }} />
+                              <X size={16} style={{ color: '#d4af37' }} />
                             </button>
                           </div>
                         )}
@@ -761,7 +761,7 @@ const IBManagement = () => {
                   className="w-5 h-5 rounded"
                 />
                 <div>
-                  <span style={{ color: editForm.commissionFrozen ? '#ef4444' : 'var(--text-primary)' }}>Freeze Commission Earnings</span>
+                  <span style={{ color: editForm.commissionFrozen ? '#d4af37' : 'var(--text-primary)' }}>Freeze Commission Earnings</span>
                   <p className="text-xs" style={{ color: 'var(--text-muted)' }}>IB won't earn any commission while frozen</p>
                 </div>
               </label>

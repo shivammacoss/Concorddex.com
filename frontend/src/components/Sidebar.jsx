@@ -12,8 +12,7 @@ import {
   UserCircle,
   Layers,
   ChevronLeft,
-  ChevronRight,
-  Monitor
+  ChevronRight
 } from 'lucide-react'
 import { useTheme } from '../context/ThemeContext'
 
@@ -31,7 +30,6 @@ const Sidebar = ({ activeView, setActiveView }) => {
   const menuItems = [
     { icon: Home, label: 'Dashboard', id: 'home', path: '/home', onClick: () => handleNavigation('home', '/home') },
     { icon: Layers, label: 'Accounts', id: 'accounts', path: '/accounts', onClick: () => handleNavigation('accounts', '/accounts') },
-    { icon: Monitor, label: 'Terminal', id: 'terminal', path: '/terminal', onClick: () => handleNavigation('terminal', '/terminal') },
     { icon: ClipboardList, label: 'Orders', id: 'orders', path: '/orders', onClick: () => handleNavigation('orders', '/orders') },
     { icon: Wallet, label: 'Wallet', id: 'wallet', path: '/wallet', onClick: () => handleNavigation('wallet', '/wallet') },
     { icon: Users, label: 'Copy Trading', id: 'copy', path: '/copytrade', onClick: () => handleNavigation('copy', '/copytrade') },
@@ -44,7 +42,6 @@ const Sidebar = ({ activeView, setActiveView }) => {
     if (item.path && location.pathname === item.path) return true
     if (item.id === 'home') return activeView === 'home' || location.pathname === '/home'
     if (item.id === 'accounts') return activeView === 'accounts' || location.pathname === '/accounts' || location.pathname === '/trade'
-    if (item.id === 'terminal') return activeView === 'terminal' || location.pathname === '/terminal'
     if (item.id === 'wallet') return activeView === 'wallet' || location.pathname === '/wallet'
     if (item.id === 'leaderboard') return activeView === 'leaderboard' || location.pathname === '/leaderboard'
     if (item.id === 'copy') return activeView === 'copy' || location.pathname === '/copytrade'
@@ -69,7 +66,7 @@ const Sidebar = ({ activeView, setActiveView }) => {
           onClick={() => setIsCollapsed(!isCollapsed)}
           className={`${isCollapsed ? 'w-10 h-10' : 'w-full h-10'} rounded-lg flex items-center justify-center gap-2 transition-all hover:opacity-90`}
         >
-          <img src="/assets/logo.jpeg" alt="Concorddex" className={`${isCollapsed ? 'h-8' : 'h-8'}`} />
+          <img src="/assets/logo.png" alt="Concorddex" className={`${isCollapsed ? 'h-8' : 'h-8'}`} />
           {!isCollapsed && (
             <ChevronLeft size={16} className="ml-auto" style={{ color: '#d4af37' }} />
           )}

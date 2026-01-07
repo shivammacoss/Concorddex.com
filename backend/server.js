@@ -33,6 +33,10 @@ const kycRoutes = require('./routes/kyc');
 const adminKycRoutes = require('./routes/adminKyc');
 const adminSettingsRoutes = require('./routes/adminSettings');
 const adminCreditRoutes = require('./routes/adminCredit');
+const bookManagementRoutes = require('./routes/bookManagement');
+const bannerRoutes = require('./routes/banners');
+const masterReferralRoutes = require('./routes/masterReferral');
+const adminMasterReferralRoutes = require('./routes/adminMasterReferral');
 
 const app = express();
 const server = http.createServer(app);
@@ -88,6 +92,10 @@ app.options('*', cors(corsOptions));
 app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ extended: true, limit: '50mb' }));
 
+// Serve uploaded files statically
+const path = require('path');
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+
 // Request logging in development
 if (process.env.NODE_ENV === 'development') {
   app.use((req, res, next) => {
@@ -121,6 +129,10 @@ app.use('/api/admin/account-types', adminAccountTypesRoutes);
 app.use('/api/admin/kyc', adminKycRoutes);
 app.use('/api/admin/settings', adminSettingsRoutes);
 app.use('/api/admin/credit', adminCreditRoutes);
+app.use('/api/admin/book-management', bookManagementRoutes);
+app.use('/api/banners', bannerRoutes);
+app.use('/api/master-referral', masterReferralRoutes);
+app.use('/api/admin/master-referral', adminMasterReferralRoutes);
 app.use('/api/admin', adminRoutes);
 
 // Health check

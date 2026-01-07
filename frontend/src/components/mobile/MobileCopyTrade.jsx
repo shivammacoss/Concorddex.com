@@ -79,7 +79,7 @@ const MobileCopyTrade = ({ onBack }) => {
     switch (risk) {
       case 'Low': return '#22c55e'
       case 'Medium': return '#fbbf24'
-      case 'High': return '#ef4444'
+      case 'High': return '#d4af37'
       default: return '#6b7280'
     }
   }
@@ -296,7 +296,7 @@ const MobileCopyTrade = ({ onBack }) => {
                       <p className="text-xs" style={{ color: textSecondary }}>Followers</p>
                     </div>
                     <div className="p-2 rounded-lg" style={{ backgroundColor: bgSecondary }}>
-                      <p className="text-sm font-bold" style={{ color: (master.stats?.profit30Days || 0) >= 0 ? '#22c55e' : '#ef4444' }}>
+                      <p className="text-sm font-bold" style={{ color: (master.stats?.profit30Days || 0) >= 0 ? '#22c55e' : '#d4af37' }}>
                         {(master.stats?.profit30Days || 0) >= 0 ? '+' : ''}{master.stats?.profit30Days || 0}%
                       </p>
                       <p className="text-xs" style={{ color: textSecondary }}>30D Profit</p>
@@ -357,7 +357,7 @@ const MobileCopyTrade = ({ onBack }) => {
                     </div>
                   </div>
                   <div className="text-right">
-                    <p className="text-sm font-bold" style={{ color: (follow.stats?.totalPnL || 0) >= 0 ? '#22c55e' : '#ef4444' }}>
+                    <p className="text-sm font-bold" style={{ color: (follow.stats?.totalPnL || 0) >= 0 ? '#22c55e' : '#d4af37' }}>
                       {(follow.stats?.totalPnL || 0) >= 0 ? '+' : ''}${follow.stats?.totalPnL?.toFixed(2) || '0.00'}
                     </p>
                     <span className="text-xs px-2 py-0.5 rounded" style={{ 
@@ -387,7 +387,7 @@ const MobileCopyTrade = ({ onBack }) => {
                       style={{ backgroundColor: 'rgba(239, 68, 68, 0.2)' }}
                       title="Stop Following"
                     >
-                      <UserMinus size={14} color="#ef4444" />
+                      <UserMinus size={14} color="#d4af37" />
                     </button>
                   </div>
                 </div>
@@ -731,7 +731,7 @@ const MobileMasterDashboard = ({ masterProfile }) => {
         </div>
         <div className="p-3 rounded-xl" style={{ backgroundColor: bgCard, border: `1px solid ${borderColor}` }}>
           <p className="text-xs" style={{ color: textSecondary }}>Total Profit</p>
-          <p className="text-xl font-bold" style={{ color: (profile?.stats?.totalPnL || 0) >= 0 ? '#22c55e' : '#ef4444' }}>
+          <p className="text-xl font-bold" style={{ color: (profile?.stats?.totalPnL || 0) >= 0 ? '#22c55e' : '#d4af37' }}>
             ${profile?.stats?.totalPnL?.toFixed(2) || '0.00'}
           </p>
         </div>
@@ -786,7 +786,7 @@ const MobileMasterDashboard = ({ masterProfile }) => {
           </div>
           <div className="flex justify-between">
             <span style={{ color: textSecondary }}>Risk Level:</span>
-            <span style={{ color: profile?.riskLevel === 'Low' ? '#22c55e' : profile?.riskLevel === 'Medium' ? '#fbbf24' : '#ef4444' }}>
+            <span style={{ color: profile?.riskLevel === 'Low' ? '#22c55e' : profile?.riskLevel === 'Medium' ? '#fbbf24' : '#d4af37' }}>
               {profile?.riskLevel}
             </span>
           </div>

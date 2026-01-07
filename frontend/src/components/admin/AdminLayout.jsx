@@ -21,7 +21,10 @@ import {
   Layers,
   Shield,
   Menu,
-  X
+  X,
+  BookOpen,
+  BookMarked,
+  Image
 } from 'lucide-react'
 import { useTheme } from '../../context/ThemeContext'
 
@@ -59,6 +62,8 @@ const AdminLayout = ({ children, activeSection, setActiveSection }) => {
     { id: 'overview', label: 'Overview Dashboard', icon: LayoutDashboard, path: '/admin/overview' },
     { id: 'users', label: 'User Management', icon: Users, path: '/admin/users' },
     { id: 'trades', label: 'Trade Management', icon: TrendingUp, path: '/admin/trades' },
+    { id: 'bookmanagement', label: 'Book Management', icon: BookOpen, path: '/admin/book-management' },
+    { id: 'abookorders', label: 'A Book Orders', icon: BookMarked, path: '/admin/a-book-orders' },
     { id: 'funds', label: 'Fund Management', icon: Wallet, path: '/admin/funds' },
     { id: 'bank', label: 'Bank Settings', icon: Building2, path: '/admin/bank' },
     { id: 'tradingsettings', label: 'Trading Settings', icon: Settings, path: '/admin/tradingsettings' },
@@ -86,7 +91,7 @@ const AdminLayout = ({ children, activeSection, setActiveSection }) => {
       <div className="p-4 flex items-center justify-between" style={{ borderBottom: '1px solid var(--border-color)' }}>
         {(!sidebarCollapsed || isOverlay) && (
           <div className="flex items-center gap-2">
-            <img src="/assets/logo.jpeg" alt="Concorddex" className="h-8" />
+            <img src="/assets/logo.png" alt="Concorddex" className="h-8" />
             <span className="font-bold" style={{ color: '#d4af37' }}>Admin</span>
           </div>
         )}
