@@ -181,6 +181,9 @@ class SocketManager {
         // Send to frontend with spread applied
         self.io.emit('tick', priceWithSpread);
         
+        // Store in SocketManager prices
+        self.prices[tickData.symbol] = priceWithSpread;
+        
         // Feed to TradeEngine for order execution (with spread)
         tradeEngine.updatePrice(tickData.symbol, {
           bid: bid,

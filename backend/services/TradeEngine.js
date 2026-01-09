@@ -35,10 +35,15 @@ class TradeEngine {
    * Update price from external source
    */
   updatePrice(symbol, priceData) {
+    const isNew = !this.prices[symbol];
     this.prices[symbol] = {
       ...priceData,
       timestamp: Date.now()
     };
+    // Log first few price updates
+    if (isNew && Object.keys(this.prices).length <= 5) {
+      console.log(`[TradeEngine] Price stored: ${symbol} ${priceData.bid}/${priceData.ask}`);
+    }
   }
 
   /**

@@ -233,21 +233,37 @@ class MetaApiService extends EventEmitter {
   startPricePolling() {
     const self = this;
     let logCount = 0;
+    let debugCount = 0;
 
     setInterval(() => {
-      if (!self.connection || !self.isConnected) return;
+      if (!self.connection || !self.isConnected) {
+        if (debugCount < 3) {
+          console.log('[MetaApi] Poll skipped - connection:', !!self.connection, 'isConnected:', self.isConnected);
+          debugCount++;
+        }
+        return;
+      }
 
       try {
         const terminalState = self.connection.terminalState;
         
         // Log terminal state structure once
-        if (logCount === 0 && terminalState) {
-          console.log('[MetaApi] Terminal state keys:', Object.keys(terminalState));
+        if (logCount === 0) {
+          console.log('[MetaApi] Terminal state exists:', !!terminalState);
+          if (terminalState) {
+            console.log('[MetaApi] Terminal state keys:', Object.keys(terminalState));
+            // Check if prices property exists
+            if (terminalState.prices) {
+              console.log('[MetaApi] Prices array length:', terminalState.prices.length);
+            }
+          }
+          console.log('[MetaApi] Subscribed symbols count:', self.subscribedSymbols.size);
           logCount++;
         }
         
         // Try to get prices from subscribed symbols
         if (terminalState) {
+          // Method 1: Try price() function
           for (const symbol of self.subscribedSymbols) {
             try {
               const price = terminalState.price(symbol);
@@ -266,6 +282,25 @@ class MetaApiService extends EventEmitter {
               }
             } catch (e) {
               // Symbol not available yet
+            }
+          }
+          
+          // Method 2: Try prices array if available
+          if (terminalState.prices && Array.isArray(terminalState.prices)) {
+            for (const price of terminalState.prices) {
+              if (price && price.symbol && price.bid !== undefined && price.ask !== undefined) {
+                self.emit('tick', {
+                  symbol: price.symbol,
+                  bid: price.bid,
+                  ask: price.ask,
+                  timestamp: Date.now()
+                });
+                
+                if (logCount < 10) {
+                  console.log(`[MetaApi] Price (array) ${price.symbol}: ${price.bid}/${price.ask}`);
+                  logCount++;
+                }
+              }
             }
           }
         }
