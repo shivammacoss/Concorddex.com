@@ -164,7 +164,8 @@ const TradingAccounts = ({ onOpenTrading }) => {
             </button>
             <button
               onClick={() => setShowNewAccountModal(true)}
-              className="flex items-center gap-2 px-5 py-2.5 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-medium transition-colors"
+              className="flex items-center gap-2 px-5 py-2.5 rounded-lg text-black font-medium transition-colors"
+              style={{ background: 'linear-gradient(135deg, #d4af37 0%, #f4d03f 50%, #d4af37 100%)' }}
             >
               <Plus size={18} />
               Open Account
@@ -319,7 +320,8 @@ const TradingAccounts = ({ onOpenTrading }) => {
                         localStorage.setItem('activeTradingAccount', JSON.stringify(account))
                         navigate('/trade')
                       }}
-                      className="flex-1 flex items-center justify-center gap-2 py-3 bg-blue-600 hover:bg-blue-700 text-white font-medium text-sm transition-colors"
+                      className="flex-1 flex items-center justify-center gap-2 py-3 text-black font-medium text-sm transition-colors"
+                      style={{ background: 'linear-gradient(135deg, #d4af37 0%, #f4d03f 50%, #d4af37 100%)' }}
                     >
                       <TrendingUp size={16} />
                       Trade
@@ -474,7 +476,8 @@ const TradingAccounts = ({ onOpenTrading }) => {
                 <button
                   onClick={handleCreateAccount}
                   disabled={!selectedAccountType || creating}
-                  className="px-12 py-3 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="px-12 py-3 rounded-lg text-black font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  style={{ background: 'linear-gradient(135deg, #d4af37 0%, #f4d03f 50%, #d4af37 100%)' }}
                 >
                   {creating ? (
                     <span className="flex items-center gap-2">
@@ -600,7 +603,8 @@ const TradingAccounts = ({ onOpenTrading }) => {
               <button
                 onClick={handleTransfer}
                 disabled={transferring || !transferForm.amount}
-                className="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-medium transition-colors disabled:opacity-50"
+                className="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-xl text-black font-medium transition-colors disabled:opacity-50"
+                style={{ background: 'linear-gradient(135deg, #d4af37 0%, #f4d03f 50%, #d4af37 100%)' }}
               >
                 {transferring ? (
                   <RefreshCw size={18} className="animate-spin" />

@@ -287,7 +287,7 @@ const Wallet = () => {
         <button
           onClick={() => setActiveTab('deposit')}
           className={`flex items-center gap-2 px-6 py-3 rounded-xl font-medium transition-all ${activeTab === 'deposit' ? 'text-white' : ''}`}
-          style={{ backgroundColor: activeTab === 'deposit' ? '#22c55e' : 'var(--bg-card)', color: activeTab === 'deposit' ? '#fff' : 'var(--text-secondary)' }}
+          style={{ background: activeTab === 'deposit' ? 'linear-gradient(135deg, #d4af37 0%, #f4d03f 50%, #d4af37 100%)' : 'var(--bg-card)', color: activeTab === 'deposit' ? '#000' : 'var(--text-secondary)' }}
         >
           <ArrowDownCircle size={18} /> Deposit
         </button>
@@ -320,7 +320,7 @@ const Wallet = () => {
                 <button
                   onClick={() => setPaymentMethod('bank')}
                   className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-xl text-sm font-medium`}
-                  style={{ backgroundColor: paymentMethod === 'bank' ? 'rgba(59, 130, 246, 0.1)' : 'var(--bg-hover)', color: paymentMethod === 'bank' ? '#3b82f6' : 'var(--text-secondary)', border: paymentMethod === 'bank' ? '2px solid #3b82f6' : '2px solid transparent' }}
+                  style={{ background: paymentMethod === 'bank' ? 'linear-gradient(135deg, #d4af37 0%, #f4d03f 50%, #d4af37 100%)' : 'var(--bg-hover)', color: paymentMethod === 'bank' ? '#000' : 'var(--text-secondary)', border: paymentMethod === 'bank' ? '2px solid #d4af37' : '2px solid transparent' }}
                 >
                   <Building2 size={18} /> Bank Transfer
                 </button>

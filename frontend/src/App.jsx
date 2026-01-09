@@ -241,9 +241,9 @@ function App({ initialView = 'home' }) {
       }
     }
     
-    // Fetch immediately and then every 500ms for real-time updates
+    // Fetch immediately and then every 2 seconds (WebSocket handles real-time)
     fetchPrices()
-    const interval = setInterval(fetchPrices, 500)
+    const interval = setInterval(fetchPrices, 2000)
     
     return () => clearInterval(interval)
   }, [selectedSymbol])
@@ -326,8 +326,8 @@ function App({ initialView = 'home' }) {
     }
 
     fetchStats()
-    // Update base stats every 2 seconds
-    const interval = setInterval(fetchStats, 2000)
+    // Update base stats every 5 seconds (reduce API load)
+    const interval = setInterval(fetchStats, 5000)
     
     // Also listen for trade events to update immediately
     const handleTradeEvent = () => fetchStats()

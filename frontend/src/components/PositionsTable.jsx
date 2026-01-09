@@ -149,10 +149,10 @@ const PositionsTable = () => {
       fetchPositions()
     })
 
-    // Poll for updates every 500ms for fast PnL
+    // Poll for updates every 3 seconds (WebSocket handles real-time)
     const interval = setInterval(() => {
       fetchPrices()
-    }, 500)
+    }, 3000)
 
     // Listen for custom trade events from OrderPanel
     const handleTradeCreated = () => {

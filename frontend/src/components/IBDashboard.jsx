@@ -165,16 +165,16 @@ const IBDashboard = () => {
         </div>
 
         {/* Referral Link Card */}
-        <div className="rounded-2xl p-6 bg-gradient-to-r from-blue-600 to-purple-600">
-          <p className="text-blue-100 text-sm mb-1">Your Referral Link</p>
-          <p className="text-white font-mono text-sm break-all mb-2">{referralLink}</p>
-          <p className="text-blue-200 text-xs mb-3">
-            Code: <span className="font-bold text-white">{profile?.referralCode || profile?.ibId}</span>
+        <div className="rounded-2xl p-6" style={{ background: 'linear-gradient(135deg, #d4af37 0%, #f4d03f 50%, #d4af37 100%)' }}>
+          <p className="text-sm mb-1" style={{ color: 'rgba(0,0,0,0.7)' }}>Your Referral Link</p>
+          <p className="font-mono text-sm break-all mb-2" style={{ color: '#000' }}>{referralLink}</p>
+          <p className="text-xs mb-3" style={{ color: 'rgba(0,0,0,0.7)' }}>
+            Code: <span className="font-bold" style={{ color: '#000' }}>{profile?.referralCode || profile?.ibId}</span>
           </p>
           <div className="flex gap-2">
             <button
               onClick={() => copyToClipboard(referralLink)}
-              className="flex-1 py-2 rounded-xl bg-white/20 hover:bg-white/30 text-white text-sm flex items-center justify-center gap-2"
+              className="flex-1 py-2 rounded-xl text-sm flex items-center justify-center gap-2" style={{ backgroundColor: 'rgba(0,0,0,0.2)', color: '#000' }}
             >
               {copied ? <CheckCircle size={16} /> : <Copy size={16} />}
               {copied ? 'Copied!' : 'Copy Link'}
@@ -185,7 +185,7 @@ const IBDashboard = () => {
                   navigator.share({ title: 'Join Concorddex', url: referralLink })
                 }
               }}
-              className="py-2 px-4 rounded-xl bg-white/20 hover:bg-white/30 text-white"
+              className="py-2 px-4 rounded-xl" style={{ backgroundColor: 'rgba(0,0,0,0.2)', color: '#000' }}
             >
               <Share2 size={16} />
             </button>
@@ -199,7 +199,7 @@ const IBDashboard = () => {
           <h3 className="text-lg font-semibold flex items-center gap-2" style={{ color: 'var(--text-primary)' }}>
             <Award size={20} /> Commission Levels
           </h3>
-          <span className="px-3 py-1 rounded-full text-xs bg-blue-500/20 text-blue-500">
+          <span className="px-3 py-1 rounded-full text-xs" style={{ backgroundColor: 'rgba(212, 175, 55, 0.2)', color: '#d4af37' }}>
             Auto-Upgrade Enabled
           </span>
         </div>
@@ -272,8 +272,8 @@ const IBDashboard = () => {
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
         <div className="p-4 rounded-2xl" style={{ backgroundColor: 'var(--bg-card)', border: '1px solid var(--border-color)' }}>
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl flex items-center justify-center bg-blue-500/10">
-              <Users size={20} className="text-blue-500" />
+            <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ backgroundColor: 'rgba(212, 175, 55, 0.1)' }}>
+              <Users size={20} style={{ color: '#d4af37' }} />
             </div>
             <div>
               <p className="text-xs" style={{ color: 'var(--text-muted)' }}>Total Referrals</p>
@@ -283,8 +283,8 @@ const IBDashboard = () => {
         </div>
         <div className="p-4 rounded-2xl" style={{ backgroundColor: 'var(--bg-card)', border: '1px solid var(--border-color)' }}>
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl flex items-center justify-center bg-green-500/10">
-              <UserPlus size={20} className="text-green-500" />
+            <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ backgroundColor: 'rgba(212, 175, 55, 0.1)' }}>
+              <UserPlus size={20} style={{ color: '#d4af37' }} />
             </div>
             <div>
               <p className="text-xs" style={{ color: 'var(--text-muted)' }}>Active Traders</p>
@@ -294,8 +294,8 @@ const IBDashboard = () => {
         </div>
         <div className="p-4 rounded-2xl" style={{ backgroundColor: 'var(--bg-card)', border: '1px solid var(--border-color)' }}>
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl flex items-center justify-center bg-purple-500/10">
-              <TrendingUp size={20} className="text-purple-500" />
+            <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ backgroundColor: 'rgba(212, 175, 55, 0.1)' }}>
+              <TrendingUp size={20} style={{ color: '#d4af37' }} />
             </div>
             <div>
               <p className="text-xs" style={{ color: 'var(--text-muted)' }}>Trading Volume</p>
@@ -305,8 +305,8 @@ const IBDashboard = () => {
         </div>
         <div className="p-4 rounded-2xl" style={{ backgroundColor: 'var(--bg-card)', border: '1px solid var(--border-color)' }}>
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl flex items-center justify-center bg-yellow-500/10">
-              <DollarSign size={20} className="text-yellow-500" />
+            <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ backgroundColor: 'rgba(212, 175, 55, 0.1)' }}>
+              <DollarSign size={20} style={{ color: '#d4af37' }} />
             </div>
             <div>
               <p className="text-xs" style={{ color: 'var(--text-muted)' }}>Total Deposits</p>
@@ -351,7 +351,7 @@ const IBDashboard = () => {
           <button
             onClick={handleWithdraw}
             disabled={submitting || !withdrawAmount}
-            className="px-6 py-3 rounded-xl bg-green-500 text-white font-medium disabled:opacity-50 flex items-center gap-2"
+            className="px-6 py-3 rounded-xl font-medium disabled:opacity-50 flex items-center gap-2" style={{ background: 'linear-gradient(135deg, #d4af37 0%, #f4d03f 50%, #d4af37 100%)', color: '#000' }}
           >
             <ArrowDownToLine size={18} />
             {submitting ? 'Processing...' : 'Transfer to Wallet'}
@@ -364,28 +364,28 @@ const IBDashboard = () => {
         <button
           onClick={() => setActiveTab('overview')}
           className="px-5 py-2 rounded-xl font-medium"
-          style={{ backgroundColor: activeTab === 'overview' ? 'var(--accent-blue)' : 'var(--bg-card)', color: activeTab === 'overview' ? '#fff' : 'var(--text-secondary)' }}
+          style={{ background: activeTab === 'overview' ? 'linear-gradient(135deg, #d4af37 0%, #f4d03f 50%, #d4af37 100%)' : 'var(--bg-card)', color: activeTab === 'overview' ? '#000' : 'var(--text-secondary)' }}
         >
           Overview
         </button>
         <button
           onClick={() => setActiveTab('referrals')}
           className="px-5 py-2 rounded-xl font-medium"
-          style={{ backgroundColor: activeTab === 'referrals' ? 'var(--accent-blue)' : 'var(--bg-card)', color: activeTab === 'referrals' ? '#fff' : 'var(--text-secondary)' }}
+          style={{ background: activeTab === 'referrals' ? 'linear-gradient(135deg, #d4af37 0%, #f4d03f 50%, #d4af37 100%)' : 'var(--bg-card)', color: activeTab === 'referrals' ? '#000' : 'var(--text-secondary)' }}
         >
           Referrals ({referrals.length})
         </button>
         <button
           onClick={() => setActiveTab('commissions')}
           className="px-5 py-2 rounded-xl font-medium"
-          style={{ backgroundColor: activeTab === 'commissions' ? 'var(--accent-blue)' : 'var(--bg-card)', color: activeTab === 'commissions' ? '#fff' : 'var(--text-secondary)' }}
+          style={{ background: activeTab === 'commissions' ? 'linear-gradient(135deg, #d4af37 0%, #f4d03f 50%, #d4af37 100%)' : 'var(--bg-card)', color: activeTab === 'commissions' ? '#000' : 'var(--text-secondary)' }}
         >
           Commissions
         </button>
         <button
           onClick={() => setActiveTab('withdrawals')}
           className="px-5 py-2 rounded-xl font-medium"
-          style={{ backgroundColor: activeTab === 'withdrawals' ? 'var(--accent-blue)' : 'var(--bg-card)', color: activeTab === 'withdrawals' ? '#fff' : 'var(--text-secondary)' }}
+          style={{ background: activeTab === 'withdrawals' ? 'linear-gradient(135deg, #d4af37 0%, #f4d03f 50%, #d4af37 100%)' : 'var(--bg-card)', color: activeTab === 'withdrawals' ? '#000' : 'var(--text-secondary)' }}
         >
           Withdrawals
         </button>

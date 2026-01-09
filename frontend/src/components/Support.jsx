@@ -167,7 +167,7 @@ const Support = () => {
             <button
               onClick={() => setShowNewTicket(true)}
               className="p-2 rounded-xl"
-              style={{ background: 'linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%)' }}
+              style={{ background: 'linear-gradient(135deg, #d4af37 0%, #f4d03f 50%, #d4af37 100%)' }}
             >
               <Plus size={20} style={{ color: '#fff' }} />
             </button>
@@ -186,7 +186,7 @@ const Support = () => {
               <button
                 onClick={() => setShowNewTicket(true)}
                 className="mt-4 px-4 py-2 rounded-xl text-sm font-medium"
-                style={{ background: 'linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%)', color: '#fff' }}
+                style={{ background: 'linear-gradient(135deg, #d4af37 0%, #f4d03f 50%, #d4af37 100%)', color: '#000' }}
               >
                 Create New Ticket
               </button>
@@ -300,7 +300,7 @@ const Support = () => {
                     type="submit"
                     disabled={sending || !newMessage.trim()}
                     className="p-3 rounded-xl disabled:opacity-50"
-                    style={{ background: 'linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%)' }}
+                    style={{ background: 'linear-gradient(135deg, #d4af37 0%, #f4d03f 50%, #d4af37 100%)' }}
                   >
                     {sending ? <Loader2 size={20} className="animate-spin" style={{ color: '#fff' }} /> : <Send size={20} style={{ color: '#fff' }} />}
                   </button>
@@ -387,7 +387,7 @@ const Support = () => {
                 type="submit"
                 disabled={sending}
                 className="w-full py-3 rounded-xl font-medium text-white disabled:opacity-50"
-                style={{ background: 'linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%)' }}
+                style={{ background: 'linear-gradient(135deg, #d4af37 0%, #f4d03f 50%, #d4af37 100%)' }}
               >
                 {sending ? 'Creating...' : 'Create Ticket'}
               </button>

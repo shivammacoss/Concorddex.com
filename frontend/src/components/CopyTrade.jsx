@@ -252,7 +252,8 @@ const CopyTrade = () => {
           {!myMasterStatus?.isMaster && myMasterStatus?.latestRequest?.status !== 'pending' && (
             <button
               onClick={() => setShowRequestModal(true)}
-              className="flex items-center gap-2 px-4 py-2 rounded-xl bg-gradient-to-r from-purple-500 to-blue-500 text-white font-medium"
+              className="flex items-center gap-2 px-4 py-2 rounded-xl font-medium"
+              style={{ background: 'linear-gradient(135deg, #d4af37 0%, #f4d03f 50%, #d4af37 100%)', color: '#000' }}
             >
               <Award size={18} /> Become a Master
             </button>
@@ -264,7 +265,7 @@ const CopyTrade = () => {
           <button
             onClick={() => setActiveTab('masters')}
             className="flex items-center gap-2 px-5 py-3 rounded-xl font-medium transition-all"
-            style={{ backgroundColor: 'var(--bg-card)', color: 'var(--text-secondary)' }}
+            style={{ background: 'linear-gradient(135deg, #d4af37 0%, #f4d03f 50%, #d4af37 100%)', color: '#000' }}
           >
             <Users size={18} /> Trade Masters
           </button>
@@ -287,7 +288,7 @@ const CopyTrade = () => {
           <button
             onClick={() => setActiveTab('referrals')}
             className="flex items-center gap-2 px-5 py-3 rounded-xl font-medium transition-all"
-            style={{ backgroundColor: 'var(--accent-gold)', color: '#000' }}
+            style={{ background: 'linear-gradient(135deg, #d4af37 0%, #f4d03f 50%, #d4af37 100%)', color: '#000' }}
           >
             <Link2 size={18} /> My Referrals
           </button>
@@ -310,7 +311,8 @@ const CopyTrade = () => {
         {!myMasterStatus?.isMaster && myMasterStatus?.latestRequest?.status !== 'pending' && (
           <button
             onClick={() => setShowRequestModal(true)}
-            className="flex items-center gap-2 px-4 py-2 rounded-xl bg-gradient-to-r from-purple-500 to-blue-500 text-white font-medium"
+            className="flex items-center gap-2 px-4 py-2 rounded-xl font-medium"
+            style={{ background: 'linear-gradient(135deg, #d4af37 0%, #f4d03f 50%, #d4af37 100%)', color: '#000' }}
           >
             <Award size={18} /> Become a Master
           </button>
@@ -327,14 +329,14 @@ const CopyTrade = () => {
         <button
           onClick={() => setActiveTab('masters')}
           className={`flex items-center gap-2 px-5 py-3 rounded-xl font-medium transition-all`}
-          style={{ backgroundColor: activeTab === 'masters' ? 'var(--accent-blue)' : 'var(--bg-card)', color: activeTab === 'masters' ? '#fff' : 'var(--text-secondary)' }}
+          style={{ background: activeTab === 'masters' ? 'linear-gradient(135deg, #d4af37 0%, #f4d03f 50%, #d4af37 100%)' : 'var(--bg-card)', color: activeTab === 'masters' ? '#000' : 'var(--text-secondary)' }}
         >
           <Users size={18} /> Trade Masters
         </button>
         <button
           onClick={() => setActiveTab('following')}
           className={`flex items-center gap-2 px-5 py-3 rounded-xl font-medium transition-all`}
-          style={{ backgroundColor: activeTab === 'following' ? 'var(--accent-green)' : 'var(--bg-card)', color: activeTab === 'following' ? '#fff' : 'var(--text-secondary)' }}
+          style={{ background: activeTab === 'following' ? 'linear-gradient(135deg, #d4af37 0%, #f4d03f 50%, #d4af37 100%)' : 'var(--bg-card)', color: activeTab === 'following' ? '#000' : 'var(--text-secondary)' }}
         >
           <UserPlus size={18} /> My Follows ({myFollows.length})
         </button>
@@ -342,7 +344,7 @@ const CopyTrade = () => {
           <button
             onClick={() => setActiveTab('dashboard')}
             className={`flex items-center gap-2 px-5 py-3 rounded-xl font-medium transition-all`}
-            style={{ backgroundColor: activeTab === 'dashboard' ? '#8b5cf6' : 'var(--bg-card)', color: activeTab === 'dashboard' ? '#fff' : 'var(--text-secondary)' }}
+            style={{ background: activeTab === 'dashboard' ? 'linear-gradient(135deg, #d4af37 0%, #f4d03f 50%, #d4af37 100%)' : 'var(--bg-card)', color: activeTab === 'dashboard' ? '#000' : 'var(--text-secondary)' }}
           >
             <BarChart3 size={18} /> Master Dashboard
           </button>
@@ -406,7 +408,7 @@ const CopyTrade = () => {
                 {/* Header */}
                 <div className="flex items-start justify-between mb-4">
                   <div className="flex items-center gap-3">
-                    <div className="w-12 h-12 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white font-bold">
+                    <div className="w-12 h-12 rounded-full flex items-center justify-center font-bold" style={{ background: 'linear-gradient(135deg, #d4af37 0%, #f4d03f 50%, #d4af37 100%)', color: '#000' }}>
                       {master.displayName?.charAt(0) || 'T'}
                     </div>
                     <div>
@@ -468,7 +470,7 @@ const CopyTrade = () => {
                   ) : (
                     <button
                       onClick={() => openFollowModal(master)}
-                      className="flex-1 py-3 rounded-xl font-medium text-white flex items-center justify-center gap-2 bg-gradient-to-r from-green-500 to-emerald-600 hover:opacity-90"
+                      className="flex-1 py-3 rounded-xl font-medium flex items-center justify-center gap-2 hover:opacity-90" style={{ background: 'linear-gradient(135deg, #d4af37 0%, #f4d03f 50%, #d4af37 100%)', color: '#000' }}
                     >
                       <UserPlus size={18} /> Follow
                     </button>
@@ -497,7 +499,7 @@ const CopyTrade = () => {
               <p style={{ color: 'var(--text-muted)' }}>You're not following any trade masters yet</p>
               <button
                 onClick={() => setActiveTab('masters')}
-                className="mt-4 px-6 py-2 rounded-xl bg-blue-500 text-white font-medium"
+                className="mt-4 px-6 py-2 rounded-xl font-medium" style={{ background: 'linear-gradient(135deg, #d4af37 0%, #f4d03f 50%, #d4af37 100%)', color: '#000' }}
               >
                 Browse Masters
               </button>
@@ -506,7 +508,7 @@ const CopyTrade = () => {
             <div key={follow._id} className="rounded-2xl p-5" style={{ backgroundColor: 'var(--bg-card)', border: '1px solid var(--border-color)' }}>
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-4">
-                  <div className="w-14 h-14 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white font-bold text-lg">
+                  <div className="w-14 h-14 rounded-full flex items-center justify-center font-bold text-lg" style={{ background: 'linear-gradient(135deg, #d4af37 0%, #f4d03f 50%, #d4af37 100%)', color: '#000' }}>
                     {follow.masterId?.displayName?.charAt(0) || 'T'}
                   </div>
                   <div>
@@ -740,7 +742,7 @@ const CopyTrade = () => {
               <button
                 onClick={handleFollow}
                 disabled={submitting || !followForm.tradingAccountId || tradingAccounts.length === 0 || ((parseFloat(getSelectedAccount()?.balance) || 0) < (parseFloat(selectedMaster?.minCopyAmount) || 0) - 0.01)}
-                className="w-full py-3 rounded-xl font-semibold text-white bg-green-500 hover:bg-green-600 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="w-full py-3 rounded-xl font-semibold disabled:opacity-50 disabled:cursor-not-allowed" style={{ background: 'linear-gradient(135deg, #d4af37 0%, #f4d03f 50%, #d4af37 100%)', color: '#000' }}
               >
                 {submitting ? 'Following...' : ((parseFloat(getSelectedAccount()?.balance) || 0) < (parseFloat(selectedMaster?.minCopyAmount) || 0) - 0.01 ? 'Insufficient Balance' : 'Start Copying')}
               </button>
@@ -861,7 +863,7 @@ const CopyTrade = () => {
               <button
                 onClick={handleRequestMaster}
                 disabled={submitting || !requestForm.strategy || !requestForm.riskDisclosureAccepted}
-                className="w-full py-3 rounded-xl font-semibold text-white bg-purple-500 hover:bg-purple-600 disabled:opacity-50"
+                className="w-full py-3 rounded-xl font-semibold disabled:opacity-50" style={{ background: 'linear-gradient(135deg, #d4af37 0%, #f4d03f 50%, #d4af37 100%)', color: '#000' }}
               >
                 {submitting ? 'Submitting...' : 'Submit Application'}
               </button>
@@ -962,7 +964,7 @@ const MasterDashboard = ({ masterProfile }) => {
                 className="flex-1 px-3 py-2 rounded-lg text-sm"
                 style={{ backgroundColor: 'var(--bg-hover)', border: '1px solid var(--border-color)', color: 'var(--text-primary)' }}
               />
-              <button onClick={handleWithdraw} className="px-4 py-2 rounded-lg bg-green-500 text-white text-sm font-medium">
+              <button onClick={handleWithdraw} className="px-4 py-2 rounded-lg text-sm font-medium" style={{ background: 'linear-gradient(135deg, #d4af37 0%, #f4d03f 50%, #d4af37 100%)', color: '#000' }}>
                 Withdraw
               </button>
             </div>
@@ -980,7 +982,7 @@ const MasterDashboard = ({ masterProfile }) => {
             {dashboardData.followers.map((f) => (
               <div key={f._id} className="flex items-center justify-between p-3 rounded-xl" style={{ backgroundColor: 'var(--bg-hover)' }}>
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-full bg-blue-500 flex items-center justify-center text-white font-medium">
+                  <div className="w-10 h-10 rounded-full flex items-center justify-center font-medium" style={{ background: 'linear-gradient(135deg, #d4af37 0%, #f4d03f 50%, #d4af37 100%)', color: '#000' }}>
                     {f.userId?.firstName?.charAt(0) || 'U'}
                   </div>
                   <div>

@@ -363,7 +363,7 @@ const Dashboard = () => {
       {/* Top Section - Logo, Greeting & Time */}
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center gap-4">
-          <img src="/assets/logo.png" alt="Concorddex" className="h-10" />
+          <img src="/assets/logo.png" alt="Concorddex" className="h-40" />
           <div>
             <h1 
               className="text-2xl font-bold"

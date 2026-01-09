@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { Eye, EyeOff, Mail, Lock, Loader2, TrendingUp, Shield, Zap, ArrowRight } from 'lucide-react'
-import axios from 'axios'
+import axios from '../../config/axios'
 
 const Login = ({ onLogin }) => {
   const navigate = useNavigate()

@@ -236,9 +236,10 @@ const Header = ({ onTradeClick, showOrderPanel }) => {
         <button 
           onClick={tradingLocked ? null : onTradeClick}
           disabled={tradingLocked}
-          className="font-medium px-4 py-2 rounded-lg text-sm transition-colors text-white disabled:opacity-50 disabled:cursor-not-allowed"
+          className="font-medium px-4 py-2 rounded-lg text-sm transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           style={{ 
-            backgroundColor: tradingLocked ? '#4b5563' : showOrderPanel ? 'var(--bg-hover)' : 'var(--accent-blue)'
+            background: tradingLocked ? '#4b5563' : showOrderPanel ? 'var(--bg-hover)' : 'linear-gradient(135deg, #d4af37 0%, #f4d03f 50%, #d4af37 100%)',
+            color: tradingLocked ? '#fff' : '#000'
           }}
         >
           {tradingLocked ? 'Locked' : 'Trade'}

@@ -232,7 +232,7 @@ const Profile = () => {
     <div className="flex-1 overflow-y-auto p-6" style={{ backgroundColor: 'var(--bg-primary)' }}>
       {/* Header */}
       <div className="flex items-center gap-4 mb-6">
-        <div className="w-20 h-20 rounded-2xl flex items-center justify-center text-3xl font-bold" style={{ background: 'linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%)', color: '#fff' }}>
+        <div className="w-20 h-20 rounded-2xl flex items-center justify-center text-3xl font-bold" style={{ background: 'linear-gradient(135deg, #d4af37 0%, #f4d03f 50%, #d4af37 100%)', color: '#000' }}>
           {user?.firstName?.[0]}{user?.lastName?.[0]}
         </div>
         <div>
@@ -375,7 +375,7 @@ const Profile = () => {
               type="submit"
               disabled={saving}
               className="flex items-center gap-2 px-6 py-3 rounded-xl font-medium disabled:opacity-50"
-              style={{ background: 'linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%)', color: '#fff' }}
+              style={{ background: 'linear-gradient(135deg, #d4af37 0%, #f4d03f 50%, #d4af37 100%)', color: '#000' }}
             >
               {saving ? <Loader2 size={18} className="animate-spin" /> : <Save size={18} />}
               Save Changes
@@ -446,7 +446,7 @@ const Profile = () => {
               type="submit"
               disabled={saving}
               className="flex items-center gap-2 px-6 py-3 rounded-xl font-medium disabled:opacity-50"
-              style={{ background: 'linear-gradient(135deg, #22c55e 0%, #16a34a 100%)', color: '#fff' }}
+              style={{ background: 'linear-gradient(135deg, #d4af37 0%, #f4d03f 50%, #d4af37 100%)', color: '#000' }}
             >
               {saving ? <Loader2 size={18} className="animate-spin" /> : <Lock size={18} />}
               Change Password
@@ -609,7 +609,7 @@ const Profile = () => {
                   type="submit"
                   disabled={saving || (!kycForm.idFront || !kycForm.selfie)}
                   className="flex items-center gap-2 px-6 py-3 rounded-xl font-medium disabled:opacity-50"
-                  style={{ background: 'linear-gradient(135deg, #f97316 0%, #ea580c 100%)', color: '#fff' }}
+                  style={{ background: 'linear-gradient(135deg, #d4af37 0%, #f4d03f 50%, #d4af37 100%)', color: '#000' }}
                 >
                   {saving ? <Loader2 size={18} className="animate-spin" /> : <Shield size={18} />}
                   Submit for Verification

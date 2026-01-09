@@ -27,6 +27,7 @@ const Orders = () => {
   const [dateFrom, setDateFrom] = useState('')
   const [dateTo, setDateTo] = useState('')
   const [showDownloadMenu, setShowDownloadMenu] = useState(false)
+  const [livePrices, setLivePrices] = useState({})
 
   const getAuthHeader = () => ({
     headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
@@ -34,10 +35,29 @@ const Orders = () => {
 
   useEffect(() => {
     fetchData(true)
-    // Auto-refresh every 5 seconds (silently)
+    // Auto-refresh trades every 5 seconds (silently)
     const interval = setInterval(() => fetchData(false), 5000)
     return () => clearInterval(interval)
   }, [activeTab])
+
+  // Fetch live prices for real-time PnL calculation
+  useEffect(() => {
+    const fetchPrices = async () => {
+      try {
+        const response = await axios.get('/api/trades/prices', getAuthHeader())
+        if (response.data.success) {
+          setLivePrices(response.data.data || {})
+        }
+      } catch (error) {
+        console.error('Error fetching prices:', error)
+      }
+    }
+    
+    fetchPrices()
+    // Update prices every 1 second for real-time PnL
+    const priceInterval = setInterval(fetchPrices, 1000)
+    return () => clearInterval(priceInterval)
+  }, [])
 
   const fetchData = async (showLoading = false) => {
     try {
@@ -127,6 +147,48 @@ const Orders = () => {
     return `${symbol}${(amount * multiplier).toFixed(2)}`
   }
 
+  // Calculate real-time PnL for open trades
+  const calculateFloatingPnL = (trade) => {
+    // For closed trades, use stored profit
+    if (trade.status !== 'open') {
+      return trade.profit || 0
+    }
+
+    // Get current price for the symbol
+    const priceData = livePrices[trade.symbol]
+    if (!priceData || !priceData.bid || !priceData.ask) {
+      return trade.profit || 0 // Fallback to stored profit if no live price
+    }
+
+    // Trade uses 'type' field for buy/sell, frontend may also use 'side'
+    const tradeType = trade.type || trade.side
+    const currentPrice = tradeType === 'buy' ? priceData.bid : priceData.ask
+    const entryPrice = trade.entryPrice || trade.price || trade.openPrice || 0
+    const lots = trade.lots || trade.amount || 0
+
+    if (!entryPrice || !lots) {
+      return trade.profit || 0
+    }
+
+    // Get contract size based on symbol
+    let contractSize = 100000 // Default forex
+    if (trade.symbol?.includes('XAU')) contractSize = 100
+    else if (trade.symbol?.includes('XAG')) contractSize = 5000
+    else if (trade.symbol?.includes('BTC') || trade.symbol?.includes('ETH')) contractSize = 1
+    else if (trade.symbol?.includes('US30') || trade.symbol?.includes('US500') || trade.symbol?.includes('US100')) contractSize = 1
+    else if (trade.symbol?.includes('OIL')) contractSize = 1000
+
+    // Calculate PnL
+    let pnl = 0
+    if (tradeType === 'buy') {
+      pnl = (currentPrice - entryPrice) * lots * contractSize
+    } else {
+      pnl = (entryPrice - currentPrice) * lots * contractSize
+    }
+
+    return pnl
+  }
+
   const downloadStatement = (format) => {
     const filtered = getFilteredTrades()
     
@@ -163,7 +225,7 @@ const Orders = () => {
   const pendingCount = trades.filter(t => t.status === 'pending').length
   const historyCount = trades.filter(t => t.status === 'closed' || t.status === 'cancelled').length
 
-  const totalPnL = filteredTrades.reduce((sum, t) => sum + (t.profit || 0), 0)
+  const totalPnL = filteredTrades.reduce((sum, t) => sum + calculateFloatingPnL(t), 0)
 
   if (loading) {
     return (
@@ -215,8 +277,8 @@ const Orders = () => {
             onClick={() => setActiveTab('open')}
             className="flex items-center gap-2 px-5 py-2.5 rounded-xl font-medium transition-all"
             style={{ 
-              background: activeTab === 'open' ? 'linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)' : 'var(--bg-card)', 
-              color: activeTab === 'open' ? '#fff' : 'var(--text-secondary)' 
+              background: activeTab === 'open' ? 'linear-gradient(135deg, #d4af37 0%, #f4d03f 50%, #d4af37 100%)' : 'var(--bg-card)', 
+              color: activeTab === 'open' ? '#000' : 'var(--text-secondary)' 
             }}
           >
             <Clock size={16} /> Open ({openCount})
@@ -248,7 +310,7 @@ const Orders = () => {
           <button
             onClick={() => setShowDownloadMenu(!showDownloadMenu)}
             className="flex items-center gap-2 px-4 py-2.5 rounded-xl font-medium"
-            style={{ background: 'linear-gradient(135deg, #22c55e 0%, #16a34a 100%)', color: '#fff' }}
+            style={{ background: 'linear-gradient(135deg, #d4af37 0%, #f4d03f 50%, #d4af37 100%)', color: '#000' }}
           >
             <Download size={16} /> Download Statement <ChevronDown size={14} />
           </button>
@@ -356,21 +418,28 @@ const Orders = () => {
                     </td>
                     <td className="py-4 px-4 text-sm capitalize" style={{ color: 'var(--text-secondary)' }}>{trade.orderType}</td>
                     <td className="py-4 px-4">
-                      <span className={`flex items-center gap-1 text-sm font-medium ${trade.side === 'buy' ? 'text-blue-500' : 'text-red-500'}`}>
-                        {trade.side === 'buy' ? <TrendingUp size={14} /> : <TrendingDown size={14} />}
-                        {trade.side?.toUpperCase()}
+                      <span className={`flex items-center gap-1 text-sm font-medium ${(trade.type || trade.side) === 'buy' ? 'text-blue-500' : 'text-red-500'}`}>
+                        {(trade.type || trade.side) === 'buy' ? <TrendingUp size={14} /> : <TrendingDown size={14} />}
+                        {(trade.type || trade.side)?.toUpperCase()}
                       </span>
                     </td>
                     <td className="py-4 px-4 text-sm" style={{ color: 'var(--text-primary)' }}>{trade.lots || trade.amount}</td>
-                    <td className="py-4 px-4 text-sm" style={{ color: 'var(--text-primary)' }}>{trade.entryPrice?.toFixed(5)}</td>
+                    <td className="py-4 px-4 text-sm" style={{ color: 'var(--text-primary)' }}>{(trade.entryPrice || trade.price)?.toFixed(5)}</td>
                     <td className="py-4 px-4 text-sm" style={{ color: 'var(--text-muted)' }}>
                       {trade.stopLoss ? `SL: ${trade.stopLoss}` : '-'} / {trade.takeProfit ? `TP: ${trade.takeProfit}` : '-'}
                     </td>
                     <td className="py-4 px-4">
-                      <span className={`text-sm font-bold ${(trade.profit || 0) >= 0 ? 'text-blue-500' : 'text-red-500'}`}>
-                        {(trade.profit || 0) >= 0 ? '+' : ''}{formatCurrency(trade.profit || 0, trade)}
-                      </span>
-                      {isCentAccountTrade(trade) && <span className="ml-1 text-xs text-yellow-500">¢</span>}
+                      {(() => {
+                        const pnl = calculateFloatingPnL(trade)
+                        return (
+                          <>
+                            <span className={`text-sm font-bold ${pnl >= 0 ? 'text-blue-500' : 'text-red-500'}`}>
+                              {pnl >= 0 ? '+' : ''}{formatCurrency(pnl, trade)}
+                            </span>
+                            {isCentAccountTrade(trade) && <span className="ml-1 text-xs text-yellow-500">¢</span>}
+                          </>
+                        )
+                      })()}
                     </td>
                     <td className="py-4 px-4">
                       <span className={`px-2 py-1 rounded-full text-xs font-medium ${
