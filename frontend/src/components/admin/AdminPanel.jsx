@@ -14,6 +14,7 @@ import KycManagement from './KycManagement'
 import TradingSettings from './TradingSettings'
 import BookManagement from './BookManagement'
 import ABookOrders from './ABookOrders'
+import AlgoTrading from './AlgoTrading'
 
 const AdminPanel = ({ initialSection = 'overview' }) => {
   const [activeSection, setActiveSection] = useState(initialSection)
@@ -48,6 +49,8 @@ const AdminPanel = ({ initialSection = 'overview' }) => {
         return <BookManagement />
       case 'abookorders':
         return <ABookOrders />
+      case 'algotrading':
+        return <AlgoTrading />
       default:
         return <OverviewDashboard />
     }

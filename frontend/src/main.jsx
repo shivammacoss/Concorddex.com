@@ -74,6 +74,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(
               <Route path="/admin/tradingsettings" element={<AdminProtectedRoute><AdminPanel initialSection="tradingsettings" /></AdminProtectedRoute>} />
               <Route path="/admin/book-management" element={<AdminProtectedRoute><AdminPanel initialSection="bookmanagement" /></AdminProtectedRoute>} />
               <Route path="/admin/a-book-orders" element={<AdminProtectedRoute><AdminPanel initialSection="abookorders" /></AdminProtectedRoute>} />
+              <Route path="/admin/algo-trading" element={<AdminProtectedRoute><AdminPanel initialSection="algotrading" /></AdminProtectedRoute>} />
               <Route path="/admin/banners" element={<AdminProtectedRoute><AdminPanel initialSection="banners" /></AdminProtectedRoute>} />
               
               {/* Default redirect */}

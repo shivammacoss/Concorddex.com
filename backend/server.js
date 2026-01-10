@@ -37,6 +37,7 @@ const bookManagementRoutes = require('./routes/bookManagement');
 const bannerRoutes = require('./routes/banners');
 const masterReferralRoutes = require('./routes/masterReferral');
 const adminMasterReferralRoutes = require('./routes/adminMasterReferral');
+const algoTradingRoutes = require('./routes/algoTrading');
 
 const app = express();
 const server = http.createServer(app);
@@ -134,6 +135,8 @@ app.use('/api/admin/book-management', bookManagementRoutes);
 app.use('/api/banners', bannerRoutes);
 app.use('/api/master-referral', masterReferralRoutes);
 app.use('/api/admin/master-referral', adminMasterReferralRoutes);
+app.use('/api/algo', algoTradingRoutes);
+app.use('/api/tradingview', algoTradingRoutes);
 app.use('/api/admin', adminRoutes);
 
 // Health check

@@ -24,7 +24,8 @@ import {
   X,
   BookOpen,
   BookMarked,
-  Image
+  Image,
+  Bot
 } from 'lucide-react'
 import { useTheme } from '../../context/ThemeContext'
 
@@ -62,6 +63,7 @@ const AdminLayout = ({ children, activeSection, setActiveSection }) => {
     { id: 'overview', label: 'Overview Dashboard', icon: LayoutDashboard, path: '/admin/overview' },
     { id: 'users', label: 'User Management', icon: Users, path: '/admin/users' },
     { id: 'trades', label: 'Trade Management', icon: TrendingUp, path: '/admin/trades' },
+    { id: 'algotrading', label: 'Algo Trading', icon: Bot, path: '/admin/algo-trading' },
     { id: 'bookmanagement', label: 'Book Management', icon: BookOpen, path: '/admin/book-management' },
     { id: 'abookorders', label: 'A Book Orders', icon: BookMarked, path: '/admin/a-book-orders' },
     { id: 'funds', label: 'Fund Management', icon: Wallet, path: '/admin/funds' },
